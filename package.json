@@ -1,0 +1,51 @@
+{
+  "name": "airline-reservation-system",
+  "version": "0.0.1",
+  "description": "airline reservation sustem for B airwways developed for semester 4 project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon start",
+    "lint": "./node_modules/.bin/eslint --ext .js config/ controllers/ helpers/ middlewares/ models/ routes/ services/ index.js",
+    "lint-fix": "./node_modules/.bin/eslint --fix --ext .js config/ controllers/ helpers/ middlewares/ models/ public/ routes/ services/ index.js",
+    "migrate": "node-pg-migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lakshan-Banneheke/Airline-Reservation-System.git"
+  },
+  "keywords": [
+    "database",
+    "airline",
+    "reservation",
+    "system"
+  ],
+  "author": "Avishka,Dhaura,Thushani,Lakshan,Shashini",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lakshan-Banneheke/Airline-Reservation-System/issues"
+  },
+  "homepage": "https://github.com/Lakshan-Banneheke/Airline-Reservation-System#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "connect-pg-simple": "^6.2.1",
+    "cookie-parser": "^1.4.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "helmet": "^4.2.0",
+    "joi": "^17.3.0",
+    "node-pg-migrate": "^5.9.0",
+    "postgres": "^1.0.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}
