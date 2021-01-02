@@ -11,13 +11,76 @@ $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
 
----------------------------------     TRIGGERS   ---------------------------------------
+----------------------------------  TABLE SCHEMA --------------------------------------
+
+CREATE TABLE Organizational_Info (
+  airline_name  varchar(30),
+  airline_hotline varchar(20),
+  airline_email varchar(50),
+  airline_address varchar(100),
+  airline_account_no varchar(30),
+  PRIMARY KEY (airline_name)
+);
+
+
+CREATE TABLE Customer_Category (
+  cat_id VARCHAR(36),
+  cat_name VARCHAR(20),
+  discount_percentage NUMERIC(4,2),
+  min_bookings SMALLINT,
+  PRIMARY KEY (cat_id)
+);
+
+CREATE TABLE Customer (
+  customer_id VARCHAR(36),
+  full_name VARCHAR(30),
+  dob DATE,
+  age INT GENERATED ALWAYS AS (get_age(dob)) STORED,
+  gender SMALLINT,
+  email VARCHAR(30),
+  contact_no VARCHAR(15),
+  passport_no VARCHAR(20),
+  country VARCHAR(30),
+  is_registered BOOL,
+  PRIMARY KEY (customer_id)
+);
+
+CREATE TABLE Profile (
+  customer_id varchar(36),
+  password varchar(70),
+  display_image blob,
+  category varchar(10),
+  address varchar(30),
+  no_of_bookings int,
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE;
+);
+
+
+
+---------------------------------- SESSION TABLE SCHEMA -----------------------------------
+
+CREATE TABLE "session" (
+    "sid" varchar NOT NULL COLLATE "default",
+    "sess" json NOT NULL,
+    "expire" timestamp(6) NOT NULL
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE "session"
+    ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
+--------------------------------     TRIGGERS   ---------------------------------------
 
 -- no of bookings trigger --
 
 -- increaseNumBookings(customer_id)
 CREATE OR REPLACE PROCEDURE  increaseNumBookings(uuid4)
-LANGUAGE plpgsql 
+LANGUAGE plpgsql
 AS $$
 DECLARE
        registered bool;
@@ -48,13 +111,13 @@ $$ LANGUAGE plpgsql;
 -- Trigger to increase booking count of customer
 CREATE TRIGGER bookingInsertTrigger
 AFTER INSERT
-ON Seat_Booking 
+ON Seat_Booking
 FOR EACH ROW EXECUTE PROCEDURE bookingInsert();
 
 
 -- decreaseNumBookings(customer_id)
 CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid4)
-LANGUAGE plpgsql 
+LANGUAGE plpgsql
 AS $$
 DECLARE
        registered bool;
@@ -67,7 +130,7 @@ BEGIN
 	-- ignore if registered is false
 	if registered is false then return;
 	end if;
-	-- inxcrease no of bookings of customer by 1
+	-- increase no of bookings of customer by 1
      UPDATE Profile SET no_of_bookings = no_of_bookings - 1 WHERE customer_id = $1;
 END;
 $$;
@@ -85,68 +148,5 @@ $$ LANGUAGE plpgsql;
 -- -- Trigger to decrease booking count of customer
 CREATE TRIGGER bookingInsertTrigger
 BEFORE DELETE
-ON Seat_Booking 
+ON Seat_Booking
 FOR EACH ROW EXECUTE PROCEDURE bookingDelete();
-
-----------------------------------  TABLE SCHEMA --------------------------------------
-
-CREATE TABLE "Organizational_Info" (
-  "airline_name" varchar(30),
-  "airline_hotline" varchar(20),
-  "airline_email" varchar(50),
-  "airline_address" varchar(100),
-  "airline_account_no" varchar(30),
-  PRIMARY KEY ("airline_name")
-);
-
-
-CREATE TABLE "Customer_Category" (
-  "cat_id" VARCHAR(36),
-  "cat_name" VARCHAR(20),
-  "discount_percentage" NUMERIC(4,2),
-  "min_bookings" SMALLINT,
-  PRIMARY KEY ("cat_id")
-);
-
-CREATE TABLE "Customer" (
-  "customer_id" VARCHAR(36),
-  "full_name" VARCHAR(30),
-  "dob" DATE,
-  "age" INT GENERATED ALWAYS AS (get_age(dob)) STORED,
-  "gender" SMALLINT,
-  "email" VARCHAR(30),
-  "contact_no" VARCHAR(15),
-  "passport_no" VARCHAR(20),
-  "country" VARCHAR(30),
-  "is_registered" BOOL,
-  PRIMARY KEY ("customer_id")
-);
-
-CREATE TABLE "Profile" (
-  "customer_id" varchar(36),
-  "password" varchar(70),
-  "photo" blob,
-  "category" varchar(10),
-  "address" varchar(30),
-  "no_of_bookings" int,
-  PRIMARY KEY ("customer_id"),
-  FOREIGN KEY("customer_id") REFERENCES "Customer"("customer_id") ON DELETE CASCADE ON UPDATE CASCADE;
-);
-
-
-
----------------------------------- SESSION TABLE SCHEMA -----------------------------------
-
-CREATE TABLE "session" (
-    "sid" varchar NOT NULL COLLATE "default",
-    "sess" json NOT NULL,
-    "expire" timestamp(6) NOT NULL
-)
-WITH (
-    OIDS = FALSE
-);
-
-ALTER TABLE "session"
-    ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
-CREATE INDEX "IDX_session_expire" ON "session" ("expire");
