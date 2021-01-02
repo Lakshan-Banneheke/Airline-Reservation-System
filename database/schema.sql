@@ -48,7 +48,7 @@ CREATE TABLE Customer (
 CREATE TABLE Profile (
   customer_id varchar(36),
   password varchar(70),
-  display_image blob,
+  display_image bytea,
   category varchar(10),
   address varchar(30),
   no_of_bookings int,
