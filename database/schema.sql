@@ -1,4 +1,3 @@
-
 ----------------------------------  FUNCTIONS  ------------------------------------
 
 CREATE OR REPLACE FUNCTION get_age( birthday date )
@@ -11,7 +10,7 @@ $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
 
-CREATE OR REPLACE FUNCTION get_price()
+-- CREATE OR REPLACE FUNCTION get_price()
 
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
@@ -57,13 +56,14 @@ CREATE TABLE Profile (
   no_of_bookings int,
   PRIMARY KEY (customer_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(cat_id) REFERENCES Customer_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE;
+  FOREIGN KEY(cat_id) REFERENCES Customer_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 --new--delete this
 CREATE TABLE Traveller_Class (
 class_id varchar(10),
 class_name varchar(10),
-PRIMARY KEY class_id)
+PRIMARY KEY (class_id)
 );
 
 CREATE TABLE Location (
@@ -71,7 +71,7 @@ CREATE TABLE Location (
   description varchar(30),
   parent_id varchar(36),
   PRIMARY KEY (location_id),
-  FOREIGN KEY(parent_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE;
+  FOREIGN KEY(parent_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Airport (
@@ -79,7 +79,7 @@ CREATE TABLE Airport (
   location_id varchar(36),
   image bytea,
   PRIMARY KEY (airport_code),
-  FOREIGN KEY(location_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE;
+  FOREIGN KEY(location_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Aircraft_Model (
@@ -100,10 +100,10 @@ CREATE TABLE Aircraft_Seat (
   seat_id varchar(10),
   traveller_class_id varchar(10),
   PRIMARY KEY (seat_id),
-  FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE;
+  FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE State_enum AS ('Scheduled','Delayed','Departed','In-Air','Landed', 'Arrived','Cancelled');
+CREATE TYPE State_enum AS ENUM('Scheduled','Delayed','Departed','In-Air','Landed','Arrived','Cancelled');  
 CREATE TABLE Aircraft_Instance (
   aircraft_id varchar(5),
   model_id varchar(12),
@@ -111,7 +111,7 @@ CREATE TABLE Aircraft_Instance (
   state State_enum,
   PRIMARY KEY (aircraft_id),
   FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(airport_code) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE;
+  FOREIGN KEY(airport_code) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 ----shashini start--delete this
 CREATE TABLE Route (
@@ -119,8 +119,10 @@ CREATE TABLE Route (
   origin varchar(10),
   destination varchar(10),
   time time,
-  PRIMARY KEY (route_id)
-)
+  PRIMARY KEY (route_id),
+  FOREIGN KEY(origin) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(destination) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE Flight_Schedule (
   flight_id varchar(24),
@@ -129,13 +131,19 @@ CREATE TABLE Flight_Schedule (
   date date,
   departuret_time_gmt datetime,
   arrival_time_gmt datetime,
-  PRIMARY KEY (flight_id)
+  PRIMARY KEY (flight_id),
+  FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Seat_Price (
   route_id varchar(10),
   traveler_class_id varchar(10),
-  Price numeric(10,2)
+  Price numeric(10,2),
+  PRIMARY KEY(route_id),
+  PRIMARY KEY(traveler_class_id),
+  FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(traveler_class_id) REFERENCES Traveller_Class(class_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Seat_Booking (
@@ -144,18 +152,25 @@ CREATE TABLE Seat_Booking (
   flight_id varchar(24),
   model_id varchar(10),
   seat_id varchar(10),
-  price numeric GENERATED ALWAYS AS (get_price()) STORED,
-  PRIMARY KEY (booking_id)
-)
+  price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
+  PRIMARY KEY (booking_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(flight_id) REFERENCES Flight_Schedule(flight_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(model_id) REFERENCES Aircraft_Seat(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(seat_id) REFERENCES Aircraft_Seat(seat_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 
 CREATE TABLE Customer_Review (
   review_id varchar(100),
   customer_id varchar(100),
   review varchar(500),
-  stars int(1),
-  PRIMARY KEY (review_id)
+  stars int1, 
+  PRIMARY KEY (review_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
 CREATE TABLE Staff (
   emp_id varchar(36),
   category varchar(10),
@@ -166,7 +181,8 @@ CREATE TABLE Staff (
   dob date,
   gender varchar(10),
   country varchar(30),
-  PRIMARY KEY (emp_id)
+  PRIMARY KEY (emp_id),
+  FOREIGN KEY(category) REFERENCES Staff_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Staff_Category (
