@@ -56,14 +56,14 @@ CREATE TABLE Profile (
   no_of_bookings int,
   PRIMARY KEY (customer_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(cat_id) REFERENCES Customer_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY(category) REFERENCES Customer_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 --new--delete this
 CREATE TABLE Traveller_Class (
-class_id varchar(10),
-class_name varchar(10),
-PRIMARY KEY (class_id)
+  class_id varchar(10),
+  class_name varchar(10),
+  PRIMARY KEY (class_id)
 );
 
 CREATE TABLE Location (
@@ -88,7 +88,7 @@ CREATE TABLE Aircraft_Model (
   manufacturer_name varchar(30),
   economy_seat_capacity int,
   business_seat_capacity int,
-  platimun_seat_capacity int,
+  platinum_seat_capacity int,
   max_load numeric(10,2),
   fuel_capacity numeric(10,2),
   avg_airspeed int,
@@ -100,7 +100,9 @@ CREATE TABLE Aircraft_Seat (
   seat_id varchar(10),
   traveller_class_id varchar(10),
   PRIMARY KEY (seat_id),
-  FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (model_id),
+  FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(traveller_class_id) REFERENCES Traveller_Class(class_id)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TYPE State_enum AS ENUM('Scheduled','Delayed','Departed','In-Air','Landed','Arrived','Cancelled');  
@@ -129,8 +131,8 @@ CREATE TABLE Flight_Schedule (
   route_id varchar(10),
   aircraft_id varchar(5),
   date date,
-  departuret_time_gmt datetime,
-  arrival_time_gmt datetime,
+  departure_time_gmt timestamp,
+  arrival_time_gmt timestamp,
   PRIMARY KEY (flight_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -165,7 +167,7 @@ CREATE TABLE Customer_Review (
   review_id varchar(100),
   customer_id varchar(100),
   review varchar(500),
-  stars int1, 
+  stars int,
   PRIMARY KEY (review_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -214,7 +216,7 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 -- no of bookings trigger --
 
 -- increaseNumBookings(customer_id)
-CREATE OR REPLACE PROCEDURE  increaseNumBookings(uuid4)
+CREATE OR REPLACE PROCEDURE  increaseNumBookings(uuid)
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -251,7 +253,7 @@ FOR EACH ROW EXECUTE PROCEDURE bookingInsert();
 
 
 -- decreaseNumBookings(customer_id)
-CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid4)
+CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid)
 LANGUAGE plpgsql
 AS $$
 DECLARE
