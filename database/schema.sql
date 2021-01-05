@@ -1,4 +1,43 @@
-----------------------------------  FUNCTIONS  ------------------------------------
+DROP TRIGGER IF EXISTS afterbookingInsertTrigger ON Seat_Booking;
+DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
+
+DROP PROCEDURE IF EXISTS increaseNumBookings;
+DROP PROCEDURE IF EXISTS decreaseNumBookings;
+
+DROP TABLE IF EXISTS Organizational_Info CASCADE;
+DROP TABLE IF EXISTS Customer_Category CASCADE;
+DROP TABLE IF EXISTS Customer CASCADE;
+DROP TABLE IF EXISTS Traveller_Class CASCADE;
+DROP TABLE IF EXISTS Location CASCADE;
+DROP TABLE IF EXISTS Airport CASCADE;
+DROP TABLE IF EXISTS Aircraft_Model CASCADE;
+DROP TABLE IF EXISTS Aircraft_Seat CASCADE;
+DROP TABLE IF EXISTS Aircraft_Instance CASCADE;
+DROP TABLE IF EXISTS Route CASCADE;
+DROP TABLE IF EXISTS Flight_Schedule CASCADE;
+DROP TABLE IF EXISTS Seat_Price CASCADE;
+DROP TABLE IF EXISTS Seat_Booking CASCADE;
+DROP TABLE IF EXISTS Customer_Review CASCADE;
+DROP TABLE IF EXISTS Staff CASCADE;
+DROP TABLE IF EXISTS Staff_Category CASCADE;
+DROP TABLE IF EXISTS Seat_Price CASCADE;
+DROP TABLE IF EXISTS session CASCADE;
+
+
+---------------------------------- ENUMS SCHEMA ------------------------------------
+
+CREATE TYPE State_enum AS ENUM(
+'Scheduled',
+'Delayed',
+'Departed',
+'In-Air',
+'Landed',
+'Arrived',
+'Cancelled');  
+
+
+
+----------------------------------  FUNCTION SCHEMA  ------------------------------------
 
 CREATE OR REPLACE FUNCTION get_age( birthday date )
 RETURNS int
@@ -96,16 +135,15 @@ CREATE TABLE Aircraft_Model (
 );
 
 CREATE TABLE Aircraft_Seat (
-  model_id varchar(10),
-  seat_id varchar(10),
+  model_id varchar(10) NOT NULL,
+  seat_id varchar(10) NOT NULL,
   traveller_class_id varchar(10),
-  PRIMARY KEY (seat_id),
-  PRIMARY KEY (model_id),
+  PRIMARY KEY (model_id,seat_id),
   FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(traveller_class_id) REFERENCES Traveller_Class(class_id)  ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TYPE State_enum AS ENUM('Scheduled','Delayed','Departed','In-Air','Landed','Arrived','Cancelled');  
+
 CREATE TABLE Aircraft_Instance (
   aircraft_id varchar(5),
   model_id varchar(12),
@@ -139,11 +177,10 @@ CREATE TABLE Flight_Schedule (
 );
 
 CREATE TABLE Seat_Price (
-  route_id varchar(10),
-  traveler_class_id varchar(10),
+  route_id varchar(10) NOT NULL,
+  traveler_class_id varchar(10) NOT NULL,
   Price numeric(10,2),
-  PRIMARY KEY(route_id),
-  PRIMARY KEY(traveler_class_id),
+  PRIMARY KEY(route_id,traveler_class_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(traveler_class_id) REFERENCES Traveller_Class(class_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -154,12 +191,12 @@ CREATE TABLE Seat_Booking (
   flight_id varchar(24),
   model_id varchar(10),
   seat_id varchar(10),
-  price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
+  --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
+  price numeric(4,2),
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(flight_id) REFERENCES Flight_Schedule(flight_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(model_id) REFERENCES Aircraft_Seat(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(seat_id) REFERENCES Aircraft_Seat(seat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -172,6 +209,11 @@ CREATE TABLE Customer_Review (
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE Staff_Category (
+  cat_id varchar(10),
+  cat_name varchar(20),
+  PRIMARY KEY (cat_id)
+);
 
 CREATE TABLE Staff (
   emp_id varchar(36),
@@ -187,15 +229,8 @@ CREATE TABLE Staff (
   FOREIGN KEY(category) REFERENCES Staff_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Staff_Category (
-  cat_id varchar(10),
-  cat_name varchar(20),
-  PRIMARY KEY (cat_id)
-);
 
-
-
----------------------------------- SESSION TABLE SCHEMA -----------------------------------
+---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
 
 CREATE TABLE "session" (
     "sid" varchar NOT NULL COLLATE "default",
@@ -211,7 +246,7 @@ ALTER TABLE "session"
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
---------------------------------     TRIGGERS   ---------------------------------------
+--------------------------------     TRIGGERS   ------------------------------------------------------------------
 
 -- no of bookings trigger --
 
@@ -236,7 +271,7 @@ END;
 $$;
 
 -- Trigger bookingInsert statements
-CREATE OR REPLACE FUNCTION afterSeat bookingInsert()
+CREATE OR REPLACE FUNCTION afterSeatbookingInsert()
 RETURNS TRIGGER AS $$
 BEGIN
     raise notice 'Trigger on Seat_Booking % (Increasing number of bookings)', NEW.customer_id;
@@ -246,12 +281,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger to increase booking count of customer
-CREATE TRIGGER bookingInsertTrigger
+CREATE TRIGGER afterbookingInsertTrigger
 AFTER INSERT
 ON Seat_Booking
-FOR EACH ROW EXECUTE PROCEDURE bookingInsert();
+FOR EACH ROW EXECUTE PROCEDURE afterSeatbookingInsert();
 
-
+------------------------------------------------------------------------------------------------------------------------
 -- decreaseNumBookings(customer_id)
 CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid)
 LANGUAGE plpgsql
@@ -273,7 +308,7 @@ END;
 $$;
 
 -- Trigger bookingDelete statements
-CREATE OR REPLACE FUNCTION afterSeat bookingDelete()
+CREATE OR REPLACE FUNCTION beforeSeatBookingCancellation()
 RETURNS TRIGGER AS $$
 BEGIN
     raise notice 'Trigger on Seat_Booking % (Decreasing number of bookings)', NEW.customer_id;
@@ -283,7 +318,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- -- Trigger to decrease booking count of customer
-CREATE TRIGGER bookingInsertTrigger
+CREATE TRIGGER beforebookingCancellationTrigger
 BEFORE DELETE
 ON Seat_Booking
-FOR EACH ROW EXECUTE PROCEDURE bookingDelete();
+FOR EACH ROW EXECUTE PROCEDURE beforeSeatbookingCancellation();
+
+------------------------------------------------------------------------------------------------------------------------
