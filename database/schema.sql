@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS decreaseNumBookings;
 DROP TABLE IF EXISTS Organizational_Info CASCADE;
 DROP TABLE IF EXISTS Customer_Category CASCADE;
 DROP TABLE IF EXISTS Customer CASCADE;
+DROP TABLE IF EXISTS Profile CASCADE;
 DROP TABLE IF EXISTS Traveller_Class CASCADE;
 DROP TABLE IF EXISTS Location CASCADE;
 DROP TABLE IF EXISTS Airport CASCADE;
@@ -22,6 +23,8 @@ DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS Staff_Category CASCADE;
 DROP TABLE IF EXISTS Seat_Price CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
+
+DROP TYPE IF EXISTS  State_enum;
 
 
 ---------------------------------- ENUMS SCHEMA ------------------------------------
@@ -323,4 +326,52 @@ BEFORE DELETE
 ON Seat_Booking
 FOR EACH ROW EXECUTE PROCEDURE beforeSeatbookingCancellation();
 
-------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
+
+GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.decreasenumbookings(uuid) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.increasenumbookings(uuid) TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_instance TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_model TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_seat TO database_app;
+
+GRANT ALL ON TABLE public.airport TO database_app;
+
+GRANT ALL ON TABLE public.customer TO database_app;
+
+GRANT ALL ON TABLE public.customer_category TO database_app;
+
+GRANT ALL ON TABLE public.customer_review TO database_app;
+
+GRANT ALL ON TABLE public.flight_schedule TO database_app;
+
+GRANT ALL ON TABLE public.location TO database_app;
+
+GRANT ALL ON TABLE public.organizational_info TO database_app;
+
+GRANT ALL ON TABLE public.profile TO database_app;
+
+GRANT ALL ON TABLE public.route TO database_app;
+
+GRANT ALL ON TABLE public.seat_booking TO database_app;
+
+GRANT ALL ON TABLE public.seat_price TO database_app;
+
+GRANT ALL ON TABLE public.session TO database_app;
+
+GRANT ALL ON TABLE public.staff TO database_app;
+
+GRANT ALL ON TABLE public.staff_category TO database_app;
+
+GRANT ALL ON TABLE public.traveller_class TO database_app;
+
