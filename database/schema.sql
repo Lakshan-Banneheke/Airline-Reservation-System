@@ -4,6 +4,8 @@ DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
 DROP PROCEDURE IF EXISTS decreaseNumBookings;
 
+DROP DOMAIN IF EXISTS UUID4 CASCADE;
+
 DROP TABLE IF EXISTS Organizational_Info CASCADE;
 DROP TABLE IF EXISTS Customer_Category CASCADE;
 DROP TABLE IF EXISTS Customer CASCADE;
@@ -38,9 +40,30 @@ CREATE TYPE State_enum AS ENUM(
 'Arrived',
 'Cancelled');  
 
+------------------------------------DOMAIN SCHEMA ---------------------------------------
+
+CREATE DOMAIN UUID4 AS char(36)
+CHECK (VALUE ~ '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
 
 ----------------------------------  FUNCTION SCHEMA  ------------------------------------
+
+--Function to create UUID for tables
+CREATE OR REPLACE FUNCTION generate_uuid4 ()
+    RETURNS char( 36
+)
+AS $$
+DECLARE
+    var_uuid char(36);
+BEGIN
+    SELECT
+        uuid_in(overlay(overlay(md5(random()::text || ':' || clock_timestamp()::text)
+            PLACING '4' FROM 13)
+        PLACING to_hex(floor(random() * (11 - 8 + 1) + 8)::int)::text FROM 17)::cstring) INTO var_uuid;
+    RETURN var_uuid;
+END
+$$
+LANGUAGE PLpgSQL;
 
 CREATE OR REPLACE FUNCTION get_age( birthday date )
 RETURNS int
@@ -68,7 +91,7 @@ CREATE TABLE Organizational_Info (
 
 
 CREATE TABLE Customer_Category (
-  cat_id VARCHAR(36),
+  cat_id uuid4 DEFAULT generate_uuid4 (),
   cat_name VARCHAR(20),
   discount_percentage NUMERIC(4,2),
   min_bookings SMALLINT,
@@ -76,7 +99,7 @@ CREATE TABLE Customer_Category (
 );
 
 CREATE TABLE Customer (
-  customer_id VARCHAR(36),
+  customer_id uuid4 DEFAULT generate_uuid4 (),
   full_name VARCHAR(30),
   dob DATE,
   age INT GENERATED ALWAYS AS (get_age(dob)) STORED,
@@ -90,7 +113,7 @@ CREATE TABLE Customer (
 );
 
 CREATE TABLE Profile (
-  customer_id varchar(36),
+  customer_id uuid4,
   password varchar(70),
   display_image bytea,
   category varchar(10),

@@ -39,7 +39,8 @@
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "node-pg-migrate": "^5.9.0",
-    "postgres": "^1.0.2"
+    "postgres": "^1.0.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.10.0",

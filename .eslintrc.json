@@ -25,6 +25,6 @@
             4
         ],
         "linebreak-style": 0,
-        "no-continue": "off"
+        "no-continue": "off",
     }
 }
