@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const helmet = require('helmet');
 const pgConnect = require('connect-pg-simple');
-const { defaultLogger } = require('./config/logger');
+// const { defaultLogger } = require('./config/logger');
 
 // Make all variables from our .env file available in our process
 require('dotenv').config();
@@ -30,15 +30,13 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },//30 days
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
 }));
 // setup routes
 app.use(require('./routes'));
 
-
-//uncomment on deployment
+// uncomment on deployment
 // const errorLogger = defaultLogger('error-handler');
-
 
 // app.use((err, req, res, next) => {
 //     const { query, params, body } = req;

@@ -15,10 +15,15 @@ class CustomerController {
             req.session.user = {};
             req.session.user.email = customer.email;
             req.session.user.id = customer.customer_id;
-            res.redirect('/');
+            // res.redirect('/');
+            return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (err) {
             // logger.error(err);
-            res.redirect(`/?registrationError=${err}#signup`);
+            // res.redirect(`/?registrationError=${err}#signup`);
+            return res.status(200).send({
+                result: 'redirect',
+                url: `/?registrationError=${err}&name=${req.body.name}&dob=${req.body.dob}&gender=${req.body.gender}&email=${req.body.email}&contactNo=${req.body.contactNo}&country=${req.body.country}&passportNo=${req.body.passportNo}#signup`,
+            });
         }
     }
 

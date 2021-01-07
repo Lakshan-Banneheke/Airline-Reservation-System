@@ -16,7 +16,6 @@
 
             var Genders=['Male','Female','Other'];
             var error_msgs="<strong>OOPS</strong>";
-            console.log(gender);
             try{
             if(name==""){
                 error_msgs+="<br>Name is required";
@@ -51,7 +50,6 @@
 
 
             if (error_msgs=="<strong>OOPS</strong>") {
-                console.log("ok");
                 $.ajax({
                     type: "POST",
                     url: '/customer/register',
@@ -65,25 +63,17 @@
                         'passportNo' : passportNo,
                         'password' :password,
                         'confirmPassword' :confirmPassword,
+                    
                     },
-                    success: function (data) {
-                        // $('#create_account_form_submit').children('.reg-success').remove();
-                        // $('#create_account_form_submit').prepend('<span class="alert alert-success reg-success">' + data + '</span>');
-                        // $('#name').val('');
-                        // $('#email').val('');
-                        // $('#dob').val('');
-                        // $("#gender").val('');
-                        // $("#contactNo").val('');
-                        // $("#country").val('');
-                        // $("#passportNo").val('');
-                        // $("#password").val('');
-                        // $("#myInput").val('');
-                        // $("#myInputTwo").val('');
-                        // $('#map').height('576px');
-                        // $('.reg-success');
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (response) {
+                        $('#create_account_form_submit').children('.reg-success').remove();
+                        if (response.result == 'redirect') {
+                            //redirecting
+                            window.location.replace(response.url);
+                          }
                     },
                     error: function (res) {
-
                     }
                 });
             } else {

@@ -1,18 +1,16 @@
 const Joi = require('joi');
 
-const CustomerRegInfo = Joi.object().keys({
+const CustomerRegInfo = Joi.object(
+).options({ abortEarly: false }).keys({
     name: Joi.string().required(),
     dob: Joi.date().required(),
-    gender: Joi.string().valid('Male', 'Female', 'Other').required(),
+    gender: Joi.string().required().valid('Male', 'Female', 'Other'),
     email: Joi.string().email().required(),
-    contactNo: Joi.string().trim().required().length(10, 'utf8')
-        .regex(/^\d+$/)
-        .message('Enter a vaild Mobile Number'),
+    contactNo: Joi.string().trim().required().label('Contact Number'),
     country: Joi.string().required(),
-    passportNo: Joi.string().required(),
-    password: Joi.string().min(5).max(10).required(),
-    confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-    termsAgreement: Joi.bool().valid(true),
+    passportNo: Joi.string().required().label('Passport Number'),
+    password: Joi.string().min(5).required(),
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required().label('Password Conformation'),
 
 });
 
