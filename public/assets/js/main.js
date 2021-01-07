@@ -82,6 +82,7 @@ $('.my-paroller').paroller();
     $('.header-top-area').toggleClass('active');
     $('.overlay').addClass('active');
   })
+  
 
   //Login
   $(document).on('click', '.custom-btn--style, .stop', function() {

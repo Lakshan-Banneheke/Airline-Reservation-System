@@ -19,7 +19,7 @@ class CustomerController {
             res.redirect('/');
         } catch (err) {
             //logger.error(err);
-            res.redirect(`/?registrationError=${err}`);
+            res.redirect(`/?registrationError=${err}#signup`);
         }
     }
 

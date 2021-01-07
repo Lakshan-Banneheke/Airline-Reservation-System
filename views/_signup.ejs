@@ -10,7 +10,12 @@
                                     <div class="close d-lg-none"><i class="fas fa-times"></i></div>
                                     <h4 class="title">Create New Account</h4>
                                     <p>Register with B Airways</p>
-                                    <form class="create-account-form" name="create-account-form" id="create_account_form_submit">
+                                    <% if(registrationError) {%>
+                                        <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                                            <%=registrationError%>
+                                        </div>
+                                    <% } %>
+                                    <form class="create-account-form" name="create-account-form" id="create_account_form_submit" method="POST" action="/customer/register">
                                         <div class="form-group">
                                             <input type="text" placeholder="Full Name" name="name" required>
                                         </div>
