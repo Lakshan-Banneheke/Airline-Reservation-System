@@ -24,3 +24,16 @@ INSERT INTO location(name, parent_id) VALUES ('Bangkok',14);
 
 INSERT INTO location(name) VALUES ('Singapore');
 INSERT INTO location(name, parent_id) VALUES ('Changi',16);
+
+---------------------INSERTING AIRPORTS---------------------------
+INSERT INTO airport(airport_code,location_id) VALUES('CGK',5);
+INSERT INTO airport(airport_code,location_id) VALUES('DPS',6);
+
+INSERT INTO airport(airport_code,location_id) VALUES('DEL',9);
+INSERT INTO airport(airport_code,location_id) VALUES('BOM',11);
+INSERT INTO airport(airport_code,location_id) VALUES('MAA',13);
+
+INSERT INTO airport(airport_code,location_id) VALUES('BKK',15);
+INSERT INTO airport(airport_code,location_id) VALUES('DMK',15);
+
+INSERT INTO airport(airport_code,location_id) VALUES('SIN',17);
