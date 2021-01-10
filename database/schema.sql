@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS Route CASCADE;
 DROP TABLE IF EXISTS Flight_Schedule CASCADE;
 DROP TABLE IF EXISTS Seat_Price CASCADE;
 DROP TABLE IF EXISTS Seat_Booking CASCADE;
+DROP TABLE IF EXISTS Seat_Reservation CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS Staff_Category CASCADE;
@@ -31,7 +32,7 @@ DROP TYPE IF EXISTS  State_enum;
 
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
-CREATE TYPE State_enum AS ENUM(
+CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
 'Delayed',
 'Departed',
@@ -40,6 +41,14 @@ CREATE TYPE State_enum AS ENUM(
 'Arrived',
 'Cancelled');  
 
+CREATE TYPE booking_state_enum AS ENUM(
+'Not paid',
+'Paid'); 
+
+CREATE TYPE gender_enum AS ENUM(
+'Male',
+'Female',
+'Other'); 
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
@@ -75,17 +84,17 @@ $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
 
+-- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
-
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
-  airline_name  varchar(30),
-  airline_hotline varchar(20),
-  airline_email varchar(50),
-  airline_address varchar(100),
-  airline_account_no varchar(30),
+  airline_name  varchar(30) NOT NULL,
+  airline_hotline varchar(20) NOT NULL,
+  airline_email varchar(50) NOT NULL,
+  airline_address varchar(100) NOT NULL,
+  airline_account_no varchar(30) NOT NULL,
   PRIMARY KEY (airline_name)
 );
 
@@ -103,7 +112,7 @@ CREATE TABLE Customer (
   full_name VARCHAR(30),
   dob DATE,
   age INT GENERATED ALWAYS AS (get_age(dob)) STORED,
-  gender SMALLINT,
+  gender gender_enum,
   email VARCHAR(30),
   contact_no VARCHAR(15),
   passport_no VARCHAR(20),
@@ -132,16 +141,16 @@ CREATE TABLE Traveller_Class (
 );
 
 CREATE TABLE Location (
-  location_id varchar(36),
-  description varchar(30),
-  parent_id varchar(36),
+  location_id SERIAL,
+  name varchar(50) NOT NULL,
+  parent_id int,
   PRIMARY KEY (location_id),
   FOREIGN KEY(parent_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Airport (
   airport_code varchar(10),
-  location_id varchar(36),
+  location_id int NOT NULL,
   image bytea,
   PRIMARY KEY (airport_code),
   FOREIGN KEY(location_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -174,7 +183,7 @@ CREATE TABLE Aircraft_Instance (
   aircraft_id varchar(5),
   model_id varchar(12),
   airport_code varchar(10),
-  state State_enum,
+  state flight_state_enum,
   PRIMARY KEY (aircraft_id),
   FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(airport_code) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
@@ -215,16 +224,25 @@ CREATE TABLE Seat_Booking (
   booking_id varchar(24),
   customer_id varchar(36),
   flight_id varchar(24),
-  model_id varchar(10),
-  seat_id varchar(10),
   --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
-  price numeric(4,2),
+  total_price() numeric(10,2),
+  state booking_state_enum,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(flight_id) REFERENCES Flight_Schedule(flight_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE Seat_Reservation(
+    booking_id varchar(24),
+    model_id varchar(10),
+    seat_id varchar(10),
+    --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
+    price() numeric(10,2),
+    PRIMARY KEY (`booking_id`, `model-id`, `seat_id`),
+    FOREIGN KEY(booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE Customer_Review (
   review_id varchar(100),
@@ -236,21 +254,22 @@ CREATE TABLE Customer_Review (
 );
 
 CREATE TABLE Staff_Category (
-  cat_id varchar(10),
-  cat_name varchar(20),
+  cat_id SERIAL,
+  cat_name varchar(20) NOT NULL,
   PRIMARY KEY (cat_id)
 );
 
+
 CREATE TABLE Staff (
-  emp_id varchar(36),
-  category varchar(10),
-  password varchar(70),
-  name varchar(50),
-  contact_no varchar(15),
-  email varchar(20),
-  dob date,
-  gender varchar(10),
-  country varchar(30),
+  emp_id uuid4 DEFAULT generate_uuid4 (),
+  category int NOT NULL,
+  password varchar(70) NOT NULL,
+  name varchar(50) NOT NULL,
+  contact_no varchar(15) NOT NULL,
+  email varchar(70) NOT NULL,
+  dob date NOT NULL,
+  gender gender_enum NOT NULL,
+  country varchar(30) NOT NULL,
   PRIMARY KEY (emp_id),
   FOREIGN KEY(category) REFERENCES Staff_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
