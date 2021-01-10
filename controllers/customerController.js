@@ -22,7 +22,8 @@ class CustomerController {
             // res.redirect(`/?registrationError=${err}#signup`);
             return res.status(200).send({
                 result: 'redirect',
-                url: `/?registrationError=${err}&name=${req.body.name}&dob=${req.body.dob}&gender=${req.body.gender}&email=${req.body.email}&contactNo=${req.body.contactNo}&country=${req.body.country}&passportNo=${req.body.passportNo}#signup`,
+                url: `/?registrationError=${err}
+                &email=${req.body.email}&firstName=${req.body.firstName}&lastName=${req.body.lastName}&dob=${req.body.dob}&gender=${req.body.gender}&contactNo=${req.body.contactNo}&passportNo=${req.body.passportNo}&addressLine1=${req.body.addressLine1}&addressLine2=${req.body.addressLine2}&city=${req.body.city}&country=${req.body.country}#signup`,
             });
         }
     }

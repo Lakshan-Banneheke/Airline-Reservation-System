@@ -5,20 +5,18 @@ const Customer = require('../models/Customer');
 
 class CustomerService {
     static async register({
-        name, dob, gender, email, contactNo, country, passportNo, password, confrimPassword,
+        // name, dob, gender, email, contactNo, country, passportNo, password, confrimPassword,
+        email, password, confrimPassword, firstName, lastName, dob,
+        gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
     }) {
         if (!crypto.timingSafeEqual(Buffer.from(password), Buffer.from(confrimPassword))) {
             throw new Errors.BadRequest('Password does not match retype password');
         }
 
-        const isRegistered = await Customer.isEmailRegistered(email);
-        if (isRegistered) {
-            throw new Errors.BadRequest('Email is already registered');
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
         return Customer.registerCustomer(
-            name, dob, gender, email, contactNo, country, passportNo, hashedPassword,
+            email, hashedPassword, firstName, lastName, dob,
+            gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
         );
     }
 

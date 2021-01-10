@@ -1,46 +1,37 @@
 const sql = require('../config/db');
 
 class Customer {
-    static async getAnyCustomerById(id) {
-        const [customer] = await sql`
-            SELECT * from Customer 
+    static async getTypeCustomerById(id) {
+        const [type] = await sql`
+            SELECT type from Customer 
             WHERE customer_id=${id}
         `;
-        return customer;
+        return type;
     }
 
     static async getRegisteredCustomerByEmail(email) {
         const [customer] = await sql`
-            SELECT * from Customer INNER JOIN Profile ON Customer.customer_id=Profile.customer_id
+            SELECT * from Registered_Customer
             WHERE email=${email}
         `;
         return customer;
     }
 
-    static async registerCustomer(name,dob,gender,email,contactNo,country,passportNo,password) {
-        //TODO: Impelement SQL TRANSACTIONS here and insert to cutsomer category
+    static async registerCustomer(
+        // name, dob, gender, email, contactNo, nationality, passportNo, password,
+        email, password, firstName, lastName, dob,
+        gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
+    ) {
         const [createdCustomer] = await sql`
-            INSERT INTO Customer 
-                ( name,dob,gender,email,contact_no,country,passport_no,is_registered ) 
-            VALUES 
-                ( ${name},${dob},${gender},${email},${contactNo},${country},${passportNo},${true} )
-            RETURNING *
+            Call Procedure registerCustomer
+                ( ${email},${password},${firstName},${lastName},${dob},${gender},${contactNo},${passportNo},${addressLine1},${addressLine2},${city},${country})
             `;
-
-            const[createdProfile]= await sql`
-            INSERT INTO Profile
-                ( customer_id,password ) 
-            VALUES 
-                (${createdCustomer.customer_id},${password} )
-            RETURNING *
-            `;
-        return [createdCustomer,createdProfile];
+        return createdCustomer;
     }
 
     static async isEmailRegistered(email) {
         const [customer] = await sql`
-            SELECT customer_id FROM
-            Profile INNER JOIN Customer ON Customer.customer_id=Profile.customer_id
+            SELECT customer_id FROM Registered_Customer
             WHERE email=${email}
             LIMIT 1
         `;
