@@ -38,7 +38,7 @@ import the current DDL and DML schema. Here give the full path to the schema
 Login to pgAdmin (Search on start) using the username and password used in the installation process of postgres.
 
 
-Then rclick Server>postgres>Databases and check for `airline_reservation_db`. The expand it go to Schemas>Tables>Test>rclick>View edit data>All rows
+Then rclick Server>postgres>Databases and check for `airline_reservation_db`. Then expand it go to Schemas>Tables>Test>rclick>View edit data>All rows
 
 Now you are done with the database setup.
 
