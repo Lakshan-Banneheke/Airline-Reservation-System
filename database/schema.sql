@@ -176,7 +176,7 @@ CREATE TABLE Aircraft_Model (
 CREATE TABLE Aircraft_Seat (
   model_id int NOT NULL,
   seat_id varchar(10) NOT NULL,
-  traveller_class_id int,
+  traveller_class_id int NOT NULL,
   PRIMARY KEY (model_id,seat_id),
   FOREIGN KEY(model_id) REFERENCES Aircraft_Model(model_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(traveller_class_id) REFERENCES Traveller_Class(class_id)  ON DELETE CASCADE ON UPDATE CASCADE
@@ -216,9 +216,9 @@ CREATE TABLE Flight_Schedule (
 );
 
 CREATE TABLE Seat_Price (
-  route_id varchar(10) NOT NULL,
+  route_id int NOT NULL,
   traveler_class_id int NOT NULL,
-  Price numeric(10,2),
+  price numeric(10,2) NOT NULL,
   PRIMARY KEY(route_id,traveler_class_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(traveler_class_id) REFERENCES Traveller_Class(class_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -338,6 +338,7 @@ FOR EACH ROW EXECUTE PROCEDURE afterSeatbookingInsert();
 ------------------------------------------------------------------------------------------------------------------------
 -- decreaseNumBookings(customer_id)
 CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid)
+
 LANGUAGE plpgsql
 AS $$
 DECLARE
