@@ -16,17 +16,26 @@
                                         </div>
                                     <% } %>
                                     <form class="create-account-form" name="create-account-form" id="create_account_form_submit">
+                                       
                                         <div class="form-group">
-                                            <input type="text" placeholder="Full Name" name="name" id="name" required value="<%=regname%>">
+                                            <label for="firstName" style="color: white;">First Name</label>
+                                            <input type="text" name="firstName" id="firstName" required value="<%=regfirstName%>">
                                         </div>
+                                        <div class="form-group">
+                                            <label for="lastName" style="color: white;">Last Name</label>
+                                            <input type="text"  name="lastName" id="lastName" required value="<%=reglastName%>">
+                                        </div>
+                                        
+                                        
                                         <div class="form-group  col-rt-in-3">
-                                            <input type='text' id="dob" class='datepicker-here' data-language='en' placeholder="Date of Birth" name="dob" required value="<%=regdob%>">
+                                            <label for="dob" style="color: white;">Date of Birth <small>(YYYY-MM-DD</small></label>
+                                            <input type='text' id="dob"  data-language='en' name="dob" required value="<%=regdob%>">
                                         </div>
 
-                                        
+                                        <label for="gender" style="color: white;">Gender</label>
                                         <div class="single-input  col-rt-in-3">
-                                            <select class="select-bar" name="gender" id="gender" required value="<%=reggender%>">
-                                                <option data-display="Gender">Gender</option>
+                                            <select class="select-bar" name="gender" id="gender" required value="<%=reggender%>" opt>
+                                                <option data-display="Choose..">Choose..</option>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>
@@ -35,24 +44,40 @@
                                         </div>
                                         
                                         <div class="form-group">
-                                            <input type="email" placeholder="Email" name="email" id="email" required value="<%=regemail%>">
+                                            <label for="email" style="color: white;">Email</label>
+                                            <input type="email" name="email" id="email" required value="<%=regemail%>">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" placeholder="Contact Number" name="contactNo" id="contactNo" required value="<%=regcontactNo%>">
+                                            <label for="contactNo" style="color: white;">Contact Number</label>
+                                            <input type="text" name="contactNo" id="contactNo" required value="<%=regcontactNo%>">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" placeholder="Resident Country" name="country" id="country" required value="<%=regcountry%>">
+                                            <label for="passportNo" style="color: white;">Passport Number</label>
+                                            <input type="text"  name="passportNo" id="passportNo" required value="<%=regpassportNo%>">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" placeholder="Passport Number" name="passportNo" id="passportNo" required value="<%=regpassportNo%>">
+                                            <label for="addressLine1" style="color: white;">Address</label>
+                                            <input type="text" name="addressLine1" id="addressLine1" required value="<%=regaddressLine1%>">
+                                            <input type="text" style="margin-top: 3px;" name="addressLine2" id="addressLine2" required value="<%=regaddressLine2%>">
                                         </div>
+                                        <div class="form-group">
+                                            <label for="city" style="color: white;">City</label>
+                                            <input type="text"  name="city" id="city" required value="<%=regcity%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="country" style="color: white;">Country</label>
+                                            <input type="text"  name="country" id="country" required value="<%=regcountry%>">
+                                        </div>
+                                        
                                     
                                         <div class="form-group">
-                                            <input type="password" id="myInput" placeholder="Password" name="password" required>
+                                            <label for="password" style="color: white;">Password</label>
+                                            <input type="password" id="myInput" name="password" required>
                                             <a href="#0" id="show-pass-one" class="show-pass"><i class="fas fa-eye"></i></a>
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" id="myInputTwo" placeholder="Confirm Password" name="confirmPassword" required>
+                                            <label for="confirmPassword" style="color: white;">Conformation Password</label>
+                                            <input type="password" id="myInputTwo" name="confirmPassword" required>
                                         </div>
                                         <div class="form-group">
                                             <div class="checkbox-wrapper d-flex flex-wrap align-items-center ">

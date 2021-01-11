@@ -61,11 +61,11 @@
                         </div>
                         <div class="col-lg-9 d-flex flex-wrap justify-content-end pr-lg-0">
                             <div class="header-top-btn">
-                                <% if (!user) {%>
-                                    <a href="#" class=" custom-btn--style">Log in</a>
-                                    <a href="#signup" class="custom-btn">Create an account</a>
+                                <% if (!user || user.type=='guest') {%>
+                                    <a href="#login" class=" custom-btn-login">Log in</a>
+                                    <a href="#signup" class="custom-btn-register">Create an account</a>
                                 <%} else{%>
-                                    <a href="/customer/logout" class=" custom-btn--style">Log Out</a>
+                                    <a href="/customer/logout" class=" custom-btn">Log Out</a>
                                 <% } %>
                             </div>
                         </div>
@@ -127,13 +127,13 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </div>
                         <div class="header-btn-group d-lg-none">
-                            <% if (!user) {%>
+                            <% if (!user || user.type=='guest') {%>
                             <div class="header-top-btn">
-                                <a href="#" class=" custom-btn--style">Log in</a>
-                                <a href="#signup" class="custom-btn">Create an account</a>
+                                <a href="#login" class=" custom-btn-login">Log in</a>
+                                <a href="#signup" class="custom-btn-register">Create an account</a>
                             </div>
                             <%} else{%>
-                                <a href="/customer/logout" class=" custom-btn--style">Log Out</a>
+                                <a href="/customer/logout" class=" custom-btn">Log Out</a>
                             <% } %>
                         </div>
                         <nav class="navbar navbar-expand-lg p-0">

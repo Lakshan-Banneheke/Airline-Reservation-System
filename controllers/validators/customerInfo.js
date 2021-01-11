@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 
 const CustomerRegInfo = Joi.object(
 ).options({ abortEarly: false }).keys({
@@ -7,7 +7,7 @@ const CustomerRegInfo = Joi.object(
     confirmPassword: Joi.string().valid(Joi.ref('password')).required().label('Password Conformation'),
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    dob: Joi.date().required(),
+    dob: Joi.string().required(),
     gender: Joi.string().required().valid('Male', 'Female', 'Other'),
     contactNo: Joi.string().trim().required().label('Contact Number'),
     passportNo: Joi.string().required().label('Passport Number'),

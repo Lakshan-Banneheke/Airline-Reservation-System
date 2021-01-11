@@ -6,14 +6,14 @@ const Customer = require('../models/Customer');
 class CustomerService {
     static async register({
         // name, dob, gender, email, contactNo, country, passportNo, password, confrimPassword,
-        email, password, confrimPassword, firstName, lastName, dob,
+        email, password, confirmPassword, firstName, lastName, dob,
         gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
     }) {
-        if (!crypto.timingSafeEqual(Buffer.from(password), Buffer.from(confrimPassword))) {
+        if (!crypto.timingSafeEqual(Buffer.from(password), Buffer.from(confirmPassword))) {
             throw new Errors.BadRequest('Password does not match retype password');
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
+
         return Customer.registerCustomer(
             email, hashedPassword, firstName, lastName, dob,
             gender, contactNo, passportNo, addressLine1, addressLine2, city, country,

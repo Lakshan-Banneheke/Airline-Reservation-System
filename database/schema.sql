@@ -125,7 +125,7 @@ CREATE TABLE Customer (
 
 CREATE TABLE Registered_Customer (
   customer_id uuid4,
-  email VARCHAR(127) not null UNIQUE,
+  email VARCHAR(127) NOT NULL UNIQUE,
   password varchar(255) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
@@ -314,33 +314,33 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 -- Procedure to register customer
 CREATE OR REPLACE PROCEDURE registerCustomer(
-  email VARCHAR(127),
-  password varchar(255),
-  first_name VARCHAR(30),
-  last_name VARCHAR(30),
-  dob DATE,
-  gender gender_enum,
-  contact_no VARCHAR(15),
-  passport_no VARCHAR(20),
-  address_line1 varchar(30),
-  address_line2 varchar(30),
-  city varchar(30),
-  country VARCHAR(30)        
+  val_email VARCHAR(127),
+  val_password varchar(255),
+  val_first_name VARCHAR(30),
+  val_last_name VARCHAR(30),
+  val_dob DATE,
+  val_gender gender_enum,
+  val_contact_no VARCHAR(15),
+  val_passport_no VARCHAR(20),
+  val_address_line1 varchar(30),
+  val_address_line2 varchar(30),
+  val_city varchar(30),
+  val_country VARCHAR(30)        
 )
 
 LANGUAGE plpgsql    
 AS $$
 DECLARE
-        customer_id uuid4;
-var_existing_email varchar(127) := (SELECT email from registered_customer where email = $1);
+customer_id uuid4;
+var_existing_email varchar(127) := (SELECT email from registered_customer where email = val_email);
 BEGIN
     if (var_existing_email is null) then
         customer_id := generate_uuid4();
         INSERT INTO customer values (customer_id,'registered'); 
-        INSERT INTO registrerd_customer(customer_id,email,password,first_name,last_name,dob,gender,contect_no,passport_no,address_line1,address_line2,city,country)
-         values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);
+        INSERT INTO registered_customer(customer_id,email,password,first_name,last_name,dob,gender,contact_no,passport_no,address_line1,address_line2,city,country)
+         values (customer_id,val_email,val_password,val_first_name,val_last_name,val_dob,val_gender,val_contact_no,val_passport_no,val_address_line1,val_address_line2,val_city,val_country);
     else
-        RAISE EXCEPTION 'Email % is already registered', $1;
+        RAISE EXCEPTION 'Email % is already registered', val_email;
     end if;
 END;
 $$;

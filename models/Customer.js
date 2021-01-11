@@ -23,7 +23,7 @@ class Customer {
         gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
     ) {
         const [createdCustomer] = await sql`
-            Call Procedure registerCustomer
+            CALL registerCustomer
                 ( ${email},${password},${firstName},${lastName},${dob},${gender},${contactNo},${passportNo},${addressLine1},${addressLine2},${city},${country})
             `;
         return createdCustomer;

@@ -47,12 +47,13 @@
             if(contactNo.length<10 ||contactNo.length>15 || isNaN(contactNo)){
                 error_msgs+="<br>Contact number must be 10-15 digits"
             }
-            }catch{
-                error_msgs="<br>OOPS! something went wrong!"
+            }catch(err){
+                error_msgs=`<br>OOPS! something went wrong!${err}`;
             }
 
 
             if (error_msgs=="<strong>OOPS</strong>") {
+                console.log('k');
                 $.ajax({
                     type: "POST",
                     url: '/customer/register',
@@ -60,8 +61,8 @@
                         'email' : email,
                         'password' :password,
                         'confirmPassword' :confirmPassword,
-                        'firstame': firstName,
-                        'lastame': lastName,
+                        'firstName': firstName,
+                        'lastName': lastName,
                         'dob' : dob,
                         'gender' :gender,
                         'contactNo' :contactNo,
@@ -73,6 +74,7 @@
                     },
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (response) {
+                        console.log(response);
                         $('#create_account_form_submit').children('.reg-success').remove();
                         if (response.result == 'redirect') {
                             //redirecting
@@ -93,16 +95,15 @@
 
 
         });
-    })
+        function ValidateEmail(mail) 
+        {
+        if (mail && /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail))
+        {
+            return (true)
+        }
+            return (false)
+        }
+            })
 
 }(jQuery));
 
-function ValidateEmail(mail) 
-{
- if (mail && /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(myForm.emailAddr.value))
-  {
-    return (true)
-  }
-    alert("You have entered an invalid email address!")
-    return (false)
-}

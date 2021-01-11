@@ -13,8 +13,8 @@ class CustomerController {
             // automatic login after register
             const customer = await CustomerService.login(value);
             req.session.user = {};
-            req.session.user.email = customer.email;
-            req.session.user.id = customer.customer_id;
+            req.session.user.type = customer.type;
+            req.session.user.customerData = customer;
             // res.redirect('/');
             return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (err) {
@@ -34,18 +34,17 @@ class CustomerController {
             if (error) throw (error);
             const customer = await CustomerService.login(value);
             req.session.user = {};
-            req.session.user.email = customer.email;
-            req.session.user.id = customer.customer_id;
+            req.session.user.type = customer.type;
+            req.session.user.customerData = customer;
             res.redirect('/');
         } catch (err) {
             // logger.error(err);
-            res.redirect(`/?loginError=${err}`);
+            res.redirect(`/?loginError=${err}#login`);
         }
     }
 
     static async logout(req, res) {
         try {
-            await CustomerService.logout();
             req.session.user = undefined;
             res.redirect('/');
         } catch (err) {
