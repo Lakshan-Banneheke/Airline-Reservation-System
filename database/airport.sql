@@ -26,6 +26,9 @@ INSERT INTO location(name) VALUES ('Singapore');
 INSERT INTO location(name, parent_id) VALUES ('Changi',16);
 
 ---------------------INSERTING AIRPORTS---------------------------
+INSERT INTO airport(airport_code,location_id) VALUES('BIA',3);
+INSERT INTO airport(airport_code,location_id) VALUES('HRI',2);
+
 INSERT INTO airport(airport_code,location_id) VALUES('CGK',5);
 INSERT INTO airport(airport_code,location_id) VALUES('DPS',6);
 
