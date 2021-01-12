@@ -75,7 +75,7 @@ $('.my-paroller').paroller();
   })
 
   //Register
-  $(document).on('click', '.custom-btn, .close', function() {
+  $(document).on('click', '.custom-btn-register, .close', function() {
     $('.header-register-form').toggleClass('active');
   });
   $(document).on('click', '.ellipsis-bar', function() {
@@ -85,7 +85,7 @@ $('.my-paroller').paroller();
   
 
   //Login
-  $(document).on('click', '.custom-btn--style, .stop', function() {
+  $(document).on('click', '.custom-btn-login, .stop', function() {
     $('.header-login-form').toggleClass('active');
   });
   $(document).on('click', '.ellipsis-bar', function() {

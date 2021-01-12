@@ -142,6 +142,7 @@ h1,h2,h3,h4,h5,h6 {
   textarea:focus {
     outline: none;
   }
+  
   button {
     border: none;
     cursor: pointer;
@@ -152,8 +153,8 @@ input, textarea {
     border: 1px solid #e5e5e5;
     width: 100%;
     font-family: var(--para-font);
-    text-transform: capitalize;
 }
+
 
 select {
     padding: 10px 20px;
@@ -812,6 +813,16 @@ span{
 }
 
 .header-top-btn .custom-btn{
+    color: #fff;
+    padding: 10px;
+}
+
+.header-top-btn .custom-btn-register{
+    color: #fff;
+    padding: 10px;
+}
+
+.header-top-btn .custom-btn-login{
     color: #fff;
     padding: 10px;
 }
@@ -3504,32 +3515,35 @@ td{
     margin-bottom: 15px;
 }
 
+.create-account-form .form-group label {
+    margin-top: 5px;
+}
+
 .create-account-form .form-group input {
-    height: 45px;
+    height: 40px;
     background: transparent;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
     width: 100%;
-    padding: 0;
+    padding: 5px;
     color: #fff;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #e5e5e5;
+    border:  1px solid #e5e5e5;
+    /* border-bottom: 1px solid #e5e5e5; */
 }
 
 .create-account-form .select-bar{
-    height: 45px;
+    height: 40px;
     background: transparent;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
     width: 100%;
-    padding: 0;
+    padding: 5px;
     color: #fff;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #e5e5e5;
+    border:  1px solid #e5e5e5;
+    /* border-bottom: 1px solid #e5e5e5; */
 }
-
 
 .create-account-form .form-group input::placeholder{
     color: #fff;
@@ -3584,6 +3598,9 @@ td{
     -webkit-transition: all ease 0.3s;
     -moz-transition: all ease 0.3s;
     transition: all ease 0.3s;
+}
+.create-account-form .form-group  input[type="email"] {
+    text-transform: lowercase;
 }
 
 .common-form-style p.terms-and-conditions {

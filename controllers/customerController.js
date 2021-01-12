@@ -13,8 +13,8 @@ class CustomerController {
             // automatic login after register
             const customer = await CustomerService.login(value);
             req.session.user = {};
-            req.session.user.email = customer.email;
-            req.session.user.id = customer.customer_id;
+            req.session.user.type = customer.type;
+            req.session.user.customerData = customer;
             // res.redirect('/');
             return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (err) {
@@ -22,7 +22,8 @@ class CustomerController {
             // res.redirect(`/?registrationError=${err}#signup`);
             return res.status(200).send({
                 result: 'redirect',
-                url: `/?registrationError=${err}&name=${req.body.name}&dob=${req.body.dob}&gender=${req.body.gender}&email=${req.body.email}&contactNo=${req.body.contactNo}&country=${req.body.country}&passportNo=${req.body.passportNo}#signup`,
+                url: `/?registrationError=${err}
+                &email=${req.body.email}&firstName=${req.body.firstName}&lastName=${req.body.lastName}&dob=${req.body.dob}&gender=${req.body.gender}&contactNo=${req.body.contactNo}&passportNo=${req.body.passportNo}&addressLine1=${req.body.addressLine1}&addressLine2=${req.body.addressLine2}&city=${req.body.city}&country=${req.body.country}#signup`,
             });
         }
     }
@@ -33,18 +34,17 @@ class CustomerController {
             if (error) throw (error);
             const customer = await CustomerService.login(value);
             req.session.user = {};
-            req.session.user.email = customer.email;
-            req.session.user.id = customer.customer_id;
+            req.session.user.type = customer.type;
+            req.session.user.customerData = customer;
             res.redirect('/');
         } catch (err) {
             // logger.error(err);
-            res.redirect(`/?loginError=${err}`);
+            res.redirect(`/?loginError=${err}#login`);
         }
     }
 
     static async logout(req, res) {
         try {
-            await CustomerService.logout();
             req.session.user = undefined;
             res.redirect('/');
         } catch (err) {

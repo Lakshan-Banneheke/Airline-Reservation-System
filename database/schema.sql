@@ -1,6 +1,7 @@
 DROP TRIGGER IF EXISTS afterbookingInsertTrigger ON Seat_Booking;
 DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
 
+DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
 DROP PROCEDURE IF EXISTS decreaseNumBookings;
 
@@ -9,7 +10,7 @@ DROP DOMAIN IF EXISTS UUID4 CASCADE;
 DROP TABLE IF EXISTS Organizational_Info CASCADE;
 DROP TABLE IF EXISTS Customer_Category CASCADE;
 DROP TABLE IF EXISTS Customer CASCADE;
-DROP TABLE IF EXISTS Profile CASCADE;
+DROP TABLE IF EXISTS Registered_Customer CASCADE;
 DROP TABLE IF EXISTS Traveller_Class CASCADE;
 DROP TABLE IF EXISTS Location CASCADE;
 DROP TABLE IF EXISTS Airport CASCADE;
@@ -24,11 +25,13 @@ DROP TABLE IF EXISTS Seat_Reservation CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS Staff_Category CASCADE;
-DROP TABLE IF EXISTS Seat_Price CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
 
-DROP TYPE IF EXISTS  State_enum;
-
+DROP TYPE IF EXISTS  booking_state_enum;
+DROP TYPE IF EXISTS  flight_state_enum;
+DROP TYPE IF EXISTS  aircraft_state_enum;
+DROP TYPE IF EXISTS  gender_enum;
+DROP TYPE IF EXISTS  customer_state_enum;
 
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
@@ -52,6 +55,11 @@ CREATE TYPE gender_enum AS ENUM(
 'Male',
 'Female',
 'Other'); 
+
+CREATE TYPE customer_state_enum AS ENUM(
+'guest',
+'registered'
+);
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
@@ -103,43 +111,46 @@ CREATE TABLE Organizational_Info (
 
 
 CREATE TABLE Customer_Category (
-  cat_id uuid4 DEFAULT generate_uuid4 (),
-  cat_name VARCHAR(20),
-  discount_percentage NUMERIC(4,2),
-  min_bookings SMALLINT,
-  PRIMARY KEY (cat_id)
+  cat_name VARCHAR(30),
+  discount_percentage NUMERIC(4,2) NOT NULL,
+  min_bookings SMALLINT NOT NULL,
+  PRIMARY KEY (cat_name)
 );
 
 CREATE TABLE Customer (
   customer_id uuid4 DEFAULT generate_uuid4 (),
-  full_name VARCHAR(30),
-  dob DATE,
-  age INT GENERATED ALWAYS AS (get_age(dob)) STORED,
-  gender gender_enum,
-  email VARCHAR(30),
-  contact_no VARCHAR(15),
-  passport_no VARCHAR(20),
-  country VARCHAR(30),
-  is_registered BOOL,
+  type customer_state_enum NOT NULL,
   PRIMARY KEY (customer_id)
 );
 
-CREATE TABLE Profile (
+CREATE TABLE Registered_Customer (
   customer_id uuid4,
-  password varchar(70),
+  email VARCHAR(127) NOT NULL UNIQUE,
+  password varchar(255) NOT NULL,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  category varchar(30), --Default no category
+  dob DATE NOT NULL,
+  age INT GENERATED ALWAYS AS (get_age(dob)) STORED NOT NULL,
+  gender gender_enum,
+  contact_no VARCHAR(15) NOT NULL,
+  passport_no VARCHAR(20) NOT NULL,
+  address_line1 varchar(30) NOT NULL,
+  address_line2 varchar(30) NOT NULL,
+  country VARCHAR(30) NOT NULL,
+  city varchar(30) NOT NULL,
   display_image bytea,
-  category varchar(10),
-  address varchar(30),
-  no_of_bookings int,
+  no_of_bookings int NOT NULL DEFAULT 0,
+  joined TIMESTAMP DEFAULT NOW() NOT NULL,
   PRIMARY KEY (customer_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(category) REFERENCES Customer_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY(category) REFERENCES Customer_Category(cat_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
 CREATE TABLE Traveller_Class (
   class_id SERIAL,
-  class_name varchar(10),
+  class_name varchar(10) NOT NULL UNIQUE,
   PRIMARY KEY (class_id)
 );
 
@@ -205,12 +216,12 @@ CREATE TABLE Route (
 
 CREATE TABLE Flight_Schedule (
   schedule_id varchar(24),
-  route_id varchar(10),
-  aircraft_id varchar(5),
+  route_id int,
+  aircraft_id int,
   date date,
   departure_time_gmt timestamp,
   arrival_time_gmt timestamp,
-  PRIMARY KEY (flight_id),
+  PRIMARY KEY (schedule_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -229,12 +240,11 @@ CREATE TABLE Seat_Booking (
   customer_id varchar(36),
   schedule_id varchar(24),
   --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
-  total_price() numeric(10,2),
+  total_price numeric(10,2),
   state booking_state_enum,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(flight_id) REFERENCES Flight_Schedule(flight_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Seat_Reservation(
@@ -242,19 +252,20 @@ CREATE TABLE Seat_Reservation(
     model_id int,
     seat_id varchar(10),
     --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
-    price() numeric(10,2),
-    PRIMARY KEY (`booking_id`, `model-id`, `seat_id`),
-    FOREIGN KEY(booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    price numeric(10,2),
+    PRIMARY KEY (booking_id, model_id, seat_id),
+    FOREIGN KEY(booking_id) REFERENCES Seat_Booking(booking_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+--Table to keep guest info about bookings if done by a guest
+
 CREATE TABLE Customer_Review (
   review_id varchar(100),
-  customer_id varchar(100),
+  customer_id varchar(100) NOT NULL,
   review varchar(500),
-  stars int,
   PRIMARY KEY (review_id),
-  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY(customer_id) REFERENCES Registered_Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Staff_Category (
@@ -270,7 +281,7 @@ CREATE TABLE Staff (
   password varchar(70) NOT NULL,
   name varchar(50) NOT NULL,
   contact_no varchar(15) NOT NULL,
-  email varchar(70) NOT NULL,
+  email varchar(70) NOT NULL UNIQUE,
   dob date NOT NULL,
   gender gender_enum NOT NULL,
   country varchar(30) NOT NULL,
@@ -295,96 +306,70 @@ ALTER TABLE "session"
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
---------------------------------     TRIGGERS   ------------------------------------------------------------------
+--------------------------------     TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 
--- no of bookings trigger --
 
--- increaseNumBookings(customer_id)
-CREATE OR REPLACE PROCEDURE  increaseNumBookings(uuid)
-LANGUAGE plpgsql
+
+--------------------------------------- PROCEDURES SCHEMA---------------------------------------------------------------------------------------
+
+-- Procedure to register customer
+CREATE OR REPLACE PROCEDURE registerCustomer(
+  val_email VARCHAR(127),
+  val_password varchar(255),
+  val_first_name VARCHAR(30),
+  val_last_name VARCHAR(30),
+  val_dob DATE,
+  val_gender gender_enum,
+  val_contact_no VARCHAR(15),
+  val_passport_no VARCHAR(20),
+  val_address_line1 varchar(30),
+  val_address_line2 varchar(30),
+  val_city varchar(30),
+  val_country VARCHAR(30)        
+)
+
+LANGUAGE plpgsql    
 AS $$
 DECLARE
-       registered bool;
+customer_id uuid4;
+var_existing_email varchar(127) := (SELECT email from registered_customer where email = val_email);
 BEGIN
-    -- ignore if customer_id is null
-    if $1 is null then return;
+    if (var_existing_email is null) then
+        customer_id := generate_uuid4();
+        INSERT INTO customer values (customer_id,'registered'); 
+        INSERT INTO registered_customer(customer_id,email,password,first_name,last_name,dob,gender,contact_no,passport_no,address_line1,address_line2,city,country)
+         values (customer_id,val_email,val_password,val_first_name,val_last_name,val_dob,val_gender,val_contact_no,val_passport_no,val_address_line1,val_address_line2,val_city,val_country);
+    else
+        RAISE EXCEPTION 'Email % is already registered', val_email;
     end if;
-    -- get if customer is registered of the category
-    SELECT is_registered INTO registered FROM Customer  WHERE customer_id=$1;
-	-- ignore if registered is false
-	if registered is false then return;
-	end if;
-	-- inxcrease no of bookings of customer by 1
-     UPDATE Profile SET no_of_bookings = no_of_bookings + 1 WHERE customer_id = $1;
 END;
 $$;
 
--- Trigger bookingInsert statements
-CREATE OR REPLACE FUNCTION afterSeatbookingInsert()
-RETURNS TRIGGER AS $$
-BEGIN
-    raise notice 'Trigger on Seat_Booking % (Increasing number of bookings)', NEW.customer_id;
-    call increaseNumBookings(NEW.customer_id);
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
--- Trigger to increase booking count of customer
-CREATE TRIGGER afterbookingInsertTrigger
-AFTER INSERT
-ON Seat_Booking
-FOR EACH ROW EXECUTE PROCEDURE afterSeatbookingInsert();
 
-------------------------------------------------------------------------------------------------------------------------
--- decreaseNumBookings(customer_id)
-CREATE OR REPLACE PROCEDURE  decreaseNumBookings(uuid)
-
-LANGUAGE plpgsql
-AS $$
-DECLARE
-       registered bool;
-BEGIN
-    -- ignore if customer_id is null
-    if $1 is null then return;
-    end if;
-    -- get if customer is registered of the category
-    SELECT is_registered INTO registered FROM Customer  WHERE customer_id=$1;
-	-- ignore if registered is false
-	if registered is false then return;
-	end if;
-	-- increase no of bookings of customer by 1
-     UPDATE Profile SET no_of_bookings = no_of_bookings - 1 WHERE customer_id = $1;
-END;
-$$;
-
--- Trigger bookingDelete statements
-CREATE OR REPLACE FUNCTION beforeSeatBookingCancellation()
-RETURNS TRIGGER AS $$
-BEGIN
-    raise notice 'Trigger on Seat_Booking % (Decreasing number of bookings)', NEW.customer_id;
-    call decreaseNumBookings(NEW.customer_id);
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- -- Trigger to decrease booking count of customer
-CREATE TRIGGER beforebookingCancellationTrigger
-BEFORE DELETE
-ON Seat_Booking
-FOR EACH ROW EXECUTE PROCEDURE beforeSeatbookingCancellation();
-
---------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
+
+GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.decreasenumbookings(uuid) TO database_app;
-
-GRANT EXECUTE ON PROCEDURE public.increasenumbookings(uuid) TO database_app;
+GRANT EXECUTE ON PROCEDURE public.registercustomer(email character varying, password character varying, first_name character varying, last_name character varying,dob date, gender gender_enum, contact_no character varying, passport_no character varying, address_line1 character varying, address_line2 character varying, country character varying, city character varying) TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
+
+GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.aircraft_model_model_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.staff_category_cat_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.traveller_class_class_id_seq TO database_app;
 
 GRANT ALL ON TABLE public.aircraft_instance TO database_app;
 
@@ -406,13 +391,15 @@ GRANT ALL ON TABLE public.location TO database_app;
 
 GRANT ALL ON TABLE public.organizational_info TO database_app;
 
-GRANT ALL ON TABLE public.profile TO database_app;
+GRANT ALL ON TABLE public.registered_customer TO database_app;
 
 GRANT ALL ON TABLE public.route TO database_app;
 
 GRANT ALL ON TABLE public.seat_booking TO database_app;
 
 GRANT ALL ON TABLE public.seat_price TO database_app;
+
+GRANT ALL ON TABLE public.seat_reservation TO database_app;
 
 GRANT ALL ON TABLE public.session TO database_app;
 

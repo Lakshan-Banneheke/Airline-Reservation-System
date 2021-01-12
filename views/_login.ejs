@@ -10,6 +10,11 @@
                                     <div class="stop d-lg-none"><i class="fas fa-times"></i></div>
                                     <h4 class="title">Login to Your Account</h4>
                                     <p>Enter email and password </p>
+                                    <% if(loginError) {%>
+                                        <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                                            <%=loginError%>
+                                        </div>
+                                    <% } %>
                                     <form class="create-account-form" method="POST" action="/customer/login">
                                         <div class="form-group">
                                             <input type="email" placeholder="Email" name="email" required>
