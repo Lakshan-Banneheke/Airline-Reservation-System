@@ -94,7 +94,19 @@ END
 $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
-
+CREATE OR REPLACE FUNCTION get_arrival(val_route_id int, val_departure_datetime timestamp)
+RETURNS timestamp
+AS $CODE$
+DECLARE
+  val_duration interval;
+  val_arrival_datetime timestamp;
+BEGIN
+  SELECT duration INTO val_duration FROM route WHERE route_id=val_route_id;
+  val_arrival_datetime = val_departure_datetime + val_duration;
+  RETURN val_arrival_datetime;
+END
+$CODE$
+LANGUAGE plpgsql;
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
@@ -208,19 +220,20 @@ CREATE TABLE Route (
   route_id SERIAL,
   origin varchar(10) NOT NULL,
   destination varchar(10) NOT NULL,
-  duration time NOT NULL,
+  duration interval NOT NULL,
   PRIMARY KEY (route_id),
   FOREIGN KEY(origin) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(destination) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Flight_Schedule (
-  schedule_id varchar(24),
-  route_id int,
-  aircraft_id int,
-  date date,
-  departure_time_gmt timestamp,
-  arrival_time_gmt timestamp,
+  schedule_id SERIAL,
+  route_id int NOT NULL ,
+  aircraft_id int NOT NULL,
+  departure_date date NOT NULL,
+  departure_time_utc time NOT NULL,
+  arrival_date date NOT NULL,
+  arrival_time_utc time NOT NULL,
   PRIMARY KEY (schedule_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -236,9 +249,9 @@ CREATE TABLE Seat_Price (
 );
 
 CREATE TABLE Seat_Booking (
-  booking_id varchar(24),
+  booking_id SERIAL,
   customer_id varchar(36),
-  schedule_id varchar(24),
+  schedule_id int,
   --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
   total_price numeric(10,2),
   state booking_state_enum,
@@ -248,7 +261,7 @@ CREATE TABLE Seat_Booking (
 );
 
 CREATE TABLE Seat_Reservation(
-    booking_id varchar(24),
+    booking_id int,
     model_id int,
     seat_id varchar(10),
     --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
@@ -270,7 +283,7 @@ CREATE TABLE Customer_Review (
 
 CREATE TABLE Staff_Category (
   cat_id SERIAL,
-  cat_name varchar(20) NOT NULL,
+  cat_name varchar(20) UNIQUE NOT NULL,
   PRIMARY KEY (cat_id)
 );
 
@@ -342,6 +355,57 @@ BEGIN
     else
         RAISE EXCEPTION 'Email % is already registered', val_email;
     end if;
+END;
+$$;
+
+----------Procedure to insert scheduled flights---------------
+CREATE OR REPLACE PROCEDURE scheduleFlights
+(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+rec RECORD;
+departure_timestamp timestamp;
+arrival_timestamp timestamp;
+temp_departure_timestamp timestamp;
+temp_arrival_timestamp timestamp;
+arrival_date date;
+arrival_time_utc time;
+is_overlap bool=false;
+maintainance_time interval='02:00:00'::interval;
+r_id int;
+dest varchar(10);
+org varchar(10);
+BEGIN
+departure_timestamp=(val_departure_date||' '||val_departure_time_utc );
+arrival_timestamp= get_arrival(val_route_id, departure_timestamp);
+arrival_date=arrival_timestamp::TIMESTAMP::DATE;
+arrival_time_utc=arrival_timestamp::TIMESTAMP::TIME;
+
+FOR rec IN (SELECT * FROM flight_schedule WHERE aircraft_id = val_aircraft_id) LOOP
+	temp_departure_timestamp = (rec.departure_date ||' '||rec.departure_time_utc);
+	temp_arrival_timestamp = (rec.arrival_date ||' '||rec.arrival_time_utc);
+	IF NOT((arrival_timestamp +maintainance_time< temp_departure_timestamp) OR (temp_arrival_timestamp+maintainance_time < departure_timestamp) )THEN
+		is_overlap=true;
+		RAISE NOTICE 'Flight is overlapping';
+		EXIT;
+	END IF;	
+END LOOP;
+IF (is_overlap=false) THEN
+	SELECT route_id INTO r_id FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
+	
+	AND ((f.arrival_date||' '||f.arrival_time_utc)::timestamp<departure_timestamp)
+	  ORDER BY (f.arrival_date||' '||f.arrival_time_utc)::timestamp DESC LIMIT 1;
+	SELECT destination INTO dest FROM Route WHERE route_id=r_id;
+	SELECT origin INTO org FROM Route WHERE route_id=val_route_id;
+	IF (dest=org) THEN	
+		INSERT INTO flight_schedule
+				(route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
+				VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
+	ELSE 
+		RAISE NOTICE 'Aircraft is not in the required Airport';
+	END IF;	
+END IF;			
 END;
 $$;
 
