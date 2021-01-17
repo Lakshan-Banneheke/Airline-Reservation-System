@@ -387,14 +387,13 @@ FOR rec IN (SELECT * FROM flight_schedule WHERE aircraft_id = val_aircraft_id) L
 	temp_arrival_timestamp = (rec.arrival_date ||' '||rec.arrival_time_utc);
 	IF NOT((arrival_timestamp +maintainance_time< temp_departure_timestamp) OR (temp_arrival_timestamp+maintainance_time < departure_timestamp) )THEN
 		is_overlap=true;
-		RAISE NOTICE 'Flight is overlapping';
+		RAISE NOTICE 'Aircraft has been scheduled for another flight.';
 		EXIT;
 	END IF;	
 END LOOP;
 IF (is_overlap=false) THEN
 	SELECT route_id INTO r_id FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
-	
-	AND ((f.arrival_date||' '||f.arrival_time_utc)::timestamp<departure_timestamp)
+	--AND ((f.arrival_date||' '||f.arrival_time_utc)::timestamp<departure_timestamp)
 	  ORDER BY (f.arrival_date||' '||f.arrival_time_utc)::timestamp DESC LIMIT 1;
 	SELECT destination INTO dest FROM Route WHERE route_id=r_id;
 	SELECT origin INTO org FROM Route WHERE route_id=val_route_id;
