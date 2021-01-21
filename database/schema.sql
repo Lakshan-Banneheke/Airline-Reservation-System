@@ -360,56 +360,86 @@ $$;
 
 ----------Procedure to insert scheduled flights---------------
 CREATE OR REPLACE PROCEDURE scheduleFlights
-(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+    (val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
 LANGUAGE plpgsql    
 AS $$ 
 DECLARE
-rec RECORD;
-departure_timestamp timestamp;
-arrival_timestamp timestamp;
-temp_departure_timestamp timestamp;
-temp_arrival_timestamp timestamp;
-arrival_date date;
-arrival_time_utc time;
-is_overlap bool=false;
-maintainance_time interval='02:00:00'::interval;
-r_id int;
-dest varchar(10);
-org varchar(10);
+    rec RECORD;
+    departure_timestamp timestamp;
+    arrival_timestamp timestamp;
+    temp_departure_timestamp timestamp;
+    temp_arrival_timestamp timestamp;
+    arrival_date date;
+    arrival_time_utc time;
+    maintainance_time interval='02:00:00'::interval;
+    dest varchar(10);
+    org varchar(10);
 BEGIN
-departure_timestamp=(val_departure_date||' '||val_departure_time_utc );
-arrival_timestamp= get_arrival(val_route_id, departure_timestamp);
-arrival_date=arrival_timestamp::TIMESTAMP::DATE;
-arrival_time_utc=arrival_timestamp::TIMESTAMP::TIME;
+    departure_timestamp=(val_departure_date||' '||val_departure_time_utc );
+    arrival_timestamp= get_arrival(val_route_id, departure_timestamp);
+    arrival_date=arrival_timestamp::TIMESTAMP::DATE;
+    arrival_time_utc=arrival_timestamp::TIMESTAMP::TIME;
+	
+	IF (departure_timestamp< CURRENT_TIMESTAMP at time zone 'utc'+INTERVAL '1 day') THEN
+		RAISE EXCEPTION 'Departure time has to be after % UTC ',current_timestamp at time zone 'utc'+INTERVAL '1 day';
+		
+		RETURN;
+	END IF;	
 
-FOR rec IN (SELECT * FROM flight_schedule WHERE aircraft_id = val_aircraft_id) LOOP
-	temp_departure_timestamp = (rec.departure_date ||' '||rec.departure_time_utc);
-	temp_arrival_timestamp = (rec.arrival_date ||' '||rec.arrival_time_utc);
-	IF NOT((arrival_timestamp +maintainance_time< temp_departure_timestamp) OR (temp_arrival_timestamp+maintainance_time < departure_timestamp) )THEN
-		is_overlap=true;
-		RAISE NOTICE 'Aircraft has been scheduled for another flight.';
-		EXIT;
-	END IF;	
-END LOOP;
-IF (is_overlap=false) THEN
-	SELECT route_id INTO r_id FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
-	--AND ((f.arrival_date||' '||f.arrival_time_utc)::timestamp<departure_timestamp)
-	  ORDER BY (f.arrival_date||' '||f.arrival_time_utc)::timestamp DESC LIMIT 1;
-	SELECT destination INTO dest FROM Route WHERE route_id=r_id;
-	SELECT origin INTO org FROM Route WHERE route_id=val_route_id;
-	IF (dest=org) THEN	
+    SELECT * INTO rec FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
+    ORDER BY (f.arrival_date||' '||f.arrival_time_utc)::timestamp DESC LIMIT 1;
+	IF(rec is NULL) THEN
 		INSERT INTO flight_schedule
-				(route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
-				VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
-	ELSE 
-		RAISE NOTICE 'Aircraft is not in the required Airport';
+            (route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
+		RETURN;
 	END IF;	
-END IF;			
+	
+    temp_arrival_timestamp = (rec.arrival_date ||' '||rec.arrival_time_utc);
+
+    IF (temp_arrival_timestamp + maintainance_time < departure_timestamp) THEN
+        SELECT destination INTO dest FROM Route WHERE route_id=rec.route_id;
+        SELECT origin INTO org FROM Route WHERE route_id=val_route_id;
+
+        IF (dest=org) THEN	
+            INSERT INTO flight_schedule
+            (route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
+        ELSE 
+                RAISE EXCEPTION 'Aircraft is not in the required Airport';
+        END IF;	
+        
+    ELSE
+        RAISE EXCEPTION 'Aircraft schedule is overlapping';
+
+    END IF;
+	
+	
 END;
 $$;
 
 
+----------Procedure to delete scheduled flights---------------
+CREATE OR REPLACE PROCEDURE deleteSchedule(val_schedule_id int)
 
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+temp_schedule_id int;
+BEGIN
+
+SELECT schedule_id INTO  temp_schedule_id FROM flight_schedule WHERE aircraft_id=
+(SELECT aircraft_id FROM flight_schedule WHERE schedule_id=val_schedule_id) 
+	ORDER BY (flight_schedule.arrival_date||' '||flight_schedule.arrival_time_utc)::timestamp DESC LIMIT 1;
+
+IF (temp_schedule_id = val_schedule_id) THEN
+	DELETE FROM flight_schedule WHERE schedule_id=val_schedule_id;
+ELSE
+	 RAISE EXCEPTION 'Only the last flight can be deleted ';
+
+END IF;
+END;
+$$;
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
 
 GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
