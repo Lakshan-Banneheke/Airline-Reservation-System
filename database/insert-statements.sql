@@ -297,3 +297,96 @@ CALL insert_route_price(63,560,430,170);
 CALL insert_route_price(64,390,220,83);
 
 
+
+-------------------INSERTING FLIGHT SCHEDULES---------------
+
+CALL scheduleFlights(1,1,'2021-05-01','07:00:00');
+CALL scheduleFlights(57,1,'2021-05-01','20:00:00');
+CALL scheduleFlights(10,1,'2021-05-02','09:00:00');
+CALL scheduleFlights(1,1,'2021-05-03','07:00:00');
+CALL scheduleFlights(57,1,'2021-05-03','20:00:00');
+CALL scheduleFlights(10,1,'2021-05-04','09:00:00');
+CALL scheduleFlights(1,1,'2021-05-05','07:00:00');
+CALL scheduleFlights(57,1,'2021-05-05','20:00:00');
+CALL scheduleFlights(10,1,'2021-05-06','09:00:00');
+
+CALL scheduleFlights(34,2,'2021-05-01','09:00:00');
+CALL scheduleFlights(31,2,'2021-05-02','03:00:00');
+CALL scheduleFlights(61,2,'2021-05-03','16:30:00');
+CALL scheduleFlights(34,2,'2021-05-04','09:00:00');
+CALL scheduleFlights(31,2,'2021-05-05','03:00:00');
+CALL scheduleFlights(61,2,'2021-05-06','16:30:00');
+CALL scheduleFlights(34,2,'2021-05-07','09:00:00');
+CALL scheduleFlights(31,2,'2021-05-08','03:00:00');
+CALL scheduleFlights(61,2,'2021-05-09','16:30:00');
+
+CALL scheduleFlights(5,3,'2021-05-01','15:30:00');
+CALL scheduleFlights(41,3,'2021-05-02','01:30:00');
+CALL scheduleFlights(5,3,'2021-05-03','15:30:00');
+CALL scheduleFlights(41,3,'2021-05-04','01:30:00');
+CALL scheduleFlights(5,3,'2021-05-05','15:30:00');
+CALL scheduleFlights(41,3,'2021-05-06','01:30:00');
+CALL scheduleFlights(5,3,'2021-05-07','15:30:00');
+CALL scheduleFlights(41,3,'2021-05-08','01:30:00');
+
+CALL scheduleFlights(17,4,'2021-05-01','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-01','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-02','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-02','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-03','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-03','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-04','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-04','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-05','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-05','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-06','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-06','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-07','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-07','15:00:00');
+CALL scheduleFlights(17,4,'2021-05-08','03:30:00');
+CALL scheduleFlights(57,4,'2021-05-08','15:00:00');
+
+
+
+CALL scheduleFlights(11,5,'2021-05-01','07:30:00');
+CALL scheduleFlights(9,5,'2021-05-01','20:00:00');
+CALL scheduleFlights(11,5,'2021-05-05','09:30:00');
+CALL scheduleFlights(9,5,'2021-05-05','21:00:00');
+CALL scheduleFlights(11,5,'2021-05-09','07:30:00');
+CALL scheduleFlights(9,5,'2021-05-09','20:00:00');
+
+CALL scheduleFlights(47,6,'2021-05-01','07:30:00');
+CALL scheduleFlights(7,6,'2021-05-01','20:00:00');
+CALL scheduleFlights(63,6,'2021-05-02','09:30:00');
+CALL scheduleFlights(50,6,'2021-05-02','21:00:00');
+CALL scheduleFlights(17,6,'2021-05-03','10:00:00');
+CALL scheduleFlights(56,6,'2021-05-03','21:00:00');
+CALL scheduleFlights(47,6,'2021-05-04','10:30:00');
+CALL scheduleFlights(7,6,'2021-05-04','20:00:00');
+CALL scheduleFlights(63,6,'2021-05-05','09:30:00');
+CALL scheduleFlights(50,6,'2021-05-05','21:00:00');
+CALL scheduleFlights(17,6,'2021-05-06','07:00:00');
+CALL scheduleFlights(56,6,'2021-05-06','21:00:00');
+
+
+CALL scheduleFlights(40,7,'2021-05-01','07:30:00');
+CALL scheduleFlights(31,7,'2021-05-01','20:00:00');
+CALL scheduleFlights(64,7,'2021-05-02','09:30:00');
+CALL scheduleFlights(15,7,'2021-05-02','21:00:00');
+CALL scheduleFlights(40,7,'2021-05-03','07:30:00');
+CALL scheduleFlights(31,7,'2021-05-03','20:00:00');
+CALL scheduleFlights(64,7,'2021-05-04','09:30:00');
+CALL scheduleFlights(15,7,'2021-05-04','21:00:00');
+CALL scheduleFlights(40,7,'2021-05-05','07:30:00');
+CALL scheduleFlights(31,7,'2021-05-05','20:00:00');
+CALL scheduleFlights(64,7,'2021-05-06','09:30:00');
+CALL scheduleFlights(15,7,'2021-05-07','21:00:00');
+
+CALL scheduleFlights(2,8,'2021-05-01','22:30:00');
+CALL scheduleFlights(19,8,'2021-05-02','20:00:00');
+CALL scheduleFlights(2,8,'2021-05-03','22:30:00');
+CALL scheduleFlights(19,8,'2021-05-04','20:00:00');
+CALL scheduleFlights(2,8,'2021-05-05','22:30:00');
+CALL scheduleFlights(19,8,'2021-05-06','20:00:00');
+CALL scheduleFlights(2,8,'2021-05-07','22:30:00');
+CALL scheduleFlights(19,8,'2021-05-08','20:00:00');
