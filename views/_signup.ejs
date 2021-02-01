@@ -1,0 +1,113 @@
+<div class="header-register-form">
+    <div class="header-register-form-area">
+        <div class="account-section">
+            <div class="container">
+                <div class="account-wrapper">
+                    <div class="login-area account-area change-form">
+                        <div class="row m-0">
+                            <div class="col-lg-6 p-0">
+                                <div class="common-form-style bg-one create-account">
+                                    <div class="close d-lg-none"><i class="fas fa-times"></i></div>
+                                    <h4 class="title">Create New Account</h4>
+                                    <p>Register with B Airways</p>
+                                    <% if(registrationError) {%>
+                                        <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                                            <%=registrationError%>
+                                        </div>
+                                    <% } %>
+                                    <form class="create-account-form" name="create-account-form" id="create_account_form_submit">
+                                       
+                                        <div class="form-group">
+                                            <label for="firstName" style="color: white;">First Name</label>
+                                            <input type="text" name="firstName" id="firstName" required value="<%=regfirstName%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="lastName" style="color: white;">Last Name</label>
+                                            <input type="text"  name="lastName" id="lastName" required value="<%=reglastName%>">
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group  col-rt-in-3">
+                                            <label for="dob" style="color: white;">Date of Birth <small>(YYYY-MM-DD</small></label>
+                                            <input type='text' id="dob"  data-language='en' name="dob" required value="<%=regdob%>">
+                                        </div>
+
+                                        <label for="gender" style="color: white;">Gender</label>
+                                        <div class="single-input  col-rt-in-3">
+                                            <select class="select-bar" name="gender" id="gender" required value="<%=reggender%>" opt>
+                                                <option data-display="Choose..">Choose..</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <span class="input-iconbadge"><img src="" alt="" draggable="false"></span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="email" style="color: white;">Email</label>
+                                            <input type="email" name="email" id="email" required value="<%=regemail%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contactNo" style="color: white;">Contact Number</label>
+                                            <input type="text" name="contactNo" id="contactNo" required value="<%=regcontactNo%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="passportNo" style="color: white;">Passport Number</label>
+                                            <input type="text"  name="passportNo" id="passportNo" required value="<%=regpassportNo%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="addressLine1" style="color: white;">Address</label>
+                                            <input type="text" name="addressLine1" id="addressLine1" required value="<%=regaddressLine1%>">
+                                            <input type="text" style="margin-top: 3px;" name="addressLine2" id="addressLine2" required value="<%=regaddressLine2%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="city" style="color: white;">City</label>
+                                            <input type="text"  name="city" id="city" required value="<%=regcity%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="country" style="color: white;">Country</label>
+                                            <input type="text"  name="country" id="country" required value="<%=regcountry%>">
+                                        </div>
+                                        
+                                    
+                                        <div class="form-group">
+                                            <label for="password" style="color: white;">Password</label>
+                                            <input type="password" id="myInput" name="password" required>
+                                            <a href="#0" id="show-pass-one" class="show-pass"><i class="fas fa-eye"></i></a>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="confirmPassword" style="color: white;">Conformation Password</label>
+                                            <input type="password" id="myInputTwo" name="confirmPassword" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox-wrapper d-flex flex-wrap align-items-center ">
+                                                <div class="checkbox-item">
+                                                    <input type="radio" id="c1" name="termsAgreement" required value="true">
+                                                    <label for="c1">I Agree to All Terms and Conditions</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <input type="submit" value="Create B Airways Account">
+                                        </div>
+                    
+                                        
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 p-0">
+                                <div class="change-catagory-area bg_img">
+                                    <div class="close"><i class="fas fa-times"></i></div>
+                                    <div class="register-thumb">
+                                        <img src="assets/images/register.jpg" alt="image">
+                                        <a href='https://www.freepik.com/vectors/coffee'>Coffee vector created by stories</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

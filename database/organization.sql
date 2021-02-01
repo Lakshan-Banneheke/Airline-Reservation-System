@@ -1,0 +1,1 @@
+INSERT INTO organizational_info VALUES ('B Airways','+61396906345','info@bairways.com','314, 3rd Floor, Gotham Towers, Melbourne, Victoria, Australia','2229993949');
