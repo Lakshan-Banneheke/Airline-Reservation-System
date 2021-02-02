@@ -4,6 +4,9 @@ DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
 DROP PROCEDURE IF EXISTS decreaseNumBookings;
+DROP PROCEDURE IF EXISTS scheduleFlights;
+DROP PROCEDURE IF EXISTS deleteSchedule;
+DROP PROCEDURE IF EXISTS handleFlightArrival;
 
 DROP DOMAIN IF EXISTS UUID4 CASCADE;
 
@@ -68,7 +71,8 @@ CHECK (VALUE ~ '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{
 
 ----------------------------------  FUNCTION SCHEMA  ------------------------------------
 
---Function to create UUID for tables
+----Function to create UUID for tables
+
 CREATE OR REPLACE FUNCTION generate_uuid4 ()
     RETURNS char( 36
 )
@@ -85,6 +89,22 @@ END
 $$
 LANGUAGE PLpgSQL;
 
+----- Function to get a time stamp from date and time
+
+CREATE OR REPLACE FUNCTION get_timestamp(val_date DATE, val_time TIME)
+RETURNS timestamp
+AS $CODE$
+DECLARE
+val_datetime timestamp;
+BEGIN
+  val_datetime := (val_date||' '||val_time)::timestamp ;
+  RETURN val_datetime;
+END
+$CODE$
+LANGUAGE plpgsql IMMUTABLE;
+
+-----Function to calculate age
+
 CREATE OR REPLACE FUNCTION get_age( birthday date )
 RETURNS int
 AS $CODE$
@@ -93,6 +113,8 @@ BEGIN
 END
 $CODE$
 LANGUAGE plpgsql IMMUTABLE;
+
+----Function to calculate arrival time for a flight
 
 CREATE OR REPLACE FUNCTION get_arrival(val_route_id int, val_departure_datetime timestamp)
 RETURNS timestamp
@@ -106,7 +128,9 @@ BEGIN
   RETURN val_arrival_datetime;
 END
 $CODE$
-LANGUAGE plpgsql;
+LANGUAGE plpgsql IMMUTABLE;
+
+
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
@@ -232,8 +256,9 @@ CREATE TABLE Flight_Schedule (
   aircraft_id int NOT NULL,
   departure_date date NOT NULL,
   departure_time_utc time NOT NULL,
-  arrival_date date NOT NULL,
-  arrival_time_utc time NOT NULL,
+  arrival_date date generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::DATE) stored NOT NULL,
+  arrival_time_utc time generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::TIME) stored NOT NULL,
+  actual_arrival timestamp,
   PRIMARY KEY (schedule_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -359,43 +384,36 @@ END;
 $$;
 
 ----------Procedure to insert scheduled flights---------------
-CREATE OR REPLACE PROCEDURE scheduleFlights
-    (val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
 LANGUAGE plpgsql    
 AS $$ 
 DECLARE
     rec RECORD;
     departure_timestamp timestamp;
-    arrival_timestamp timestamp;
     temp_departure_timestamp timestamp;
     temp_arrival_timestamp timestamp;
-    arrival_date date;
-    arrival_time_utc time;
     maintainance_time interval='02:00:00'::interval;
     dest varchar(10);
     org varchar(10);
 BEGIN
-    departure_timestamp=(val_departure_date||' '||val_departure_time_utc );
-    arrival_timestamp= get_arrival(val_route_id, departure_timestamp);
-    arrival_date=arrival_timestamp::TIMESTAMP::DATE;
-    arrival_time_utc=arrival_timestamp::TIMESTAMP::TIME;
+    departure_timestamp:=get_timestamp(val_departure_date,val_departure_time_utc);
+    
 	
-	IF (departure_timestamp< CURRENT_TIMESTAMP at time zone 'utc'+INTERVAL '1 day') THEN
+	IF (departure_timestamp < CURRENT_TIMESTAMP at time zone 'utc'+INTERVAL '1 day') THEN
 		RAISE EXCEPTION 'Departure time has to be after % UTC ',current_timestamp at time zone 'utc'+INTERVAL '1 day';
-		
 		RETURN;
 	END IF;	
 
     SELECT * INTO rec FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
-    ORDER BY (f.arrival_date||' '||f.arrival_time_utc)::timestamp DESC LIMIT 1;
+    ORDER BY get_timestamp(f.arrival_date,f.arrival_time_utc) DESC LIMIT 1;
 	IF(rec is NULL) THEN
 		INSERT INTO flight_schedule
-            (route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
-            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
+            (route_id,aircraft_id,departure_date,departure_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc); 
 		RETURN;
 	END IF;	
 	
-    temp_arrival_timestamp = (rec.arrival_date ||' '||rec.arrival_time_utc);
+    temp_arrival_timestamp = get_timestamp(rec.arrival_date,rec.arrival_time_utc);
 
     IF (temp_arrival_timestamp + maintainance_time < departure_timestamp) THEN
         SELECT destination INTO dest FROM Route WHERE route_id=rec.route_id;
@@ -403,8 +421,8 @@ BEGIN
 
         IF (dest=org) THEN	
             INSERT INTO flight_schedule
-            (route_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc)
-            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc,arrival_date,arrival_time_utc); 
+            (route_id,aircraft_id,departure_date,departure_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc); 
         ELSE 
                 RAISE EXCEPTION 'Aircraft is not in the required Airport';
         END IF;	
@@ -430,7 +448,7 @@ BEGIN
 
 SELECT schedule_id INTO  temp_schedule_id FROM flight_schedule WHERE aircraft_id=
 (SELECT aircraft_id FROM flight_schedule WHERE schedule_id=val_schedule_id) 
-	ORDER BY (flight_schedule.arrival_date||' '||flight_schedule.arrival_time_utc)::timestamp DESC LIMIT 1;
+	ORDER BY get_timestamp(flight_schedule.arrival_date,flight_schedule.arrival_time_utc) DESC LIMIT 1;
 
 IF (temp_schedule_id = val_schedule_id) THEN
 	DELETE FROM flight_schedule WHERE schedule_id=val_schedule_id;
@@ -440,65 +458,92 @@ ELSE
 END IF;
 END;
 $$;
+
+
+
+------------Procedure to handle delays/arrival of a flight -------
+
+
+CREATE OR REPLACE PROCEDURE handleFlightArrival(val_schedule_id int,val_arrival_date date,val_arrival_time_utc time)
+
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+val_arrival_timestamp TIMESTAMP:= get_timestamp(val_arrival_date,val_arrival_time_utc);
+val_aircraft_id int;
+val_flight_departue_date DATE;
+val_flight_departure_time TIME;
+ref_arrival_date DATE;
+ref_arrival_time TIME;
+temp_schedule_id int;
+temp_departure_date DATE;
+temp_departure_time TIME;
+temp_arrival_date DATE;
+temp_arrival_time TIME;
+schedule_record RECORD;
+maintainance_time interval='02:00:00'::interval;
+calculated_delay_interval interval;
+calculated_departure_timestamp timestamp;
+calculated_arrival_timestamp timestamp;
+
+
+BEGIN
+	
+    -- select the aircraft id  related to the flight
+    SELECT aircraft_id,departure_date,departure_time_utc 
+    INTO val_aircraft_id,val_flight_departue_date,val_flight_departure_time
+    FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
+
+    -- update that flight with the actual arrival time , may need to add column
+    UPDATE flight_schedule SET actual_arrival= val_arrival_timestamp
+    WHERE schedule_id=val_schedule_id;
+
+
+    --Init refrenceing arrival and departure times to the value of the flight in consideration
+    ref_arrival_date = val_arrival_date ;
+    ref_arrival_time = val_arrival_time_utc;
+
+
+    --select all the schedule_ids the specific aircraft 
+	--which have departure times after the departure time of the arrived flight
+	--ordered them by departure time
+	FOR schedule_record IN SELECT * FROM Flight_Schedule 
+    WHERE aircraft_id = val_aircraft_id
+    AND get_timestamp(departure_date,departure_time_utc)>get_timestamp(val_flight_departue_date,val_flight_departure_time)
+    ORDER BY departure_date ASC, departure_time_utc ASC
+        LOOP
+            --SELECT schedule_id,departure_date,departure_time _utc,arrival_date,arrival_time _utc 
+            --INTO temp_schedule_id,temp_departure_date,temp_departure_time,temp_arrival_date,temp_arrival_time FROM schedule_record;
+            temp_schedule_id = schedule_record.schedule_id;
+            temp_departure_date = schedule_record.departure_date;
+            temp_departure_time = schedule_record.departure_time_utc;
+            temp_arrival_date = schedule_record.arrival_date;
+            temp_arrival_time = schedule_record.arrival_time_utc; 
+
+            IF (get_timestamp(ref_arrival_date,ref_arrival_time)+maintainance_time >= get_timestamp(temp_departure_date,temp_departure_time)) THEN
+
+                calculated_delay_interval = (get_timestamp(ref_arrival_date,ref_arrival_time)+maintainance_time - get_timestamp(temp_departure_date,temp_departure_time))::interval;
+                calculated_departure_timestamp = get_timestamp(temp_departure_date,temp_departure_time) + calculated_delay_interval;
+                calculated_arrival_timestamp = get_timestamp(temp_arrival_date,temp_arrival_time) + calculated_delay_interval;
+
+                UPDATE Flight_schedule 
+                SET departure_date = calculated_departure_timestamp::DATE,
+                departure_time_utc = calculated_departure_timestamp::TIME
+                WHERE schedule_id = temp_schedule_id;
+
+                ref_arrival_date = calculated_arrival_timestamp::DATE;
+                ref_arrival_time = calculated_arrival_timestamp::TIME;
+
+            ELSE
+                EXIT;
+            END IF;
+
+        END LOOP;
+
+		
+		return;
+
+END;
+$$;
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
-
-GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
-
-GRANT EXECUTE ON PROCEDURE public.registercustomer(email character varying, password character varying, first_name character varying, last_name character varying,dob date, gender gender_enum, contact_no character varying, passport_no character varying, address_line1 character varying, address_line2 character varying, country character varying, city character varying) TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
-
-GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.aircraft_model_model_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.staff_category_cat_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.traveller_class_class_id_seq TO database_app;
-
-GRANT ALL ON TABLE public.aircraft_instance TO database_app;
-
-GRANT ALL ON TABLE public.aircraft_model TO database_app;
-
-GRANT ALL ON TABLE public.aircraft_seat TO database_app;
-
-GRANT ALL ON TABLE public.airport TO database_app;
-
-GRANT ALL ON TABLE public.customer TO database_app;
-
-GRANT ALL ON TABLE public.customer_category TO database_app;
-
-GRANT ALL ON TABLE public.customer_review TO database_app;
-
-GRANT ALL ON TABLE public.flight_schedule TO database_app;
-
-GRANT ALL ON TABLE public.location TO database_app;
-
-GRANT ALL ON TABLE public.organizational_info TO database_app;
-
-GRANT ALL ON TABLE public.registered_customer TO database_app;
-
-GRANT ALL ON TABLE public.route TO database_app;
-
-GRANT ALL ON TABLE public.seat_booking TO database_app;
-
-GRANT ALL ON TABLE public.seat_price TO database_app;
-
-GRANT ALL ON TABLE public.seat_reservation TO database_app;
-
-GRANT ALL ON TABLE public.session TO database_app;
-
-GRANT ALL ON TABLE public.staff TO database_app;
-
-GRANT ALL ON TABLE public.staff_category TO database_app;
-
-GRANT ALL ON TABLE public.traveller_class TO database_app;
 
