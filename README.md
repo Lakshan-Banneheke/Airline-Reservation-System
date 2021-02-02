@@ -17,7 +17,7 @@ psql -U postgres
 ```sql
 CREATE ROLE database_app WITH LOGIN PASSWORD 'password';
 CREATE DATABASE airline_reservation_db;
-GRANT ALL PRIVILEGES ON DATABASE airline_reservation_db TO databse_app;
+GRANT ALL PRIVILEGES ON DATABASE airline_reservation_db TO database_app;
 \q
 ```
 
