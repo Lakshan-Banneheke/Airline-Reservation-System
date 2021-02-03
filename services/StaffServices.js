@@ -17,14 +17,14 @@ class StaffService {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        return Staff.registerStaff(
+        return Staff.registerStaffMember(
             empId, category, hashedPassword,
             firstName, lastName, contactNo, email, dob, gender, country,
         );
     }
 
-    static async login({ empID, password }) {
-        const staff = await Staff.getStaffMemberById(empID);
+    static async login({ empId, password }) {
+        const staff = await Staff.getStaffMemberById(empId);
         if (!staff) {
             throw new Errors.BadRequest('Employee ID is not registered');
         }
@@ -32,7 +32,7 @@ class StaffService {
         const hashedPassword = staff.password;
         const passwordCorrect = await bcrypt.compare(password, hashedPassword);
         if (!passwordCorrect) {
-            throw new Errors.BadRequest('Invalid Email or Password');
+            throw new Errors.BadRequest('Invalid ID or Password');
         }
         if (staff.account_state === 'unverified') {
             throw new Errors.Unauthorized('Account Not Verified');

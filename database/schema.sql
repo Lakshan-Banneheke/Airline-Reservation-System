@@ -407,15 +407,15 @@ CREATE OR REPLACE PROCEDURE registerStaff(
 LANGUAGE plpgsql    
 AS $$
 DECLARE
-var_existing_employee  char(6) := (SELECT emp_id from staff where emp_id = val_emp_id);
+val_existing_employee  char(6) := (SELECT emp_id from staff where emp_id = val_emp_id);
 BEGIN
-    if (var_existing_employee is null) then
-        if (var_category=='admin') then
+    if (val_existing_employee is null) then
+        if (val_category='admin') then
             INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
-            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_gender,val_country,'verified');
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'verified');
         else
             INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
-            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_gender,val_country,'unverified');
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified');
         end if;
     else
         RAISE EXCEPTION 'Emmployee ID % is already registered', val_emp_id;

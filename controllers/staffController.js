@@ -20,6 +20,15 @@ class StaffController {
         });
     }
 
+    static async loginPage(req, res) {
+        res.render('staff_login', {
+            user: req.session.user,
+            error: req.query.error,
+            success: req.query.success,
+            empId: req.query.empId,
+        });
+    }
+
     static async register(req, res) {
         try {
             const { value, error } = await StaffRegInfo.validate(req.body);
@@ -38,11 +47,11 @@ class StaffController {
             const staff = await StaffService.login(value);
             req.session.user = {};
             req.session.user.type = 'staff';
-            req.session.user.staff_category = staff.category;
+            req.session.user.staff_category = staff.category; // admin,manager,general
             req.session.user.staffData = staff;
-            res.redirect('/staff/');
+            res.redirect(`/staff/${staff.category}`);
         } catch (err) {
-            res.redirect(`/staff/login?error=${err}`);
+            res.redirect(`/staff/login?error=${err}&empId=${req.body.empId}`);
         }
     }
 
@@ -51,7 +60,7 @@ class StaffController {
             req.session.user = undefined;
             res.redirect('/staff/login');
         } catch (err) {
-            res.redirect('/staff/');
+            res.redirect(`/staff/${req.session.staff_category}?error=${err}`);
         }
     }
 }

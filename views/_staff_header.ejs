@@ -15,7 +15,11 @@
     <div class="content">
         <div>
             <nav class="navbar navbar-expand-lg navbar-light shadow-lg bg-light border-bottom fixed-top">
-                <a class="navbar-brand" href="/staff"><strong><h4>B Airways</h4></strong></a>
+                <% if(user) {%>
+                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>"><strong><h4>B Airways</h4></strong></a>
+                <%}else{%>
+                    <a class="navbar-brand" href=""><strong><h4>B Airways</h4></strong></a>
+                <%}%>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
@@ -24,27 +28,16 @@
                     <% if(user) { %>
                         <li class="nav-item dropdown">
                                 <li class="nav-item">
-                                    <a href="/" class="nav-link"><b>Home</b></a>
+                                    <a href="/staff/<%=user.staff_category%>" class="nav-link"><b>Home</b></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/logout" class="nav-link"><b>Log Out</b></a>
+                                    <a href="/staff/logout" class="nav-link"><b>Log Out</b></a>
                                 </li>
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img src="" width="30" height="30" class="d-inline-block align-top rounded-circle" alt="user-icon">
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item"><i class="fas fa-home" style="margin-right: 6px;"></i><b>HOME</b></a>
-                                <a class="dropdown-item"><i class="fas fa-edit" style="color: grey;margin-right: 6px;"></i>Edit profile </a>
-                                <a class="dropdown-item"><i class="fas fa-lock" style="color: grey;margin-right: 6px;"></i>Change Password</a>
-                                <a class="dropdown-item"><i class="fas fa-trash-alt" style="color: grey;margin-right: 6px;"></i>Delete Account</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item"><i class="fas fa-sign-out-alt" style="color: grey;margin-right: 6px;"></i> Log out</a>
-                            </div>
                         </li>
                     <% }else{ %>
                         <li class="nav-item dropdown">
                             <li class="nav-item">
-                                <a href="" class="nav-link active"><b>Log In</b></a>
+                                <a href="/staff/login" class="nav-link"><b>Log In</b></a>
                             </li>
                         </li>
                     <%}%>

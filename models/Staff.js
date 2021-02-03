@@ -8,7 +8,7 @@ class Staff {
     }
 
     static async getStaffMemberById(id) {
-        const query = 'SELECT * FROM Staff WHERE emp_id=$1';
+        const query = 'SELECT * FROM staff WHERE emp_id=$1';
         const result = await pool.query(query, [id]);
         return result.rows[0];
     }
@@ -16,7 +16,7 @@ class Staff {
     static async registerStaffMember(
         empId, category, password, firstName, lastName, contactNo, email, dob, gender, country,
     ) {
-        const query = 'CALL registerStaff ( $1,$2,$3,$4,$5,$6,$7,$8,$9)';
+        const query = 'CALL registerStaff($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)';
         await pool.query(query,
             [empId, category, password,
                 firstName, lastName, contactNo, email, dob, gender, country]);

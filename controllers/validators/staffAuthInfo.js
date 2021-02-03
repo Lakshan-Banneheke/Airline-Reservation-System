@@ -30,11 +30,12 @@ const StaffRegInfo = Joi.object(
     gender: Joi.string().required().valid('Male', 'Female', 'Other').label('Gender'),
     country: Joi.string().trim().min(2).max(30)
         .required(),
+    securityKey: Joi.string().allow(''),
 });
 
 const StaffLoginInfo = Joi.object().keys({
-    email: Joi.string().trim().email().required()
-        .label('E-mail'),
+    empId: Joi.string().trim().required()
+        .label('Employee ID'),
     password: Joi.string().trim().required(),
 });
 
