@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B Airways</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/d231d60e79.js" crossorigin="anonymous"></script>
+    
+
+</head>
+
+<body style="padding-top: 70px;">
+    <div class="content">
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-light shadow-lg bg-light border-bottom fixed-top">
+                <a class="navbar-brand" href="/staff"><strong><h4>B Airways</h4></strong></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <% if(user) { %>
+                        <li class="nav-item dropdown">
+                                <li class="nav-item">
+                                    <a href="/" class="nav-link"><b>Home</b></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/logout" class="nav-link"><b>Log Out</b></a>
+                                </li>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="" width="30" height="30" class="d-inline-block align-top rounded-circle" alt="user-icon">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item"><i class="fas fa-home" style="margin-right: 6px;"></i><b>HOME</b></a>
+                                <a class="dropdown-item"><i class="fas fa-edit" style="color: grey;margin-right: 6px;"></i>Edit profile </a>
+                                <a class="dropdown-item"><i class="fas fa-lock" style="color: grey;margin-right: 6px;"></i>Change Password</a>
+                                <a class="dropdown-item"><i class="fas fa-trash-alt" style="color: grey;margin-right: 6px;"></i>Delete Account</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item"><i class="fas fa-sign-out-alt" style="color: grey;margin-right: 6px;"></i> Log out</a>
+                            </div>
+                        </li>
+                    <% }else{ %>
+                        <li class="nav-item dropdown">
+                            <li class="nav-item">
+                                <a href="" class="nav-link active"><b>Log In</b></a>
+                            </li>
+                        </li>
+                    <%}%>
+                    
+                </ul>
+                </div>
+            </nav>
+        </div>
+        <div>
+<main>
+          

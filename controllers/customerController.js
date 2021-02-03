@@ -1,8 +1,5 @@
 const { CustomerRegInfo, CustomerLoginInfo } = require('./validators/customerInfo');
 const CustomerService = require('../services/CustomerServices');
-// const { defaultLogger } = require('../config/logger');
-
-// const logger = defaultLogger('customer-controller');
 
 class CustomerController {
     static async register(req, res) {
@@ -15,11 +12,8 @@ class CustomerController {
             req.session.user = {};
             req.session.user.type = customer.type;
             req.session.user.customerData = customer;
-            // res.redirect('/');
             return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (err) {
-            // logger.error(err);
-            // res.redirect(`/?registrationError=${err}#signup`);
             return res.status(200).send({
                 result: 'redirect',
                 url: `/?registrationError=${err}
@@ -38,7 +32,6 @@ class CustomerController {
             req.session.user.customerData = customer;
             res.redirect('/');
         } catch (err) {
-            // logger.error(err);
             res.redirect(`/?loginError=${err}#login`);
         }
     }
@@ -48,7 +41,6 @@ class CustomerController {
             req.session.user = undefined;
             res.redirect('/');
         } catch (err) {
-            // logger.error(err);
             res.redirect('/');
         }
     }
