@@ -28,17 +28,29 @@
                                         
                                         
                                         <div class="form-group  col-rt-in-3">
-                                            <label for="dob" style="color: white;">Date of Birth <small>(YYYY-MM-DD</small></label>
+                                            <label for="dob" style="color: white;">Date of Birth <small>(YYYY-MM-DD)</small></label>
                                             <input type='text' id="dob"  data-language='en' name="dob" required value="<%=regdob%>">
                                         </div>
 
                                         <label for="gender" style="color: white;">Gender</label>
                                         <div class="single-input  col-rt-in-3">
-                                            <select class="select-bar" name="gender" id="gender" required value="<%=reggender%>" opt>
+                                            <select class="select-bar" name="gender" id="gender" required opt>
                                                 <option data-display="Choose..">Choose..</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                                <option value="Other">Other</option>
+                                                <% if(reggender=='Male') {%>
+                                                    <option value="Male" selected>Male</option>
+                                                <%}else{%>
+                                                    <option value="Male">Male</option>
+                                                <%}%>
+                                                <% if(reggender=='Female') {%>
+                                                    <option value="Female" selected>Female</option>
+                                                <%}else{%>
+                                                    <option value="Female">Female</option>
+                                                <%}%>
+                                                <% if(reggender=='Other') {%>
+                                                    <option value="Other" selected>Other</option>
+                                                <%}else{%>
+                                                    <option value="Other">Other</option>
+                                                <%}%>
                                             </select>
                                             <span class="input-iconbadge"><img src="" alt="" draggable="false"></span>
                                         </div>

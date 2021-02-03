@@ -1,20 +1,16 @@
-const sql = require('../config/db');
+const pool = require('../config/db');
 
 class Customer {
     static async getTypeCustomerById(id) {
-        const [type] = await sql`
-            SELECT type from Customer 
-            WHERE customer_id=${id}
-        `;
-        return type;
+        const query = 'SELECT type FROM customer WHERE customer_id=$1';
+        const result = await pool.query(query, [id]);
+        return result.rows[0];
     }
 
     static async getRegisteredCustomerByEmail(email) {
-        const [customer] = await sql`
-            SELECT * from Registered_Customer
-            WHERE email=${email}
-        `;
-        return customer;
+        const query = 'SELECT * FROM Registered_Customer INNER JOIN Customer USING(customer_id) WHERE email=$1';
+        const result = await pool.query(query, [email]);
+        return result.rows[0];
     }
 
     static async registerCustomer(
@@ -22,20 +18,16 @@ class Customer {
         email, password, firstName, lastName, dob,
         gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
     ) {
-        const [createdCustomer] = await sql`
-            CALL registerCustomer
-                ( ${email},${password},${firstName},${lastName},${dob},${gender},${contactNo},${passportNo},${addressLine1},${addressLine2},${city},${country})
-            `;
-        return createdCustomer;
+        const query = 'CALL registerCustomer ( $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)';
+        await pool.query(query,
+            [email, password, firstName, lastName, dob,
+                gender, contactNo, passportNo, addressLine1, addressLine2, city, country]);
     }
 
     static async isEmailRegistered(email) {
-        const [customer] = await sql`
-            SELECT customer_id FROM Registered_Customer
-            WHERE email=${email}
-            LIMIT 1
-        `;
-        return customer != null;
+        const query = 'SELECT customer_id FROM Registered_Customer WHERE email=$1 LIMIT 1';
+        const result = await pool.query(query, [email]);
+        return result.rows[0] != null;
     }
 }
 
