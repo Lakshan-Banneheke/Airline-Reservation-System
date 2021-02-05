@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title %></title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="assets/dist/css/adminlte.min.css">
+    <!-- DataTables -->
+  <link rel="stylesheet" href="assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <!-- main style css link -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- responsive css link -->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+
+    <!-- jQuery -->
+    <script src="assets/plugins/jquery/jquery.min.js"></script>
+    <script src="assets/plugins/table-to-json/lib/jquery.tabletojson.js"></script>
+</head>
+
+<body style="padding-top: 70px;">
+    <div class="content">
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-light shadow-lg bg-light border-bottom fixed-top">
+                <% if(user) {%>
+                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>"><strong><h4>B Airways</h4></strong></a>
+                <%}else{%>
+                    <a class="navbar-brand" href=""><strong><h4>B Airways</h4></strong></a>
+                <%}%>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <% if(user) { %>
+                        <li class="nav-item dropdown">
+                                <li class="nav-item">
+                                    <a href="/staff/<%=user.staff_category%>" class="nav-link"><b>Home</b></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/staff/logout" class="nav-link"><b>Log Out</b></a>
+                                </li>
+                        </li>
+                    <% }else{ %>
+                        <li class="nav-item dropdown">
+                            <li class="nav-item">
+                                <a href="/staff/login" class="nav-link"><b>Log In</b></a>
+                            </li>
+                        </li>
+                    <%}%>
+                    
+                </ul>
+                </div>
+            </nav>
+        </div>
+        <div>
+<main>
+          
