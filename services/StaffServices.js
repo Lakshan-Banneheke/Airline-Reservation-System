@@ -40,6 +40,22 @@ class StaffService {
 
         return staff;
     }
+
+    static async getAllUnverifiedStaff() {
+        return Staff.getAllUnverifiedStaff();
+    }
+
+    static async getAllUnverifiedGeneralStaff() {
+        return Staff.getAllUnverifiedGeneralStaff();
+    }
+
+    static async deleteStaff(id) {
+        return Staff.deleteStaff(id);
+    }
+
+    static async verifyStaff(id) {
+        return Staff.verifyStaff(id);
+    }
 }
 
 module.exports = StaffService;

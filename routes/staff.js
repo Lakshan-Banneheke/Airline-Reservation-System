@@ -18,5 +18,9 @@ router.get('/logout', ifStaff, StaffController.logout);
 
 router.post('/register', ifNotLoggedIn, StaffController.register);
 router.post('/login', ifNotLoggedIn, StaffController.login);
+router.post('/admin/verify_staff', ifAdmin, AdminController.verifyStaff);
+router.post('/admin/delete_staff', ifAdmin, AdminController.deleteStaff);
+router.post('/manager/verify_staff', ifManager, ManagerController.verifyStaff);
+router.post('/manager/delete_staff', ifManager, ManagerController.deleteStaff);
 
 module.exports = router;

@@ -1,3 +1,66 @@
 <%- include('_staff_header',{user}) %>
-    <h3>Manager Home</h3>
+<div class="container py-4">
+    <div class="text-center">
+        <h3>Managment Panel</h3>
+    </div>
+    <br>
+    <div class="card-deck">
+        <div class="card p-3">
+            <div class="text-center">
+                <h4>New Users Waiting for Verification</h4>
+            </div>
+            <% if (error) {%>
+                <div class="alert alert-danger text-center" role="alert">
+                    <%=error%>
+                </div>
+            <% } %>
+            <% if (success) {%>
+                <div class="alert alert-success text-center" role="alert">
+                    <%=success%>
+                </div>
+            <% } %>
+            <div class="text-center">
+                Image Here
+            </div>
+            <hr>
+            <div class="p-3">
+                <% if(unverifiedStaff && unverifiedStaff.length!=0) {%>
+                        <div style="overflow-x:auto;">
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Employee ID</th>
+                                        <th scope="col">Full Name</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">E-mail</th>
+                                        <th scope="col">Mobile</th>
+                                        <th>Approve</th>
+                                        <th>Disapprove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+        
+                                    <% unverifiedStaff.forEach(function(staff){%>
+                                        <tr>
+                                            <td><%=staff.emp_id%></td>
+                                            <td><%=staff.first_name+' '+staff.last_name%></td>
+                                            <td><%=staff.category.toUpperCase()%></td>
+                                            <td><%=staff.email%></td>
+                                            <td><%=staff.contact_no%></td>
+                                            <td><form action='/staff/manager/verify_staff' method=post><button type='submit' class='btn btn-outline-success' name='verify-button'>Approve</button><input type='hidden' name='empId' value='<%=staff.emp_id%>'></form></td>
+                                            <td><form action='/staff/manager/delete_staff' method=post><button type='submit' class='btn btn-outline-danger' name='disapprove-button'>Disapprove</button><input type='hidden' name='empId' value='<%=staff.emp_id%>'></form></td>
+                                        </tr>
+                                    <%});%>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% }else{ %>
+                        <div class="alert alert-warning text-center">
+                            <strong>No Unverified Staff Members</strong>
+                        </div>
+                    <%}%>
+            </div>
+        </div>
+    </div>
+    <br>
 <%- include('_staff_footer') %>
