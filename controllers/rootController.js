@@ -17,10 +17,7 @@ class RootController {
             regcity: req.query.city,
             regcountry: req.query.country,
         });
-        // res.render('general_staff_new_home',{
-        //     user: req.session.user,
-        //     error: req.query.error,
-        //     success: req.query.success});
+
     }
 }
 

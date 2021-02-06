@@ -1,0 +1,114 @@
+<%- include('_staff_header_new',{user}) %>
+<div class="hold-transition sidebar-mini">
+    <div class="container">
+
+
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Upcoming flights</br></h3>
+            </div>
+            </br>
+            
+            <!--search form-->
+            <form action="enhanced-results.html">
+                <div class="row">
+                    <div class="col-md-8 offset-md-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    
+                                    <div class="input-group input-group-md">
+                                        
+                                        <input type="search" class="form-control form-control-md" placeholder="Search from flight id" >
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-md btn-default">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+
+            <div class="card-body">
+                <!--ongoing flights start-->
+                <div class="col-lg-12 mb-30">
+                    <div class="flight-search-box">
+                        <div class="row"><!--row start-->
+                            <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                <div class="flight-search-item d-flex flex-wrap">
+                                    <div class="flight-search-thumb">
+                                        <i class="fa fa-plane" aria-hidden="true"></i>
+                                        
+                                    </div>
+                                    <div class="flight-search-title">
+                                        <h5 class="title">Flight-id1</h5>
+                                        
+                                    </div>
+                                </div>
+                                <div class="flight-search-body">
+                                    <h5 class="flight-start">14:00</h5>
+                                    <h5 class="flight-middle">07h00</h5>
+                                    <h5 class="flight-end"> 17:10</h5>
+                                </div>
+                                <div class="flight-place">
+                                    <p><span class="start-place">Departure time</span></p>
+                                </div>
+                            </div><!--new 1st div end-->
+                            <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                <br/><h6>From: Dhaka </h6>
+                                <h6>To: Delhi Airport </h6>
+                                <h6>Aircraft:  </h6>
+                                <a href='#' class="btn btn-info float-right">More Details</a>
+
+                            </div><!--new 2nd div-->
+                    </div><!--raw end-->
+                    </div>
+                </div>
+                <!--ongoing flights end-->
+               <!--ongoing flights start-->
+                <div class="col-lg-12 mb-30">
+                    <div class="flight-search-box">
+                        <div class="row"><!--row start-->
+                            <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                <div class="flight-search-item d-flex flex-wrap">
+                                    <div class="flight-search-thumb">
+                                        <i class="fa fa-plane" aria-hidden="true"></i>
+                                        
+                                    </div>
+                                    <div class="flight-search-title">
+                                        <h5 class="title">Flight-id1</h5>
+                                        
+                                    </div>
+                                </div>
+                                <div class="flight-search-body">
+                                    <h5 class="flight-start">14:00</h5>
+                                    <h5 class="flight-middle">07h00</h5>
+                                    <h5 class="flight-end"> 17:10</h5>
+                                </div>
+                                <div class="flight-place">
+                                    <p><span class="start-place">Departure Time</span></p>
+                                    
+                                </div>
+                            </div><!--new 1st div end-->
+                            <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                <br/><h6>From: Dhaka </h6>
+                                <h6>To: Delhi Airport </h6>
+                                <h6>Aircraft:  </h6>
+                                <a href='#' class="btn btn-info float-right">More Info</a>
+                            </div><!--new 2nd div-->
+                    </div><!--raw end-->
+                    </div>
+                </div>
+                <!--ongoing flights end-->
+            </div>
+        </div>
+
+
+    </div><!--container div closed-->
+</div>
+<%- include('staff_footer_new') %>
