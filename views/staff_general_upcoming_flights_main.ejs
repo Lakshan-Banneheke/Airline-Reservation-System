@@ -63,55 +63,14 @@
                                 <br/><h6>From: Dhaka </h6>
                                 <h6>To: Delhi Airport </h6>
                                 <h6>Aircraft:  </h6>
-                                <button type="button" class="btn btn-info float-right" data-toggle="modal" data-target="#exampleModal1">More Details</button>
+                                <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a>
 
                             </div><!--new 2nd div-->
                     </div><!--raw end-->
                     </div>
                 </div>
                 <!--ongoing flights end-->
-                                <!--test modal-->
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Flight 1 Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body">
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Booking ID</th>
-                                    <th scope="col">Customer ID</th>
-                                    <th scope="col">Customer Name</th>
-                                    <th scope="col">No.of seats</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    <% for (var i = 0; i <25; i++) { %>
-                                    
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                  </tr>
-                                  <% } %>
-                                </tbody>
-                              </table>
-                        </div>
-                        
-                    </div>
-                    </div>
-                </div>
-                <!--test modal end-->
-
-
-
+                 
 
                <!--ongoing flights start-->
                 <div class="col-lg-12 mb-30">
@@ -149,8 +108,7 @@
                 </div>
                 <!--ongoing flights end-->
 
-                <!--test modal-->
-                <!-- Modal -->
+                <!--test modal
                 <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -183,11 +141,10 @@
                                   </tbody>
                               </table>
                         </div>
-                        
                     </div>
                     </div>
                 </div>
-                <!--test modal end-->
+                test modal end-->
 
             </div>
         </div>
@@ -200,4 +157,4 @@
 
     </div><!--container div closed-->
 </div>
-<%- include('staff_footer_new') %>
+<%- include('_staff_footer_new') %>

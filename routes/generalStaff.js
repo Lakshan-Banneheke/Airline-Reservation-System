@@ -3,6 +3,7 @@ const ifGeneralStaff = require('../middleware/ifGeneralStaff');
 const GeneralStaffController = require('../controllers/generalStaffController');
 
 router.get('/', ifGeneralStaff, GeneralStaffController.homePage);
-router.get('/upcomingFlights', ifGeneralStaff, GeneralStaffController.upcomingFlights);
+router.get('/upcomingFlightsMain', ifGeneralStaff, GeneralStaffController.upcomingFlightsMain);
+router.get('/upcomingFlightsMore', ifGeneralStaff, GeneralStaffController.upcomingFlightsMore);
 
 module.exports = router;

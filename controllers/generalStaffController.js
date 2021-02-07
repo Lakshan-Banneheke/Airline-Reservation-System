@@ -5,15 +5,23 @@ class GeneralStaffController {
         //     error: req.query.error,
         //     success: req.query.success,
         // });
-        res.render('general_staff_new_home', {
+        res.render('staff_general_home', {
             user: req.session.user,
             error: req.query.error,
             success: req.query.success,
         });
     }
 
-    static async upcomingFlights(req, res) {
-        res.render('general_staff_upcoming_flights', {
+    static async upcomingFlightsMain(req, res) {
+        res.render('staff_general_upcoming_flights_main', {
+            user: req.session.user,
+            error: req.query.error,
+            success: req.query.success,
+        });
+    }
+
+    static async upcomingFlightsMore(req, res) {
+        res.render('staff_general_upcoming_flights_more', {
             user: req.session.user,
             error: req.query.error,
             success: req.query.success,
