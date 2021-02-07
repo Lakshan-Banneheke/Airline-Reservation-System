@@ -174,62 +174,12 @@ INSERT INTO traveller_class(class_name) VALUES ('Economy');
 ---------------------INSERTING ROUTES-----------------------------
 
 
----------------------PROCEDURE FOR ADDING SEATS---------------------------
-CREATE OR REPLACE PROCEDURE insert_seats()
-LANGUAGE plpgsql
-AS $$
-DECLARE
-	   temp_model_id int;
-	   model_count int;
-       current_seat int;
-	   platinum int;
-	   business int;
-	   economy int;
-BEGIN
 
-	SELECT COUNT(model_id) INTO model_count FROM aircraft_model;
-	temp_model_id = 1;
-	
-	while temp_model_id <= model_count loop
-		SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity INTO economy, business, platinum 
-			FROM aircraft_model WHERE model_id=temp_model_id;
-		
-		current_seat = 1;
-		while current_seat <= platinum loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 1);
-			current_seat = current_seat + 1;
-		end loop;
-		business = business + current_seat;
-		while current_seat < business loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 2);
-			current_seat = current_seat + 1;
-		end loop;
-		economy = economy + current_seat;
-		while current_seat < economy loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 3);
-			current_seat = current_seat + 1;
-		end loop;
-        temp_model_id = temp_model_id + 1;
-	end loop;
-	
-END;
-$$;
 
 CALL insert_seats();
 
 
----------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
-CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
-LANGUAGE plpgsql
-AS $$
 
-BEGIN
-	INSERT INTO seat_price VALUES ($1,1,$2);
-	INSERT INTO seat_price VALUES ($1,2,$3);
-	INSERT INTO seat_price VALUES ($1,3,$4);
-
-END;
-$$;
 
 CALL insert_route_price(1,800,500,145);
 CALL insert_route_price(2,700,600,161);
