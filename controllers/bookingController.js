@@ -1,8 +1,13 @@
-
+const {GuestInfo} = require('./validators/guestInfo');
+const BookingService = require('../services/BookingServices');
 
 class BookingController {
-    static async getBooking(req, res){
+    static async getBooking(req, res) {
+        console.log(req.params.schedule_id);
+        const seats = await BookingService.getSeats(parseInt(req.params.schedule_id));
+
         res.render('booking', {
+            seats: seats,
             schedule_id: req.params.schedule_id,
             user: req.session.user,
             registrationError: req.query.registrationError,
@@ -18,7 +23,20 @@ class BookingController {
             regaddressLine2: req.query.addressLine2,
             regcity: req.query.city,
             regcountry: req.query.country,
-        })
+        });
+    }
+
+    static async createBooking(req, res) {
+        // try {
+        //     const { value, error } = await GuestInfo.validate(req.body);
+        //     if (error) throw (error);
+        //     await CustomerService.register(value);
+        //
+        //     return res.status(200).send({ result: 'redirect', url: '/confirm-payment' });
+        // } catch (err) {
+        //     return res.redirect();
+        // }
+
     }
 }
 

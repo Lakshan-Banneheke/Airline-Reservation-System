@@ -143,7 +143,6 @@ END
 $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
-
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
@@ -640,6 +639,7 @@ BEGIN
 
 END;
 $$;
+
 
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
 
