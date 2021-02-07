@@ -546,4 +546,82 @@ BEGIN
 END;
 $$;
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
+GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id integer, val_departure_datetime timestamp without time zone) TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.get_timestamp(val_date date, val_time time without time zone) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.deleteschedule(val_schedule_id integer) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.handleflightarrival(val_schedule_id integer, val_arrival_date date, val_arrival_time_utc time without time zone) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.insert_route_price(integer, numeric, numeric, numeric) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.insert_seats() TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
+
+GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.aircraft_model_model_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.staff_category_cat_id_seq TO database_app;
+
+GRANT ALL ON SEQUENCE public.traveller_class_class_id_seq TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_instance TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_model TO database_app;
+
+GRANT ALL ON TABLE public.aircraft_seat TO database_app;
+
+GRANT ALL ON TABLE public.airport TO database_app;
+
+GRANT ALL ON TABLE public.customer TO database_app;
+
+GRANT ALL ON TABLE public.customer_category TO database_app;
+
+GRANT ALL ON TABLE public.customer_review TO database_app;
+
+GRANT ALL ON TABLE public.flight_schedule TO database_app;
+
+GRANT ALL ON TABLE public.location TO database_app;
+
+GRANT ALL ON TABLE public.organizational_info TO database_app;
+
+GRANT ALL ON TABLE public.registered_customer TO database_app;
+
+GRANT ALL ON TABLE public.route TO database_app;
+
+GRANT ALL ON TABLE public.seat_booking TO database_app;
+
+GRANT ALL ON TABLE public.seat_price TO database_app;
+
+GRANT ALL ON TABLE public.seat_reservation TO database_app;
+
+GRANT ALL ON TABLE public.session TO database_app;
+
+GRANT ALL ON TABLE public.staff TO database_app;
+
+GRANT ALL ON TABLE public.staff_category TO database_app;
+
+GRANT ALL ON TABLE public.traveller_class TO database_app;
+
 

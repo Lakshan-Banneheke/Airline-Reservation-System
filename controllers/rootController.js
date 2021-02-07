@@ -1,6 +1,7 @@
 class RootController {
     static async root(req, res) {
         res.render('index', {
+            // pass these to every page as you can register or login from any page
             user: req.session.user,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
