@@ -34,9 +34,6 @@ class CustomerService {
 
         return customer;
     }
-
-    // eslint-disable-next-line no-empty-function
-    static async logout() {}
 }
 
 module.exports = CustomerService;

@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS decreaseNumBookings;
 DROP PROCEDURE IF EXISTS scheduleFlights;
 DROP PROCEDURE IF EXISTS deleteSchedule;
 DROP PROCEDURE IF EXISTS handleFlightArrival;
+DROP PROCEDURE IF EXISTS registerStaff;
 
 DROP DOMAIN IF EXISTS UUID4 CASCADE;
 
@@ -27,7 +28,6 @@ DROP TABLE IF EXISTS Seat_Booking CASCADE;
 DROP TABLE IF EXISTS Seat_Reservation CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
-DROP TABLE IF EXISTS Staff_Category CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
 
 DROP TYPE IF EXISTS  booking_state_enum;
@@ -35,6 +35,8 @@ DROP TYPE IF EXISTS  flight_state_enum;
 DROP TYPE IF EXISTS  aircraft_state_enum;
 DROP TYPE IF EXISTS  gender_enum;
 DROP TYPE IF EXISTS  customer_state_enum;
+DROP TYPE IF EXISTS  staff_category;
+DROP TYPE IF EXISTS  staff_account_state;
 
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
@@ -62,6 +64,17 @@ CREATE TYPE gender_enum AS ENUM(
 CREATE TYPE customer_state_enum AS ENUM(
 'guest',
 'registered'
+);
+
+CREATE TYPE staff_category AS ENUM(
+'admin',
+'manager',
+'general'
+);
+
+CREATE TYPE staff_account_state AS ENUM(
+'verified',
+'unverified'
 );
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
@@ -306,25 +319,19 @@ CREATE TABLE Customer_Review (
   FOREIGN KEY(customer_id) REFERENCES Registered_Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Staff_Category (
-  cat_id SERIAL,
-  cat_name varchar(20) UNIQUE NOT NULL,
-  PRIMARY KEY (cat_id)
-);
-
 
 CREATE TABLE Staff (
-  emp_id uuid4 DEFAULT generate_uuid4 (),
-  category int NOT NULL,
-  password varchar(70) NOT NULL,
-  name varchar(50) NOT NULL,
+  emp_id char(6) PRIMARY KEY, --Bxxxxx
+  category staff_category NOT NULL,
+  password varchar(255) NOT NULL,
+  first_name varchar(127) NOT NULL,
+  last_name varchar(127) NOT NULL,
   contact_no varchar(15) NOT NULL,
   email varchar(70) NOT NULL UNIQUE,
   dob date NOT NULL,
   gender gender_enum NOT NULL,
   country varchar(30) NOT NULL,
-  PRIMARY KEY (emp_id),
-  FOREIGN KEY(category) REFERENCES Staff_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  account_state staff_account_state NOT NULL DEFAULT 'unverified'
 );
 
 
@@ -344,7 +351,7 @@ ALTER TABLE "session"
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
---------------------------------     TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
+--------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 
 
 
@@ -379,6 +386,39 @@ BEGIN
          values (customer_id,val_email,val_password,val_first_name,val_last_name,val_dob,val_gender,val_contact_no,val_passport_no,val_address_line1,val_address_line2,val_city,val_country);
     else
         RAISE EXCEPTION 'Email % is already registered', val_email;
+    end if;
+END;
+$$;
+
+-------------------------- Procedure to register staff member -------------------------------------
+CREATE OR REPLACE PROCEDURE registerStaff(
+  val_emp_id CHAR(6),
+  val_category staff_category,
+  val_password varchar(255),
+  val_first_name VARCHAR(30),
+  val_last_name VARCHAR(30),
+  val_contact_no VARCHAR(15),
+  val_email VARCHAR(127),
+  val_dob DATE,
+  val_gender gender_enum,
+  val_country VARCHAR(30)        
+)
+
+LANGUAGE plpgsql    
+AS $$
+DECLARE
+val_existing_employee  char(6) := (SELECT emp_id from staff where emp_id = val_emp_id);
+BEGIN
+    if (val_existing_employee is null) then
+        if (val_category='admin') then
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'verified');
+        else
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified');
+        end if;
+    else
+        RAISE EXCEPTION 'Emmployee ID % is already registered', val_emp_id;
     end if;
 END;
 $$;
@@ -546,6 +586,9 @@ BEGIN
 END;
 $$;
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
+
+
+
 GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
@@ -564,6 +607,8 @@ GRANT EXECUTE ON PROCEDURE public.insert_seats() TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
 
+GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying) TO database_app;
+
 GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
@@ -581,8 +626,6 @@ GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
-
-GRANT ALL ON SEQUENCE public.staff_category_cat_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.traveller_class_class_id_seq TO database_app;
 
@@ -620,8 +663,5 @@ GRANT ALL ON TABLE public.session TO database_app;
 
 GRANT ALL ON TABLE public.staff TO database_app;
 
-GRANT ALL ON TABLE public.staff_category TO database_app;
-
 GRANT ALL ON TABLE public.traveller_class TO database_app;
-
 
