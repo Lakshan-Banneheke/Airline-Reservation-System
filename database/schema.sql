@@ -147,6 +147,39 @@ LANGUAGE plpgsql IMMUTABLE;
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
+
+----------- Function to get flight state
+
+CREATE OR REPLACE FUNCTION public.get_flight_state(
+	estimated_arrival_time time without time zone)
+    RETURNS varchar
+    LANGUAGE 'plpgsql'
+    COST 100
+    IMMUTABLE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	now_time TIME WITHOUT TIME ZONE;
+	flight_state varchar;
+BEGIN
+  SELECT CURRENT_TIMESTAMP(0) into now_time::TIME WITHOUT TIME ZONE;
+  if(estimated_arrival_time>now_time) then return 'pending';
+  else return 'delayed';
+  end if;
+END
+$BODY$;
+
+ALTER FUNCTION public.get_flight_state(time without time zone)
+    OWNER TO postgres;
+
+
+--select public.get_flight_state('11:53:50');
+-- update flight_schedule set departure_date='2021-02-08' where schedule_id=50;
+-- update flight_schedule set departure_date='2021-02-08' where schedule_id=1;
+-- update flight_schedule set departure_date='2021-02-08' where schedule_id=2;
+-- select * from flight_schedule;
+
+
+
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
@@ -615,6 +648,12 @@ GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
 
+GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO PUBLIC;
+
+GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO database_app;
+
+GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO postgres;
+
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_model_model_id_seq TO database_app;
@@ -664,4 +703,5 @@ GRANT ALL ON TABLE public.session TO database_app;
 GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
+
 

@@ -10,76 +10,65 @@
             </div>
             
             <div class="card-body">
-                <!--ongoing flights start-->
-                <div class="col-lg-12 mb-30">
-                    <div class="flight-search-box">
-                        <div class="row"><!--row start-->
-                            <div class="col-lg-4 mb-30"><!--new 1st div-->
-                                <div class="flight-search-item d-flex flex-wrap">
-                                    <div class="flight-search-thumb">
-                                        <i class="fa fa-plane" aria-hidden="true"></i>
-                                        
-                                    </div>
-                                    <div class="flight-search-title">
-                                        <h5 class="title">Flight-id1</h5>
-                                        <h5><span class="badge badge-info ">Pending</span></h5>
-                                    </div>
-                                </div>
-                                <div class="flight-search-body">
-                                    <h5 class="flight-start">14:00</h5>
-                                    <h5 class="flight-middle">07h00</h5>
-                                    <h5 class="flight-end"> 17:10</h5>
-                                </div>
-                                <div class="flight-place">
-                                    <p><span class="start-place">Departed at</span></p>
-                                </div>
-                            </div><!--new 1st div end-->
-                            <div class="col-lg-8 mb-30"><!--new 2nd div-->
-                                <br/><h6>From: Dhaka </h6>
-                                <h6>To: Delhi Airport </h6>
-                                <h6>Aircraft:  </h6>
-                                <a href='#' class="btn btn-success float-right">Mark Arrival</a>
 
-                            </div><!--new 2nd div-->
-                    </div><!--raw end-->
+
+                <% if (error) {%>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <%=error%>
                     </div>
-                </div>
-                <!--ongoing flights end-->
-               <!--ongoing flights start-->
-                <div class="col-lg-12 mb-30">
-                    <div class="flight-search-box">
-                        <div class="row"><!--row start-->
-                            <div class="col-lg-4 mb-30"><!--new 1st div-->
-                                <div class="flight-search-item d-flex flex-wrap">
-                                    <div class="flight-search-thumb">
-                                        <i class="fa fa-plane" aria-hidden="true"></i>
-                                        
-                                    </div>
-                                    <div class="flight-search-title">
-                                        <h5 class="title">Flight-id1</h5>
-                                        <h5><span class="badge badge-danger ">Delayed</span></h5>
-                                    </div>
-                                </div>
-                                <div class="flight-search-body">
-                                    <h5 class="flight-start">14:00</h5>
-                                    <h5 class="flight-middle">07h00</h5>
-                                    <h5 class="flight-end"> 17:10</h5>
-                                </div>
-                                <div class="flight-place">
-                                    <p><span class="start-place">Departed at</span></p>
-                                    
-                                </div>
-                            </div><!--new 1st div end-->
-                            <div class="col-lg-8 mb-30"><!--new 2nd div-->
-                                <br/><h6>From: Dhaka </h6>
-                                <h6>To: Delhi Airport </h6>
-                                <h6>Aircraft:  </h6>
-                                <a href='#' class="btn btn-success float-right">Mark Arrival</a>
-                            </div><!--new 2nd div-->
-                    </div><!--raw end-->
+                <% } %>
+
+                <% if (success) {%>
+                    <div class="alert alert-success text-center" role="alert">
+                        <%=success%>
                     </div>
-                </div>
-                <!--ongoing flights end-->
+                <% } %>
+                
+                <% for (var i = 0; i < ongoingFlights.length; i++) { %>
+                        
+                    <!--ongoing flights start-->
+                    <div class="col-lg-12 mb-30">
+                        <div class="flight-search-box">
+                            <div class="row"><!--row start-->
+                                <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                    <div class="flight-search-item d-flex flex-wrap">
+                                        <div class="flight-search-thumb">
+                                            <i class="fa fa-plane" aria-hidden="true"></i>
+                                            
+                                        </div>
+                                        <div class="flight-search-title">
+                                            <h5 class="title">Schedule ID: <%= ongoingFlights[i].schedule_id %></h5>
+                                            <%if (ongoingFlights[i].flight_state=="delayed") { %>
+                                                <h5><span class="badge badge-danger ">Delayed</span></h5>
+                                            
+                                            <% }else { %>
+                                                <h5><span class="badge badge-info ">Pending</span></h5>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="flight-search-body">
+                                        <h5 class="flight-start"><%= ongoingFlights[i].departure_time_utc %></h5>
+                                        <h5 class="flight-middle"><%= ("0"+ongoingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+ongoingFlights[i].duration.minutes).slice(-2) %></h5>
+                                        <h5 class="flight-end"> <%= ongoingFlights[i].arrival_time_utc %></h5>
+                                    </div>
+                                    <div class="flight-place">
+                                        <p><span class="start-place">Departed at</span></p>
+                                    </div>
+                                </div><!--new 1st div end-->
+                                <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                    <br/><h6>From:  <%= ongoingFlights[i].origin %></h6>
+                                    <h6>To:  <%= ongoingFlights[i].destination %> </h6>
+                                    <h6>Aircraft ID: <%= ongoingFlights[i].aircraft_id %> </h6>
+                                    <a href='#' class="btn btn-success float-right">Mark Arrival</a>
+
+                                </div><!--new 2nd div-->
+                        </div><!--raw end-->
+                        </div>
+                    </div>
+                    <!--ongoing flights end-->
+
+                <% } %>
+
             </div>
         </div>
 
@@ -99,7 +88,7 @@
                 <div class="icon">
                 <i class="fas fa-plane-departure"></i>
                 </div>
-                <a href="/staff/general/upcomingFlights" class="small-box-footer">
+                <a href="/staff/general/upcomingFlightsMore" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>

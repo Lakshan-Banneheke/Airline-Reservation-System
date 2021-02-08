@@ -56,6 +56,13 @@ class StaffService {
     static async verifyStaff(id) {
         return Staff.verifyStaff(id);
     }
+
+    static async getOngoingFlights(){
+        const ongoingFlights = await Staff.getOngoingFlightDetails();
+        console.log("inside staff services");
+        console.log(ongoingFlights.schedule_id);
+        return ongoingFlights;
+    }
 }
 
 module.exports = StaffService;
