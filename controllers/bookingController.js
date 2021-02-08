@@ -3,12 +3,12 @@ const BookingService = require('../services/BookingServices');
 
 class BookingController {
     static async getBooking(req, res) {
-        console.log(req.params.schedule_id);
-        const seats = await BookingService.getSeats(parseInt(req.params.schedule_id));
+        // console.log(req.params.schedule_id);
+        let schedule_id = 1;
+        const seats = await BookingService.getSeats(schedule_id);
 
         res.render('booking', {
-            seats: seats,
-            schedule_id: req.params.schedule_id,
+            schedule_id : schedule_id,
             user: req.session.user,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
