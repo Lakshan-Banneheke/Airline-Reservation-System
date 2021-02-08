@@ -50,27 +50,6 @@ class Staff {
         await pool.query(query, [id]);
     }
 
-    static async getOngoingFlightDetails(){
-
-        let date_ob = new Date();
-        let date = ("0" + date_ob.getDate()).slice(-2);
-        // current month
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        // current year
-        let year = date_ob.getFullYear();
-
-        let today_date=year + "-" + month + "-" + date;
-        // prints time in HH:MM:SS format
-        console.log("inside staff modal");
-        console.log(today_date);
-
-        const query = 'SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,(select public.get_flight_state(arrival_time_utc))as flight_state FROM flight_schedule LEFT OUTER JOIN route USING(route_id) WHERE (actual_arrival is NULL and arrival_date=$1) ORDER BY arrival_time_utc ASC';
-        
-        const result = await pool.query(query, [today_date]);
-        
-        console.log(result.rows);
-        return result.rows;
-    }
 }
 
 module.exports = Staff;

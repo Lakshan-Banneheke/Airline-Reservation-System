@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Errors = require('../helpers/error');
 const Staff = require('../models/Staff');
-
+const Flight = require('../models/Flight');
 class StaffService {
     static async register({
         empId, category, password, confirmPassword,
@@ -58,11 +58,35 @@ class StaffService {
     }
 
     static async getOngoingFlights(){
-        const ongoingFlights = await Staff.getOngoingFlightDetails();
-        console.log("inside staff services");
-        console.log(ongoingFlights.schedule_id);
+        let date_ob = new Date();
+        //current date
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        // current month
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        // current year
+        let year = date_ob.getFullYear();
+        let today=year + "-" + month + "-" + date;
+        
+        const ongoingFlights = await Flight.getOngoingFlightDetails(today);
+        
         return ongoingFlights;
     }
+
+    static async getUpcomingFlights(){
+        let date_ob = new Date();
+        //current date
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        // current month
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        // current year
+        let year = date_ob.getFullYear();
+        let today=year + "-" + month + "-" + date;
+        
+        const upcomingFlights = await Flight.getUpcomingFlightDetails(today);
+       
+        return upcomingFlights;
+    }
+
 }
 
 module.exports = StaffService;
