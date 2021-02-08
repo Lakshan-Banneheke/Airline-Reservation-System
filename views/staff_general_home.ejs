@@ -59,8 +59,8 @@
                                     <br/><h6>From:  <%= ongoingFlights[i].origin %></h6>
                                     <h6>To:  <%= ongoingFlights[i].destination %> </h6>
                                     <h6>Aircraft ID: <%= ongoingFlights[i].aircraft_id %> </h6>
-                                    <a href='#' class="btn btn-success float-right">Mark Arrival</a>
-
+                                    <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
+                                    <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-success float-right' >Mark Flight</button><input type='hidden' name='schedule_id' value='<%= ongoingFlights[i].schedule_id %>'></form>
                                 </div><!--new 2nd div-->
                         </div><!--raw end-->
                         </div>

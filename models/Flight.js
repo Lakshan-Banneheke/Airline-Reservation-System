@@ -15,6 +15,12 @@ class Flight {
         
         return result.rows;
     }
+
+    static async markArrival(schedule_id,today_date,now_time){
+        const query = 'CALL handleflightarrival($1,$2,$3)';
+        await pool.query(query, [schedule_id,today_date,now_time]);
+        
+    }
 }
 
 module.exports = Flight;

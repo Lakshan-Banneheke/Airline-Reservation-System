@@ -40,6 +40,16 @@ class GeneralStaffController {
             success: req.query.success,
         });
     }
+
+    
+    static async markFlightArrival(req, res) {
+        try {
+            await StaffService.markFlightArrival(req.body.schedule_id);
+            res.redirect('/staff/general?success=Flight Arrival Marked');
+        } catch (e) {
+            res.redirect(`/staff/general?error=${e}`);
+        }
+    }
 }
 
 module.exports = GeneralStaffController;
