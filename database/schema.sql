@@ -38,15 +38,15 @@ DROP TYPE IF EXISTS  customer_state_enum;
 DROP TYPE IF EXISTS  staff_category;
 DROP TYPE IF EXISTS  staff_account_state;
 
+SET TIME ZONE 'Etc/UTC';
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
 CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
 'Delayed',
-'Departed',
 'In-Air',
-'Arrived',
-'Cancelled');
+'Arrived'
+);
 
  CREATE TYPE aircraft_state_enum AS ENUM( 
  'On-Ground',
@@ -148,25 +148,31 @@ LANGUAGE plpgsql IMMUTABLE;
 -- CREATE OR REPLACE FUNCTION get_price()
 
 
------------ Function to get flight state
+----------- Function to get flight State---------------------------------
 
-CREATE OR REPLACE FUNCTION public.get_flight_state(
-	estimated_arrival_time time without time zone)
+CREATE OR REPLACE FUNCTION get_flight_state(val_schedule_id int)
     RETURNS varchar
-    LANGUAGE 'plpgsql'
-    COST 100
-    IMMUTABLE PARALLEL UNSAFE
 AS $BODY$
 DECLARE
-	now_time TIME WITHOUT TIME ZONE;
-	flight_state varchar;
+    scheduled_departure timestamp;
+    scheduled_arrival timestamp;
+    val_actual_arrival timestamp;
+	flight_state flight_state_enum;
 BEGIN
-  SELECT CURRENT_TIMESTAMP(0) into now_time::TIME WITHOUT TIME ZONE;
-  if(estimated_arrival_time>now_time) then return 'pending';
-  else return 'delayed';
-  end if;
+    SELECT get_timestamp(departure_date,departure_time_utc),get_timestamp(arrival_date,arrival_time_utc),actual_arrival INTO scheduled_departure,scheduled_arrival,val_actual_arrival FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
+    IF(val_actual_arrival is NULL AND scheduled_departure>NOW()) THEN
+      flight_state := 'Scheduled';
+    ELSIF(val_actual_arrival is NULL AND scheduled_departure<NOW() AND scheduled_arrival>NOW()) THEN
+      flight_state := 'In-Air';
+    ELSIF(val_actual_arrival is NULL AND scheduled_arrival<NOW()) THEN
+      flight_state :='Delayed';
+    ELSIF(val_actual_arrival is NOT NULL) THEN
+      flight_state:='Arrived';
+    END IF;
+    RETURN flight_state;
 END
-$BODY$;
+$BODY$
+LANGUAGE plpgsql IMMUTABLE;
 
 
 --select public.get_flight_state('11:53:50');
@@ -534,12 +540,14 @@ $$;
 ------------Procedure to handle delays/arrival of a flight -------
 
 
-CREATE OR REPLACE PROCEDURE handleFlightArrival(val_schedule_id int,val_arrival_date date,val_arrival_time_utc time)
+CREATE OR REPLACE PROCEDURE handleFlightArrival(val_schedule_id int)
 
 LANGUAGE plpgsql    
 AS $$ 
 DECLARE
-val_arrival_timestamp TIMESTAMP:= get_timestamp(val_arrival_date,val_arrival_time_utc);
+val_arrival_timestamp TIMESTAMP:= NOW();
+val_arrival_date date := NOW()::DATE;
+val_arrival_time_utc time := NOW()::TIME;
 val_aircraft_id int;
 val_flight_departue_date DATE;
 val_flight_departure_time TIME;
@@ -619,6 +627,7 @@ $$;
 
 
 
+
 GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
@@ -629,11 +638,7 @@ GRANT EXECUTE ON FUNCTION public.get_timestamp(val_date date, val_time time with
 
 GRANT EXECUTE ON PROCEDURE public.deleteschedule(val_schedule_id integer) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.handleflightarrival(val_schedule_id integer, val_arrival_date date, val_arrival_time_utc time without time zone) TO database_app;
-
-GRANT EXECUTE ON PROCEDURE public.insert_route_price(integer, numeric, numeric, numeric) TO database_app;
-
-GRANT EXECUTE ON PROCEDURE public.insert_seats() TO database_app;
+GRANT EXECUTE ON PROCEDURE public.handleflightarrival(val_schedule_id integer) TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
 
@@ -641,15 +646,7 @@ GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_catego
 
 GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO PUBLIC;
-
-GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO database_app;
+GRANT EXECUTE ON FUNCTION public.get_flight_state(val_schedule_id integer) TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 
@@ -700,5 +697,4 @@ GRANT ALL ON TABLE public.session TO database_app;
 GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
-
 

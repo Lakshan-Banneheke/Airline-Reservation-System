@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Errors = require('../helpers/error');
 const Staff = require('../models/Staff');
 const Flight = require('../models/Flight');
+const { ymd } = require('../helpers/dateFormat');
 
 class StaffService {
     static async register({
@@ -60,54 +62,29 @@ class StaffService {
     }
 
     static async getOngoingFlights() {
-        const date_ob = new Date();
-        // current date
-        const date = (`0${date_ob.getDate()}`).slice(-2);
-        // current month
-        const month = (`0${date_ob.getMonth() + 1}`).slice(-2);
-        // current year
-        const year = date_ob.getFullYear();
-        const today = `${year}-${month}-${date}`;
-
-        const ongoingFlights = await Flight.getOngoingFlightDetails(today);
-
+        const ongoingFlights = await Flight.getOngoingFlightDetails();
+        if (ongoingFlights && ongoingFlights.length > 0) {
+            ongoingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
         return ongoingFlights;
     }
 
     static async getUpcomingFlights() {
-        const date_ob = new Date();
-        // current date
-        const date = (`0${date_ob.getDate()}`).slice(-2);
-        // current month
-        const month = (`0${date_ob.getMonth() + 1}`).slice(-2);
-        // current year
-        const year = date_ob.getFullYear();
-        const today = `${year}-${month}-${date}`;
-
-        const upcomingFlights = await Flight.getUpcomingFlightDetails(today);
-
+        const upcomingFlights = await Flight.getUpcomingFlightDetails();
+        if (upcomingFlights && upcomingFlights.length > 0) {
+            upcomingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
         return upcomingFlights;
     }
 
     static async markFlightArrival(schedule_id) {
-        const date_ob = new Date();
-        // current date
-        // adjust 0 before single digit date
-        const date = (`0${date_ob.getDate()}`).slice(-2);
-        // current month
-        const month = (`0${date_ob.getMonth() + 1}`).slice(-2);
-        // current year
-        const year = date_ob.getFullYear();
-        // current hours
-        const hours = (`0${date_ob.getHours() + 1}`).slice(-2);
-        // current minutes
-        const minutes = (`0${date_ob.getMinutes() + 1}`).slice(-2);
-        // current seconds
-        const seconds = (`0${date_ob.getSeconds() + 1}`).slice(-2);
-        const today_date = `${year}-${month}-${date}`;
-        const now_time = `${hours}:${minutes}:${seconds}`;
-
-        return Flight.markArrival(schedule_id, today_date, now_time);
+        return Flight.markArrival(schedule_id);
     }
 }
 
