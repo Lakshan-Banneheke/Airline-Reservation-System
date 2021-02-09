@@ -89,6 +89,11 @@ class StaffService {
         return upcomingFlights;
     }
 
+    static async getUpcomingFlightGeneralInfo(aircraft_id){
+        const upcomingFlightMoreInfo= await Flight.getUpcomingFlightGeneralInfo(aircraft_id);
+        return upcomingFlightMoreInfo;
+    }
+
     static async markFlightArrival(schedule_id) {
         const date_ob = new Date();
         // current date
@@ -109,6 +114,7 @@ class StaffService {
 
         return Flight.markArrival(schedule_id, today_date, now_time);
     }
+
 }
 
 module.exports = StaffService;

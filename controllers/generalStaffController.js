@@ -33,11 +33,18 @@ class GeneralStaffController {
 
     // under development
     static async upcomingFlightsMore(req, res) {
-        res.render('staff_general_upcoming_flights_more', {
-            user: req.session.user,
-            error: req.query.error,
-            success: req.query.success,
-        });
+        try {
+            const moreInfoGeneral = await StaffService.getUpcomingFlightGeneralInfo(req.body.aircraft_id);
+            res.render('staff_general_upcoming_flights_more', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                moreInfoGeneral
+            });
+        } catch (e) {
+            console.log(e);
+            res.render('500');
+        }
     }
 
     static async markFlightArrival(req, res) {
