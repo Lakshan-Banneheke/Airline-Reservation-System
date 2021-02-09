@@ -25,7 +25,7 @@ let passengerinfo = '<br><div class="form-group row">' +
                     '<div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Seat Number</label>' +
                         '<div class="col-lg-8">' +
-                            '<select class="select-bar" id="seatNumber">' +
+                            '<select class="select-bar seatNumber">' +
 
                             '</select>' +
                         '</div>' +
@@ -53,7 +53,7 @@ $(".seat-check").click(function () {
         dropdown += menuItem;
     });
 
-    $('#seatNumber').each(function () {
+    $('.seatNumber').each(function () {
         $(this).html(dropdown);
     })
 })
@@ -66,7 +66,7 @@ $("#passengers").change(function() {
         passengerList += passengerinfo
     }
     bookingForm.append(start + passengerList + end);
-    $('#seatNumber').each(function () {
+    $('.seatNumber').each(function () {
         $(this).html(dropdown);
     })
 });
