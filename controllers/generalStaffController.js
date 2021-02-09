@@ -1,4 +1,5 @@
 const StaffService = require('../services/StaffServices');
+
 class GeneralStaffController {
     static async homePage(req, res) {
         try {
@@ -7,14 +8,13 @@ class GeneralStaffController {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
-                ongoingFlights
+                ongoingFlights,
             });
         } catch (e) {
             console.log(e);
             res.render('500');
         }
     }
-
 
     static async upcomingFlightsMain(req, res) {
         try {
@@ -23,16 +23,15 @@ class GeneralStaffController {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
-                upcomingFlights
-                });
-        
+                upcomingFlights,
+            });
         } catch (e) {
             console.log(e);
             res.render('500');
         }
     }
 
-    //under development
+    // under development
     static async upcomingFlightsMore(req, res) {
         res.render('staff_general_upcoming_flights_more', {
             user: req.session.user,
@@ -41,7 +40,6 @@ class GeneralStaffController {
         });
     }
 
-    
     static async markFlightArrival(req, res) {
         try {
             await StaffService.markFlightArrival(req.body.schedule_id);

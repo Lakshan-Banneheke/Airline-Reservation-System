@@ -7,15 +7,13 @@ const ifStaff = require('../middleware/ifStaff');
 const StaffController = require('../controllers/staffController');
 const AdminController = require('../controllers/adminController');
 const ManagerController = require('../controllers/managerController');
-const GeneralStaffController = require('../controllers/generalStaffController');
 
+router.use('/general', ifGeneralStaff, require('./generalStaff'));
 
-router.use('/general', ifGeneralStaff,require('./generalStaff'));
 router.get('/register', ifNotLoggedIn, StaffController.registerPage);
 router.get('/login', ifNotLoggedIn, StaffController.loginPage);
 router.get('/admin', ifAdmin, AdminController.homePage);
 router.get('/manager', ifManager, ManagerController.homePage);
-//router.get('/general', ifGeneralStaff, GeneralStaffController.homePage);
 
 router.get('/logout', ifStaff, StaffController.logout);
 

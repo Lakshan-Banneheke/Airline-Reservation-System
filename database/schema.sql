@@ -168,9 +168,6 @@ BEGIN
 END
 $BODY$;
 
-ALTER FUNCTION public.get_flight_state(time without time zone)
-    OWNER TO postgres;
-
 
 --select public.get_flight_state('11:53:50');
 -- update flight_schedule set departure_date='2021-02-08' where schedule_id=50;
@@ -652,7 +649,7 @@ GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO PUB
 
 GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO postgres;
+GRANT EXECUTE ON FUNCTION public.get_flight_state(time without time zone) TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 
