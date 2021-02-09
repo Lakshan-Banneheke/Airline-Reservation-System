@@ -45,10 +45,10 @@ $(".seat-check").click(function () {
     selected.forEach(function (item, index) {
         let menuItem;
         if (index === 0){
-            menuItem = '<option value="'+ item +'" selected>' + item + '</option>'
+            menuItem = '<option style="color: #0b0b0b" value="'+ item +'" selected>' + item + '</option>'
 
         } else {
-            menuItem = '<option value="'+ item +'">' + item + '</option>'
+            menuItem = '<option style="color: #0b0b0b" value="'+ item +'">' + item + '</option>'
         }
         dropdown += menuItem;
     });
