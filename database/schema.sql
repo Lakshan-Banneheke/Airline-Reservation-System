@@ -147,6 +147,35 @@ LANGUAGE plpgsql IMMUTABLE;
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
+-- -FUNCTION TO FIND AIRPORT ADDRESS
+CREATE OR REPLACE FUNCTION getLocation(val_airport_code varchar)
+RETURNS text
+
+AS $$
+DECLARE
+val_location_id int;
+val_parent_id int=0;
+loc_address text:='('||val_airport_code||')';
+val_name varchar;
+
+
+BEGIN
+raise notice 'Counter %', val_airport_code;
+SELECT location_id INTO val_location_id FROM airport WHERE airport_code=val_airport_code;
+SELECT location_id INTO val_parent_id FROM airport WHERE airport_code=val_airport_code;
+
+WHILE val_parent_id >0 LOOP
+SELECT name,parent_id INTO val_name,val_parent_id FROM location WHERE location_id=val_location_id;
+raise notice 'Couddnter %', val_location_id;
+loc_address:=loc_address||' '||val_name;
+raise notice ' %',loc_address;
+val_location_id:=val_parent_id;
+END LOOP;
+RETURN loc_address;
+END;
+$$
+LANGUAGE plpgsql IMMUTABLE;
+ 
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
@@ -350,6 +379,9 @@ ALTER TABLE "session"
     ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
+-----------------------------------VIEWS SCHEMA ----------------------------------------
+CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 
@@ -665,3 +697,4 @@ GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
 
+GRANT ALL ON TABLE public.temp_airport TO database_app;
