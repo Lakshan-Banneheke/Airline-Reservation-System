@@ -24,7 +24,7 @@ let passengerinfo = '<br><div class="form-group row">' +
                     '<div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Seat Number</label>' +
                         '<div class="col-lg-8">' +
-                            '<select class="select-bar seatNumber" name="seatNo[]" required>' +
+                            '<select class="select-bar seatNumber" name="seatNo[]" id="seatNo" required>' +
 
                             '</select>' +
                         '</div>' +
@@ -64,7 +64,7 @@ $("#passengers").change(function() {
     for(let i=0; i<this.value; i++){
         passengerList += passengerinfo
     }
-    bookingForm.append(start + passengerList + end);
+    $('.educational-registration-form').before(start + passengerList + end)
     $('.seatNumber').each(function () {
         $(this).html(dropdown);
     })
