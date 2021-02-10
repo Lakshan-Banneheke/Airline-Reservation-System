@@ -58,6 +58,8 @@ $(".seat-check").click(function () {
 })
 
 
+
+
 $("#passengers").change(function() {
     bookingForm.children('.passengerCount').remove();
     let passengerList = '';

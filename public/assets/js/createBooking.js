@@ -4,22 +4,27 @@
     jQuery(document).ready(function ($) {
         $(document).on('submit', '#bookingForm', function (e) {
             e.preventDefault();
+            let schedule_id = $('#schedule_id').val();
+            let custID = $('#custID').val();
             let custName = $('#custName').val();
-            let address = $('#adress').val();
+            let tempAddress = $('#adress').val();
             let custDob = $('#custDob').val();
             let custGender = $('#custGender').val();
             let custPassport = $('#custPassport').val();
             let mobile = $('#mobile').val();
             let custEmail = $('#custEmail').val();
             let passengers = $('#passengers').val();
-            let passname = $("input[name='passName[]']").map(function(){return $(this).val();}).get();
+            let custType = $('#custType').val();
+            let passName = $("input[name='passName[]']").map(function(){return $(this).val();}).get();
             let passPassport = $("input[name='passPassport[]']").map(function(){return $(this).val();}).get();
             let passDob = $("input[name='passDob[]']").map(function(){return $(this).val();}).get();
             let seatNo = $("select[name='seatNo[]']").map(function(){return $(this).val();}).get();
 
             let passengerArray = ['1','2','3','4','5'];
-            var Genders=['Male','Female','Other'];
-            var error_msgs="<strong>Error</strong>";
+            let Genders=['Male','Female','Other'];
+            let error_msgs="<strong>Error</strong>";
+
+            let address = tempAddress.replace(/\n/g, "");
 
             try{
                 if(!ValidateEmail(custEmail)){
@@ -57,39 +62,40 @@
             }
 
             if (error_msgs==="<strong>Error</strong>") {
-                // $.ajax({
-                //     type: "POST",
-                //     url: '/booking/createBooking',
-                //     data: {
-                //
-                //         'email' : email,
-                //         'password' :password,
-                //         'confirmPassword' :confirmPassword,
-                //         'firstName': firstName,
-                //         'lastName': lastName,
-                //         'dob' : dob,
-                //         'gender' :gender,
-                //         'contactNo' :contactNo,
-                //         'passportNo' : passportNo,
-                //         'addressLine1': addressLine1,
-                //         'addressLine2': addressLine2,
-                //         'city': city,
-                //         'country' :country,
-                //     },
-                //     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                //     success: function (response) {
-                //         $('#bookingForm').children('.reg-error').remove();
-                //         if (response.result === 'redirect') {
-                //             //redirecting
-                //             let baseurl = window.location.origin;
-                //             baseurl = baseurl + '/';
-                //             let url = baseurl + response.url;
-                //             window.location.replace(url);
-                //         }
-                //     },
-                //     error: function (res) {
-                //     }
-                // });
+                $.ajax({
+                    type: "POST",
+                    url: '/booking/createBooking',
+                    data: {
+                        'schedule_id' : schedule_id,
+                        'custID' : custID,
+                        'custName' : custName,
+                        'address' : address,
+                        'custDob' : custDob,
+                        'custGender' : custGender,
+                        'custPassport' : custPassport,
+                        'mobile' : mobile,
+                        'custEmail' : custEmail,
+                        'custType' : custType,
+                        'passengers' : passengers,
+                        'passName' : passName,
+                        'passPassport' : passPassport,
+                        'passDob' : passDob,
+                        'seatNo' : seatNo
+                    },
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (response) {
+                        $('#bookingForm').children('.reg-error').remove();
+                        if (response.result === 'redirect') {
+                            //redirecting
+                            let baseurl = window.location.origin;
+                            baseurl = baseurl + '/booking';
+                            let url = baseurl + response.url;
+                            window.location.href = url;
+                        }
+                    },
+                    error: function (res) {
+                    }
+                });
             } else {
                 let bookingForm = $('#bookingForm');
                 bookingForm.children('.reg-error').remove();
