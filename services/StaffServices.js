@@ -83,9 +83,15 @@ class StaffService {
         return upcomingFlights;
     }
 
+    static async getUpcomingFlightGeneralInfo(aircraft_id){
+        const upcomingFlightMoreInfo= await Flight.getUpcomingFlightGeneralInfo(aircraft_id);
+        return upcomingFlightMoreInfo;
+    }
+
     static async markFlightArrival(schedule_id) {
         return Flight.markArrival(schedule_id);
     }
+
 }
 
 module.exports = StaffService;

@@ -7,6 +7,17 @@
                 <img src="/assets/images/blog-10.jpg" class="card-img-top" alt="...">
                 </br>
                 </br>
+                <% if (error) {%>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <%=error%>
+                    </div>
+                <% } %>
+
+                <% if (success) {%>
+                    <div class="alert alert-success text-center" role="alert">
+                        <%=success%>
+                    </div>
+                <% } %>
                 <div id="accordion">
                     <div class="card">
                       <div class="card-header" id="headingOne">
@@ -19,8 +30,11 @@
                   
                       <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
-                          <p>Flight model:blaa blaa</p>
-                          <p>No.of economic class seats,....</p>
+                          <li>Model name: <%= moreInfoGeneral.model_name %></li>
+                          <li>Variant: <%= moreInfoGeneral.variant %></li>
+                          <li>Economic Seat Capacity: <%= moreInfoGeneral.economy_seat_capacity %></li>
+                          <li>Business Seat Capacity: <%= moreInfoGeneral.business_seat_capacity %></li>
+                          <li>Platinum Seat Capacity: <%= moreInfoGeneral.platinum_seat_capacity %></li>
                         </div>
                       </div>
                     </div>

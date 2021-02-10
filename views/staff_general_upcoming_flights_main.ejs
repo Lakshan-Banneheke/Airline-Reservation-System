@@ -77,8 +77,8 @@
                                     <br/><h6>From:  <%= upcomingFlights[i].origin %> </br> Departing date: <%= upcomingFlights[i].departure_date %></h6>
                                     <h6>To:  <%= upcomingFlights[i].destination %> </br> Arrival date: <%= upcomingFlights[i].arrival_date %></h6>
                                     <h6>Aircraft ID: <%= upcomingFlights[i].aircraft_id %> </h6>
-                                    <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a>
-
+                                    <!-- <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a> -->
+                                    <form action='/staff/general/moreInfoUpcomingFlight' method=post><button type='submit' class='btn btn-outline-info float-right' >More info</button><input type='hidden' name='aircraft_id' value=' <%= upcomingFlights[i].aircraft_id %>'></form>
                                 </div><!--new 2nd div-->
                         </div><!--raw end-->
                         </div>

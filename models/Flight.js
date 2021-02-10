@@ -25,6 +25,12 @@ class Flight {
         const query = 'CALL handleflightarrival($1)';
         await pool.query(query, [schedule_id]);
     }
+
+    static async getUpcomingFlightGeneralInfo(aircraft_id){
+        const query='SELECT model_name,variant,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity FROM aircraft_model WHERE model_id=(SELECT model_id FROM aircraft_instance WHERE aircraft_id=$1)';
+        const result = await pool.query(query, [aircraft_id]);
+        return result.rows[0];
+    }
 }
 
 module.exports = Flight;
