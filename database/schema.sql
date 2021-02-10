@@ -302,7 +302,7 @@ CREATE TABLE Passenger_Seat(
     booking_id int,
     model_id int,
     seat_id varchar(10),
-    price numeric GENERATED ALWAYS AS (get_seat_price(booking_id, model_id, seat_id)) STORED, -- price function to be implemented
+    price numeric(10, 2), -- price function to be implemented
     name varchar(100) NOT NULL,
     passport_no varchar(20) NOT NULL,
     dob date NOT NULL,
