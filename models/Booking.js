@@ -11,12 +11,7 @@ class Booking {
         const query_3 = 'SELECT model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=$1';
         const model_id = await pool.query(query_3, [schedule_id]);
 
-        console.log(capacities.rows[0]);
-        console.log(booked_seats.rows);
-        console.log(model_id.rows[0]);
-
         return [capacities.rows[0], booked_seats.rows, model_id.rows[0]];
-        // return [[], [], 1];
     }
 
 }

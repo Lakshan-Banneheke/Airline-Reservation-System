@@ -1,0 +1,187 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">booking flight</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Payment</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">booking</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+<!-- booking-registration-section start -->
+<section class="booking-registration-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form class="general-information" id="bookingForm" action="create-booking">
+
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title">Payment information</h3>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Price</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" value="$ 1000.00" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </form>
+
+
+
+
+
+                <div class="educational-registration-form">
+                    <div class="booking-form-area">
+                        <div class="row justify-content-center">
+
+                            <div class="col-lg-12 text-center">
+                                <a href="/booking/payment/success" class="cmn-btn">Pay</a>
+                                <a href="/booking/payment/cancel" class="cmn-btn">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            <div class="col-lg-4 col-sm-8">
+                <div class="sidebar">
+                    <div class="widget-box mb-30">
+                        <h3 class="caption">Flight details</h3>
+                        <ul class="flight-category">
+                            <li><span class="category-date">fri 01/11/19</span></li>
+                            <li><a href="#">Dhaka (DCA)</a><span class="count">03:30</span></li>
+                            <li><a href="#">Paris</a><span class="count">13:10</span></li>
+                            <li><span class="category-date">fri 01/11/19</span></li>
+                            <li><a href="#">Paris</a><span class="count">15:30</span></li></li>
+                            <li><a href="#">Dhaka(Dca)</a><span class="count">09:10</span></li></li>
+                        </ul>
+                    </div>
+                    <div class="widget-box mb-30">
+                        <h3 class="caption">recent Flight</h3>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Thuki air line</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Softking Air</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Thuki air line</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Softking Air</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recent-flight-area">
+                            <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
+                            <div class="recent-flight-content d-flex flex-wrap">
+                                <span class="place">dhaka to dubai</span>
+                                <div class="time">
+                                    <span class="first-time">13:00</span>
+                                    <span class="middle-time">05h00</span>
+                                    <span class="last-time">08:10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('_footer',{user}) %>
