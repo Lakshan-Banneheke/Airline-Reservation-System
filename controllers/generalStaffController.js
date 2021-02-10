@@ -4,11 +4,13 @@ class GeneralStaffController {
     static async homePage(req, res) {
         try {
             const ongoingFlights = await StaffService.getOngoingFlights();
+            const departingFlights = await StaffService.getToBeDepartedFlights();
             res.render('staff_general_home', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
                 ongoingFlights,
+                departingFlights,
             });
         } catch (e) {
             console.log(e);
@@ -50,8 +52,17 @@ class GeneralStaffController {
 
     static async markFlightArrival(req, res) {
         try {
-            await StaffService.markFlightArrival(req.body.schedule_id);
+            await StaffService.markFlightArrival(req.body.arrival_schedule_id);
             res.redirect('/staff/general?success=Flight Arrival Marked');
+        } catch (e) {
+            res.redirect(`/staff/general?error=${e}`);
+        }
+    }
+
+    static async markFlightDeparture(req, res) {
+        try {
+            await StaffService.markFlightDeparture(req.body.departing_schedule_id);
+            res.redirect('/staff/general?success=Flight Departure Marked');
         } catch (e) {
             res.redirect(`/staff/general?error=${e}`);
         }

@@ -72,6 +72,11 @@ class StaffService {
         return ongoingFlights;
     }
 
+    static async getToBeDepartedFlights() {
+        const toBeDepartedFlights = await Flight.getToBeDepartedFlights(ymd(new Date()));
+        return toBeDepartedFlights;
+    }
+
     static async getUpcomingFlights() {
         const upcomingFlights = await Flight.getUpcomingFlightDetails();
         if (upcomingFlights && upcomingFlights.length > 0) {
@@ -90,6 +95,10 @@ class StaffService {
 
     static async markFlightArrival(schedule_id) {
         return Flight.markArrival(schedule_id);
+    }
+
+    static async markFlightDeparture(schedule_id) {
+        return Flight.markDeparture(schedule_id);
     }
 }
 

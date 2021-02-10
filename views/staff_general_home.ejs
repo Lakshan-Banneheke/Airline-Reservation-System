@@ -8,8 +8,7 @@
             <h3>Welcome!</h3>
         <%}%>
         <hr>
-
-        <div class="card mt-3">
+        <div class="card mt-3" style="background-color: #c6eaec;"><!--card1 start-->
             <div class="card-header">
               <h3 class="card-title">Ongoing flights</h3>
             </div>
@@ -44,11 +43,11 @@
                                             </div>
                                             <div class="flight-search-title">
                                                 <h5 class="title">Schedule ID: <%= ongoingFlights[i].schedule_id %></h5>
-                                                <%if (ongoingFlights[i].flight_state=="Delayed") { %>
-                                                    <h5><span class="badge badge-danger ">Delayed</span></h5>
+                                                <%if (ongoingFlights[i].flight_state=="Delayed-Departure") { %>
+                                                    <h5><span class="badge badge-danger ">delayed departure</span></h5>
                                                 
-                                                <% }else { %>
-                                                    <h5><span class="badge badge-info ">Pending</span></h5>
+                                                <% }else{ %>
+                                                    <h5><span class="badge badge-info ">Departed on-time</span></h5>
                                                 <% } %>
                                             </div>
                                         </div>
@@ -66,7 +65,7 @@
                                         <h6>To:  <%= ongoingFlights[i].destination %> </h6>
                                         <h6>Aircraft ID: <%= ongoingFlights[i].aircraft_id %> </h6>
                                         <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
-                                        <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-success float-right' >Mark Flight</button><input type='hidden' name='schedule_id' value='<%= ongoingFlights[i].schedule_id %>'></form>
+                                        <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Arrival</button><input type='hidden' name='arrival_schedule_id' value='<%= ongoingFlights[i].schedule_id %>'></form>
                                     </div><!--new 2nd div-->
                             </div><!--raw end-->
                             </div>
@@ -81,11 +80,82 @@
                 <% } %>
 
             </div>
-        </div>
+        </div><!--card1 end-->
+
+        <!--card2 start-->
+        <hr>
+        <div class="card mt-3 " style="background-color: #b1dfc0;">
+            <div class="card-header">
+              <h3 class="card-title">Departing Flights</h3>
+            </div>
+            
+            <div class="card-body">
+
+
+                <% if (error) {%>
+                    <div class="alert alert-danger text-center" role="alert" style="background-color: #f8d7da;color:#721c24;">
+                        <%=error%>
+                    </div>
+                <% } %>
+
+                <% if (success) {%>
+                    <div class="alert alert-success text-center" role="alert" style="background-color: #d4edda;color:#588c64;">
+                        <%=success%>
+                    </div>
+                <% } %>
+                
+                <% if (departingFlights && departingFlights.length > 0){ %>
+                    <% for (var i = 0; i < departingFlights.length; i++) { %>
+                    
+                        <!--ongoing flights start-->
+                        <div class="col-lg-12 mb-30">
+                            <div class="flight-search-box">
+                                <div class="row"><!--row start-->
+                                    <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                        <div class="flight-search-item d-flex flex-wrap">
+                                            <div class="flight-search-thumb">
+                                                <i class="fa fa-plane" aria-hidden="true"></i>
+                                                
+                                            </div>
+                                            <div class="flight-search-title">
+                                                <h5 class="title">Schedule ID: <%= departingFlights[i].schedule_id %></h5>
+                                            </div>
+                                        </div>
+                                        <div class="flight-search-body">
+                                            <h5 class="flight-start"><%= departingFlights[i].departure_time_utc %></h5>
+                                            <h5 class="flight-middle"><%= ("0"+departingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+departingFlights[i].duration.minutes).slice(-2) %></h5>
+                                            <h5 class="flight-end"> <%= departingFlights[i].arrival_time_utc %></h5>
+                                        </div>
+                                        <div class="flight-place">
+                                            <p><span class="start-place">Scheduled time:</span></p>
+                                        </div>
+                                    </div><!--new 1st div end-->
+                                    <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                        <br/><h6>From:  <%= departingFlights[i].origin %></h6>
+                                        <h6>To:  <%= departingFlights[i].destination %> </h6>
+                                        <h6>Aircraft ID: <%= departingFlights[i].aircraft_id %> </h6>
+                                        <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
+                                        <form action='/staff/general/markDepartureFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Departure</button><input type='hidden' name='departing_schedule_id' value='<%= departingFlights[i].schedule_id %>'></form>
+                                    </div><!--new 2nd div-->
+                            </div><!--raw end-->
+                            </div>
+                        </div>
+                        <!--ongoing flights end-->
+
+                    <% } %>
+                <% } else { %>
+                    <div class="alert alert-warning text-center" role="alert" style="background-color: #fff3cd; color:#a08330;">
+                        No Ongoing Flights Available
+                    </div>
+                <% } %>
+
+            </div>
+        </div><!--card2 end-->
+
 
 
         <hr>
-        <!-- cards starting-->
+        <!-- button cards starting-->
         <div class="row">
             <!-- ./col -->
             <div class="col-lg-4 col-xs-6">

@@ -11,6 +11,15 @@ class Flight {
         return result.rows;
     }
 
+    static async getToBeDepartedFlights(today) {
+        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND departure_date<=$1
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC;`;
+        const result = await pool.query(query, [today]);
+        return result.rows;
+    }
+
     static async getUpcomingFlightDetails() {
         const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
@@ -23,6 +32,11 @@ class Flight {
 
     static async markArrival(schedule_id) {
         const query = 'CALL handleflightarrival($1)';
+        await pool.query(query, [schedule_id]);
+    }
+
+    static async markDeparture(schedule_id) {
+        const query = 'CALL handleflightdeparture($1)';
         await pool.query(query, [schedule_id]);
     }
 

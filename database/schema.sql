@@ -524,7 +524,7 @@ BEGIN
 
     --update flight state
     IF(get_timestamp(val_scheduled_departue_date,val_scheduled_departure_time)+buffer_time >= NOW()) THEN
-      UPDATE Flight_Schedule SET flight_state='Departed-On-Time',actual_departue=NOW() WHERE schedule_id=val_schedule_id;
+      UPDATE Flight_Schedule SET flight_state='Departed-On-Time',actual_departed=NOW() WHERE schedule_id=val_schedule_id;
     ELSE
       UPDATE Flight_Schedule SET flight_state='Delayed-Departure',actual_departure=NOW() WHERE schedule_id=val_schedule_id;
     END IF;

@@ -8,4 +8,6 @@ router.get('/upcomingFlightsMain', ifGeneralStaff, GeneralStaffController.upcomi
 
 router.post('/moreInfoUpcomingFlight', ifGeneralStaff, GeneralStaffController.upcomingFlightsMore);
 router.post('/markArrivalFlight', ifGeneralStaff, GeneralStaffController.markFlightArrival);
+router.post('/markDepartureFlight', ifGeneralStaff, GeneralStaffController.markFlightDeparture);
+
 module.exports = router;
