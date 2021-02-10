@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS decreaseNumBookings;
 DROP PROCEDURE IF EXISTS scheduleFlights;
 DROP PROCEDURE IF EXISTS deleteSchedule;
 DROP PROCEDURE IF EXISTS handleFlightArrival;
+DROP PROCEDURE IF EXISTS handleFlightDeparture;
 DROP PROCEDURE IF EXISTS registerStaff;
 
 DROP DOMAIN IF EXISTS UUID4 CASCADE;
@@ -43,9 +44,9 @@ SET TIME ZONE 'Etc/UTC';
 
 CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
-'Delayed',
-'In-Air',
-'Arrived'
+'Departed-On-Time',
+'Delayed-Departure',
+'Landed'
 );
 
  CREATE TYPE aircraft_state_enum AS ENUM( 
@@ -147,42 +148,6 @@ LANGUAGE plpgsql IMMUTABLE;
 -- CREATE OR REPLACE FUNCTION get_seat_price()
 -- CREATE OR REPLACE FUNCTION get_price()
 
-
------------ Function to get flight State---------------------------------
-
-CREATE OR REPLACE FUNCTION get_flight_state(val_schedule_id int)
-    RETURNS varchar
-AS $BODY$
-DECLARE
-    scheduled_departure timestamp;
-    scheduled_arrival timestamp;
-    val_actual_arrival timestamp;
-	flight_state flight_state_enum;
-BEGIN
-    SELECT get_timestamp(departure_date,departure_time_utc),get_timestamp(arrival_date,arrival_time_utc),actual_arrival INTO scheduled_departure,scheduled_arrival,val_actual_arrival FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
-    IF(val_actual_arrival is NULL AND scheduled_departure>NOW()) THEN
-      flight_state := 'Scheduled';
-    ELSIF(val_actual_arrival is NULL AND scheduled_departure<NOW() AND scheduled_arrival>NOW()) THEN
-      flight_state := 'In-Air';
-    ELSIF(val_actual_arrival is NULL AND scheduled_arrival<NOW()) THEN
-      flight_state :='Delayed';
-    ELSIF(val_actual_arrival is NOT NULL) THEN
-      flight_state:='Arrived';
-    END IF;
-    RETURN flight_state;
-END
-$BODY$
-LANGUAGE plpgsql IMMUTABLE;
-
-
---select public.get_flight_state('11:53:50');
--- update flight_schedule set departure_date='2021-02-08' where schedule_id=50;
--- update flight_schedule set departure_date='2021-02-08' where schedule_id=1;
--- update flight_schedule set departure_date='2021-02-08' where schedule_id=2;
--- select * from flight_schedule;
-
-
-
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
@@ -216,7 +181,6 @@ CREATE TABLE Registered_Customer (
   last_name VARCHAR(30) NOT NULL,
   category varchar(30), --Default no category
   dob DATE NOT NULL,
-  age INT GENERATED ALWAYS AS (get_age(dob)) STORED NOT NULL,
   gender gender_enum,
   contact_no VARCHAR(15) NOT NULL,
   passport_no VARCHAR(20) NOT NULL,
@@ -307,7 +271,9 @@ CREATE TABLE Flight_Schedule (
   departure_time_utc time NOT NULL,
   arrival_date date generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::DATE) stored NOT NULL,
   arrival_time_utc time generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::TIME) stored NOT NULL,
-  actual_arrival timestamp,
+  actual_departed TIMESTAMP,
+  actual_arrival TIMESTAMP,
+  flight_state flight_state_enum NOT NULL DEFAULT 'Scheduled',
   PRIMARY KEY (schedule_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -535,6 +501,37 @@ END IF;
 END;
 $$;
 
+------------Procedure to handle departure of a flight -------
+
+CREATE OR REPLACE PROCEDURE handleFlightDeparture(val_schedule_id int)
+
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+val_aircraft_id int;
+val_scheduled_departue_date DATE;
+val_scheduled_departure_time TIME;
+buffer_time interval='00:15:00'::interval;
+BEGIN
+	
+    -- select the aircraft id  related to the flight
+    SELECT aircraft_id,departure_date,departure_time_utc 
+    INTO val_aircraft_id,val_scheduled_departue_date,val_scheduled_departure_time
+    FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
+
+    -- update the aircraft state
+    UPDATE Aircraft_Instance SET aircraft_state='In-Air' WHERE aircraft_id=val_aircraft_id;
+
+    --update flight state
+    IF(get_timestamp(val_scheduled_departue_date,val_scheduled_departure_time)+buffer_time >= NOW()) THEN
+      UPDATE Flight_Schedule SET flight_state='Departed-On-Time',actual_departue=NOW() WHERE schedule_id=val_schedule_id;
+    ELSE
+      UPDATE Flight_Schedule SET flight_state='Delayed-Departure',actual_departure=NOW() WHERE schedule_id=val_schedule_id;
+    END IF;
+    RETURN;
+END;
+$$;
+
 
 
 ------------Procedure to handle delays/arrival of a flight -------
@@ -572,9 +569,11 @@ BEGIN
     INTO val_aircraft_id,val_flight_departue_date,val_flight_departure_time
     FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
 
-    -- update that flight with the actual arrival time , may need to add column
-    UPDATE flight_schedule SET actual_arrival= val_arrival_timestamp
+    -- update that flight with the actual arrival time
+    UPDATE flight_schedule SET actual_arrival= val_arrival_timestamp,flight_state='Landed'
     WHERE schedule_id=val_schedule_id;
+
+    UPDATE Aircraft_Instance SET aircraft_state='On-Ground' WHERE aircraft_id=val_aircraft_id;
 
 
     --Init refrenceing arrival and departure times to the value of the flight in consideration
@@ -640,13 +639,13 @@ GRANT EXECUTE ON PROCEDURE public.deleteschedule(val_schedule_id integer) TO dat
 
 GRANT EXECUTE ON PROCEDURE public.handleflightarrival(val_schedule_id integer) TO database_app;
 
+GRANT EXECUTE ON PROCEDURE public.handleflightdeparture(val_schedule_id integer) TO database_app;
+
 GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying) TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
-
-GRANT EXECUTE ON FUNCTION public.get_flight_state(val_schedule_id integer) TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 

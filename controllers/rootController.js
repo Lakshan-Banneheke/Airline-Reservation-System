@@ -17,7 +17,6 @@ class RootController {
             regcity: req.query.city,
             regcountry: req.query.country,
         });
-
     }
 }
 

@@ -34,12 +34,13 @@ class GeneralStaffController {
     // under development
     static async upcomingFlightsMore(req, res) {
         try {
-            const moreInfoGeneral = await StaffService.getUpcomingFlightGeneralInfo(req.body.aircraft_id);
+            const moreInfoGeneral = await
+            StaffService.getUpcomingFlightGeneralInfo(req.body.aircraft_id);
             res.render('staff_general_upcoming_flights_more', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
-                moreInfoGeneral
+                moreInfoGeneral,
             });
         } catch (e) {
             console.log(e);
