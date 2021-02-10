@@ -547,7 +547,7 @@ AS $$
 DECLARE
 val_arrival_timestamp TIMESTAMP:= NOW();
 val_arrival_date date := NOW()::DATE;
-val_arrival_time_utc time := NOW()::TIME;
+val_arrival_time_utc time := TO_CHAR(NOW()::TIME,'HH24:MI:SS')::TIME;
 val_aircraft_id int;
 val_flight_departue_date DATE;
 val_flight_departure_time TIME;
