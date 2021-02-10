@@ -14,12 +14,13 @@ class Staff {
     }
 
     static async registerStaffMember(
-        empId, category, password, firstName, lastName, contactNo, email, dob, gender, country,
+        empId, category, password, firstName,
+        lastName, contactNo, email, dob, gender, country, airport,
     ) {
-        const query = 'CALL registerStaff($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)';
+        const query = 'CALL registerStaff($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)';
         await pool.query(query,
             [empId, category, password,
-                firstName, lastName, contactNo, email, dob, gender, country]);
+                firstName, lastName, contactNo, email, dob, gender, country, airport]);
     }
 
     static async isEmpIDRegistered(id) {
@@ -29,13 +30,13 @@ class Staff {
     }
 
     static async getAllUnverifiedStaff() {
-        const query = 'SELECT emp_id,first_name,last_name,category,email,contact_no,gender,country FROM staff WHERE account_state=$1 ORDER BY emp_id';
+        const query = 'SELECT emp_id,first_name,last_name,category,email,contact_no,gender,country,assigned_airport FROM staff WHERE account_state=$1 ORDER BY emp_id';
         const result = await pool.query(query, ['unverified']);
         return result.rows;
     }
 
     static async getAllUnverifiedGeneralStaff() {
-        const query = 'SELECT emp_id,first_name,last_name,category,email,contact_no,gender,country FROM staff WHERE account_state=$1 AND category=$2 ORDER BY emp_id';
+        const query = 'SELECT emp_id,first_name,last_name,category,email,contact_no,gender,country,assigned_airport FROM staff WHERE account_state=$1 AND category=$2 ORDER BY emp_id';
         const result = await pool.query(query, ['unverified', 'general']);
         return result.rows;
     }
@@ -49,7 +50,6 @@ class Staff {
         const query = 'DELETE FROM staff WHERE emp_id=$1';
         await pool.query(query, [id]);
     }
-
 }
 
 module.exports = Staff;

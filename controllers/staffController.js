@@ -3,21 +3,29 @@ const StaffService = require('../services/StaffServices');
 
 class StaffController {
     static async registerPage(req, res) {
-        res.render('staff_signup', {
-            user: req.session.user,
-            error: req.query.error,
-            success: req.query.success,
-            firstName: req.query.firstName,
-            lastName: req.query.lastName,
-            empId: req.query.empId,
-            category: req.query.category,
-            email: req.query.email,
-            contactNo: req.query.contactNo,
-            gender: req.query.gender,
-            dob: req.query.dob,
-            country: req.query.country,
-            securityKey: req.query.securityKey,
-        });
+        try {
+            const airportCodes = await StaffService.getAllAirportCodes();
+            res.render('staff_signup', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                firstName: req.query.firstName,
+                lastName: req.query.lastName,
+                empId: req.query.empId,
+                category: req.query.category,
+                email: req.query.email,
+                contactNo: req.query.contactNo,
+                gender: req.query.gender,
+                dob: req.query.dob,
+                country: req.query.country,
+                securityKey: req.query.securityKey,
+                airport: req.query.airport,
+                airportCodes,
+            });
+        } catch (e) {
+            console.log(e);
+            res.send(500).render('500');
+        }
     }
 
     static async loginPage(req, res) {
@@ -36,7 +44,7 @@ class StaffController {
             await StaffService.register(value);
             res.redirect('/staff/login?success=Registration Successful.NOTE: If you are not an admin you may have to wait till your account is verfified before login');
         } catch (err) {
-            res.redirect(`/staff/register?error=${err}&firstName=${req.body.firstName}&lastName=${req.body.lastName}&empId=${req.body.empId}&category=${req.body.category}&gender=${req.body.gender}&dob=${req.body.dob}&email=${req.body.email}&contactNo=${req.body.contactNo}&country=${req.body.country}&securityKey=${req.body.securityKey}`);
+            res.redirect(`/staff/register?error=${err}&firstName=${req.body.firstName}&lastName=${req.body.lastName}&empId=${req.body.empId}&category=${req.body.category}&gender=${req.body.gender}&dob=${req.body.dob}&email=${req.body.email}&contactNo=${req.body.contactNo}&country=${req.body.country}&securityKey=${req.body.securityKey}&airport=${req.body.airport}`);
         }
     }
 

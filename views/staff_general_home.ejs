@@ -3,7 +3,7 @@
     <div class="container py-4">
 
         <% if(user.staffData){%>
-            <h3>Welcome <%=user.staffData.first_name%></h3>
+            <h3>Welcome <%=user.staffData.first_name%> Airport - <%=user.staffData.assigned_airport%></h3>
         <%}else{%>
             <h3>Welcome!</h3>
         <%}%>

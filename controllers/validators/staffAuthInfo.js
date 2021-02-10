@@ -33,6 +33,7 @@ const StaffRegInfo = Joi.object(
     country: Joi.string().trim().min(2).max(30)
         .required(),
     securityKey: Joi.string().allow(''),
+    airport: Joi.string().allow(''),
 });
 
 const StaffLoginInfo = Joi.object().keys({

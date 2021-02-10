@@ -333,7 +333,9 @@ CREATE TABLE Staff (
   dob date NOT NULL,
   gender gender_enum NOT NULL,
   country varchar(30) NOT NULL,
-  account_state staff_account_state NOT NULL DEFAULT 'unverified'
+  assigned_airport varchar(10),
+  account_state staff_account_state NOT NULL DEFAULT 'unverified',
+  FOREIGN KEY(assigned_airport) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -403,7 +405,8 @@ CREATE OR REPLACE PROCEDURE registerStaff(
   val_email VARCHAR(127),
   val_dob DATE,
   val_gender gender_enum,
-  val_country VARCHAR(30)        
+  val_country VARCHAR(30),
+  val_airport VARCHAR(10)        
 )
 
 LANGUAGE plpgsql    
@@ -415,6 +418,9 @@ BEGIN
         if (val_category='admin') then
             INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
             VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'verified');
+        elsif(val_category='general') then
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state,assigned_airport)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified',val_airport);
         else
             INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
             VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified');
@@ -643,7 +649,7 @@ GRANT EXECUTE ON PROCEDURE public.handleflightdeparture(val_schedule_id integer)
 
 GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying) TO database_app;
+GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying, val_airport character varying) TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 

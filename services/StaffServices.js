@@ -5,12 +5,13 @@ const crypto = require('crypto');
 const Errors = require('../helpers/error');
 const Staff = require('../models/Staff');
 const Flight = require('../models/Flight');
+const Airport = require('../models/Airport');
 const { ymd } = require('../helpers/dateFormat');
 
 class StaffService {
     static async register({
         empId, category, password, confirmPassword,
-        firstName, lastName, contactNo, email, dob, gender, country, securityKey,
+        firstName, lastName, contactNo, email, dob, gender, country, securityKey, airport,
     }) {
         if (!crypto.timingSafeEqual(Buffer.from(password), Buffer.from(confirmPassword))) {
             throw new Errors.BadRequest('Password does not match retype password');
@@ -19,11 +20,14 @@ class StaffService {
         if (category === 'admin' && securityKey !== process.env.REG_KEY) {
             throw new Errors.Unauthorized('Provided Security Key Invalid');
         }
+        if (category === 'general' && airport === '') {
+            throw new Errors.BadRequest('Provide the Assigned Airport');
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
 
         return Staff.registerStaffMember(
             empId, category, hashedPassword,
-            firstName, lastName, contactNo, email, dob, gender, country,
+            firstName, lastName, contactNo, email, dob, gender, country, airport,
         );
     }
 
@@ -99,6 +103,10 @@ class StaffService {
 
     static async markFlightDeparture(schedule_id) {
         return Flight.markDeparture(schedule_id);
+    }
+
+    static async getAllAirportCodes() {
+        return Airport.getAllAirportCodes();
     }
 }
 
