@@ -1,139 +1,158 @@
 <div class="plane">
     <div class="cabin">
+        <% const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        var capacity = seat_info[0]['platinum_seat_capacity'];
+        var seats_per_row = seat_info[0]['platinum_seats_per_row'];
+        var rows = capacity / seats_per_row;
+        var cols1 = columns.slice(0, seats_per_row/2);
+        var cols2 = columns.slice(seats_per_row/2, seats_per_row);
+        var row = 1;
+        var booked_seats = seat_info[1];
+        while (row <= rows){ %>
         <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-a1"><input id="seat-a1" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-a2"><input id="seat-a2" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A2" disabled="disabled"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-a3"><input id="seat-a3" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A3" disabled="disabled"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">A</span></div>
-            <div class="seat four"><label class="label" for="seat-a4"><input id="seat-a4" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A4" disabled="disabled"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-a5"><input id="seat-a5" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-a6"><input id="seat-a6" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="A6"/><span class="seat-label">Six</span></label></div>
+            <% cols1.forEach(function (column) {
+                if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                    <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                <%}else{%>
+                    <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+            <%  }
+            }); %>
+            <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+            <% cols2.forEach(function (column) {
+                if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                    <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                <%}else{%>
+                    <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+            <%  }
+            }); %>
         </div>
+        <% row += 1;
+        } %>
+    </div>
 
+    <div class="cabin">
+        <% capacity = seat_info[0]['business_seat_capacity'];
+        seats_per_row = seat_info[0]['business_seats_per_row'];
+        rows = capacity / seats_per_row;
+        if (seats_per_row == 6){
+            cols1 = columns.slice(0, seats_per_row/3);
+            cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3);
+            cols3 = columns.slice(2*seats_per_row/3, seats_per_row);
+            while (row <= rows){ %>
+                <div class="seat-row">
+                    <% cols1.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                    <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols2.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols3.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                </div>
+            <% row += 1;
+            }
+        }else {
+            cols1 = columns.slice(0, seats_per_row/2);
+            cols2 = columns.slice(seats_per_row/2, seats_per_row);
+            while (row <= rows){ %>
+                <div class="seat-row">
+                    <% cols1.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols2.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                </div>
+            <% row += 1;
+            }
+        } %>
 
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-b1"><input id="seat-b1" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-b2"><input id="seat-b2" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B2" disabled="disabled"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-b3"><input id="seat-b3" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">B</span></div>
-            <div class="seat four"><label class="label" for="seat-b4"><input id="seat-b4" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-b5"><input id="seat-b5" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-b6"><input id="seat-b6" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="B6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
+    </div>
 
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-c1"><input id="seat-c1" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-c2"><input id="seat-c2" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-c3"><input id="seat-c3" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">C</span></div>
-            <div class="seat four"><label class="label" for="seat-c4"><input id="seat-c4" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-c5"><input id="seat-c5" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C5" disabled="disabled"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-c6"><input id="seat-c6" type="checkbox" class="seat-check visuallyhidden" name="seat-cssignment" value="" data-seat="C6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-d1"><input id="seat-d1" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D1"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-d2"><input id="seat-d2" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-d3"><input id="seat-d3" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">D</span></div>
-            <div class="seat four"><label class="label" for="seat-d4"><input id="seat-d4" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-d5"><input id="seat-d5" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-d6"><input id="seat-d6" type="checkbox" class="seat-check visuallyhidden" name="seat-dssignment" value="" data-seat="D6"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-e1"><input id="seat-e1" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E1"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-e2"><input id="seat-e2" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E2" disabled="disabled"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-e3"><input id="seat-e3" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E3" disabled="disabled"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">E</span></div>
-            <div class="seat four"><label class="label" for="seat-e4"><input id="seat-e4" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-e5"><input id="seat-e5" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E5" disabled="disabled"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-e6"><input id="seat-e6" type="checkbox" class="seat-check visuallyhidden" name="seat-essignment" value="" data-seat="E6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-f1"><input id="seat-f1" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-f2"><input id="seat-f2" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F2" disabled="disabled"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-f3"><input id="seat-f3" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">F</span></div>
-            <div class="seat four"><label class="label" for="seat-f4"><input id="seat-f4" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-f5"><input id="seat-f5" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F5" disabled="disabled"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-f6"><input id="seat-f6" type="checkbox" class="seat-check visuallyhidden" name="seat-fssignment" value="" data-seat="F6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-g1"><input id="seat-g1" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-g2"><input id="seat-g2" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-g3"><input id="seat-g3" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G3" disabled="disabled"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">G</span></div>
-            <div class="seat four"><label class="label" for="seat-g4"><input id="seat-g4" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G4" disabled="disabled"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-g5"><input id="seat-g5" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-g6"><input id="seat-g6" type="checkbox" class="seat-check visuallyhidden" name="seat-gssignment" value="" data-seat="G6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-h1"><input id="seat-h1" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-h2"><input id="seat-h2" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-h3"><input id="seat-h3" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">H</span></div>
-            <div class="seat four"><label class="label" for="seat-h4"><input id="seat-h4" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-h5"><input id="seat-h5" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-h6"><input id="seat-h6" type="checkbox" class="seat-check visuallyhidden" name="seat-hssignment" value="" data-seat="H6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-i1"><input id="seat-i1" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I1"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-i2"><input id="seat-i2" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-i3"><input id="seat-i3" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I3" disabled="disabled"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">I</span></div>
-            <div class="seat four"><label class="label" for="seat-i4"><input id="seat-i4" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-i5"><input id="seat-i5" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-i6"><input id="seat-i6" type="checkbox" class="seat-check visuallyhidden" name="seat-issignment" value="" data-seat="I6"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-j1"><input id="seat-j1" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J1"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-j2"><input id="seat-j2" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J2" disabled="disabled"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-j3"><input id="seat-j3" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J3" disabled="disabled"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">J</span></div>
-            <div class="seat four"><label class="label" for="seat-j4"><input id="seat-j4" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-j5"><input id="seat-j5" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-j6"><input id="seat-j6" type="checkbox" class="seat-check visuallyhidden" name="seat-jssignment" value="" data-seat="J6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-k1"><input id="seat-k1" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K1" disabled="disabled"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-k2"><input id="seat-k2" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-k3"><input id="seat-k3" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">K</span></div>
-            <div class="seat four"><label class="label" for="seat-k4"><input id="seat-k4" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-k5"><input id="seat-k5" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K5" disabled="disabled"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-k6"><input id="seat-k6" type="checkbox" class="seat-check visuallyhidden" name="seat-kssignment" value="" data-seat="K6" disabled="disabled"/><span class="seat-label">Six</span></label></div>
-        </div>
-
-
-        <div class="seat-row">
-            <div class="seat one"><label class="label" for="seat-l1"><input id="seat-l1" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L1"/><span class="seat-label">One</span></label></div>
-            <div class="seat two"><label class="label" for="seat-l2"><input id="seat-l2" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L2"/><span class="seat-label">Two</span></label></div>
-            <div class="seat three"><label class="label" for="seat-l3"><input id="seat-l3" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L3"/><span class="seat-label">Three</span></label></div>
-            <div class="aisle"><span class="aisle-number">L</span></div>
-            <div class="seat four"><label class="label" for="seat-l4"><input id="seat-l4" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L4"/><span class="seat-label">Four</span></label></div>
-            <div class="seat five"><label class="label" for="seat-l5"><input id="seat-l5" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L5"/><span class="seat-label">Five</span></label></div>
-            <div class="seat six"><label class="label" for="seat-l6"><input id="seat-l6" type="checkbox" class="seat-check visuallyhidden" name="seat-lssignment" value="" data-seat="L6"/><span class="seat-label">Six</span></label></div>
-        </div>
+    <div class="cabin">
+        <% capacity = seat_info[0]['economy_seat_capacity'];
+        seats_per_row = seat_info[0]['economy_seats_per_row'];
+        rows = capacity / seats_per_row;
+        if (seats_per_row == 10){
+            cols1 = columns.slice(0, seats_per_row/3);
+            cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3+1);
+            cols3 = columns.slice(2*seats_per_row/3+1, seats_per_row);
+            while (row <= rows){ %>
+                <div class="seat-row">
+                    <% cols1.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols2.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols3.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                </div>
+            <% row += 1;
+            }
+        }else{
+            cols1 = columns.slice(0, seats_per_row/2);
+            cols2 = columns.slice(seats_per_row/2, seats_per_row);
+            while (row <= rows){ %>
+                <div class="seat-row">
+                    <% cols1.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                    <div class="aisle"><span class="aisle-number"><%= row%></span></div>
+                    <% cols2.forEach(function (column) {
+                        if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>" disabled="disabled"/><span class="seat-label"><%= column%></span></label></div>
+                        <%}else{%>
+                            <div class="seat one"><label class="label" for="seat-<%= row+column%>"><input id="seat-<%= row+column%>" type="checkbox" class="seat-check visuallyhidden" name="seat-assignment" value="" data-seat="<%= row+column%>"/><span class="seat-label"><%= column%></span></label></div>
+                        <%  }
+                    }); %>
+                </div>
+            <% row += 1;
+            }
+        } %>
     </div>
 </div>
 

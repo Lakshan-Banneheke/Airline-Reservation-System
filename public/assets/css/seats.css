@@ -19,9 +19,9 @@ body {
   transform: rotateX(0deg) translateZ(-500px) translateY(-200px);
   transform-style: preserve-3d;
 }
-.cabin:hover {
-  transform: rotateX(20deg) translateZ(50px) translateY(0px);
-}
+/*.cabin:hover {*/
+/*  transform: rotateX(20deg) translateZ(50px) translateY(0px);*/
+/*}*/
 .seat-row {
   display: flex;
   transform-style: preserve-3d;

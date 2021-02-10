@@ -4,12 +4,14 @@ const BookingService = require('../services/BookingServices');
 class BookingController {
     static async getBooking(req, res) {
         // console.log(req.params.schedule_id);
-        let schedule_id = 1;
-        const seats = await BookingService.getSeats(schedule_id);
+        let schedule_id = 80;
+        const seat_info = await BookingService.getSeats(schedule_id);
+        seat_info[1] = [{seat_id: '1A'}, {seat_id: '20B'}];
 
         res.render('booking', {
             schedule_id : schedule_id,
             user: req.session.user,
+            seat_info: seat_info,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
             regemail: req.query.email,
