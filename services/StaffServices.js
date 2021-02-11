@@ -61,6 +61,19 @@ class StaffService {
         return Staff.deleteStaff(id);
     }
 
+    static async deleteOwnAccount(empId, password) {
+        const staff = await Staff.getStaffMemberById(empId);
+        if (!staff) {
+            throw new Errors.BadRequest('OOPS could not delete account');
+        }
+        const hashedPassword = staff.password;
+        const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+        if (!isPasswordCorrect) {
+            throw new Errors.BadRequest('Password is not correct');
+        }
+        return Staff.deleteStaff(empId);
+    }
+
     static async verifyStaff(id) {
         return Staff.verifyStaff(id);
     }
@@ -116,6 +129,28 @@ class StaffService {
 
     static async getAllAirportCodes() {
         return Airport.getAllAirportCodes();
+    }
+
+    static async editProfileInfo(empId, {
+        firstName, lastName, email, contactNo, country,
+    }) {
+        const isEmailRegistered = await Staff.isEmailRegistered(email);
+        const staff = await Staff.getStaffMemberById(empId);
+        if (email !== staff.email && isEmailRegistered) {
+            throw new Errors.BadRequest('Email Already in Use.');
+        }
+        return Staff.updateGerenalInfo(empId, firstName, lastName, email, contactNo, country);
+    }
+
+    static async changePassword(empId, { old_pwd, new_pwd }) {
+        const staff = await Staff.getStaffMemberById(empId);
+        const hashedPassword = staff.password;
+        const isPasswordCorrect = await bcrypt.compare(old_pwd, hashedPassword);
+        if (!isPasswordCorrect) {
+            throw new Errors.BadRequest('Current Password is not correct');
+        }
+        const newhashedPassword = await bcrypt.hash(new_pwd, 10);
+        return Staff.updatePassword(empId, newhashedPassword);
     }
 }
 

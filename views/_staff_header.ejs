@@ -33,6 +33,18 @@
                                 <li class="nav-item">
                                     <a href="/staff/logout" class="nav-link"><b>Log Out</b></a>
                                 </li>
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <!-- <img src="/assets/usericon.png" width="30" height="30" class="d-inline-block align-top rounded-circle" alt="user-icon"> -->
+                                    Img
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/staff/<%=user.staff_category%>" ><i class="fas fa-home" style="margin-right: 6px;"></i><b>HOME</b></a>
+                                    <a class="dropdown-item" href="/staff/edit_profile"><i class="fas fa-edit" style="color: grey;margin-right: 6px;"></i>Edit profile </a>
+                                    <a class="dropdown-item" href="/staff/edit_profile#changePassword"><i class="fas fa-lock" style="color: grey;margin-right: 6px;"></i>Change Password</a>
+                                    <a class="dropdown-item" href="/staff/edit_profile#delAccount"><i class="fas fa-trash-alt" style="color: grey;margin-right: 6px;"></i>Delete Account</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="/staff/logout"><i class="fas fa-sign-out-alt" style="color: grey;margin-right: 6px;"></i> Log out</a>
+                                </div>
                         </li>
                     <% }else{ %>
                         <li class="nav-item dropdown">

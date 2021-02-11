@@ -26,7 +26,14 @@ class Staff {
     static async isEmpIDRegistered(id) {
         const query = 'SELECT emp_id FROM staff WHERE emp_id=$1 LIMIT 1';
         const result = await pool.query(query, [id]);
-        return result.rows[0] != null;
+        return !(result.rowCount === 0);
+    }
+
+    static async isEmailRegistered(email) {
+        const query = 'SELECT emp_id FROM staff WHERE email=$1 LIMIT 1';
+        const result = await pool.query(query, [email]);
+        console.log(result);
+        return !(result.rowCount === 0);
     }
 
     static async getAllUnverifiedStaff() {
@@ -49,6 +56,16 @@ class Staff {
     static async deleteStaff(id) {
         const query = 'DELETE FROM staff WHERE emp_id=$1';
         await pool.query(query, [id]);
+    }
+
+    static async updateGerenalInfo(empId, firstName, lastName, email, contactNo, country) {
+        const query = 'UPDATE staff SET first_name=$1,last_name=$2,email=$3,contact_no=$4,country=$5 WHERE emp_id=$6';
+        await pool.query(query, [firstName, lastName, email, contactNo, country, empId]);
+    }
+
+    static async updatePassword(empId, password) {
+        const query = 'UPDATE staff SET password=$1 WHERE emp_id=$2';
+        await pool.query(query, [password, empId]);
     }
 }
 

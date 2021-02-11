@@ -1,4 +1,6 @@
-const { StaffRegInfo, StaffLoginInfo } = require('./validators/staffAuthInfo');
+const {
+    StaffRegInfo, StaffLoginInfo, staffEditInfo, ChangePasswordInfo,
+} = require('./validators/staffAuthInfo');
 const StaffService = require('../services/StaffServices');
 
 class StaffController {
@@ -21,6 +23,27 @@ class StaffController {
                 securityKey: req.query.securityKey,
                 airport: req.query.airport,
                 airportCodes,
+            });
+        } catch (e) {
+            console.log(e);
+            res.send(500).render('500');
+        }
+    }
+
+    static async editProfilePage(req, res) {
+        try {
+            res.render('staff_edit_profile', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                pwd_error: req.query.pwd_error,
+                pwd_success: req.query.pwd_success,
+                del_acc_error: req.query.del_acc_error,
+                firstName: req.session.user.staffData.first_name,
+                lastName: req.session.user.staffData.last_name,
+                email: req.session.user.staffData.email,
+                contactNo: req.session.user.staffData.contact_no,
+                country: req.session.user.staffData.country,
             });
         } catch (e) {
             console.log(e);
@@ -56,6 +79,7 @@ class StaffController {
             req.session.user = {};
             req.session.user.type = 'staff';
             req.session.user.staff_category = staff.category; // admin,manager,general
+            req.session.user.staffId = staff.emp_id;
             req.session.user.staffData = staff;
             res.redirect(`/staff/${staff.category}`);
         } catch (err) {
@@ -69,6 +93,43 @@ class StaffController {
             res.redirect('/staff/login');
         } catch (err) {
             res.redirect(`/staff/${req.session.staff_category}?error=${err}`);
+        }
+    }
+
+    static async editProfileInfo(req, res) {
+        try {
+            const { value, error } = await staffEditInfo.validate(req.body);
+            if (error) throw (error);
+            await StaffService.editProfileInfo(req.params.emp_id, value);
+            req.session.user.staffData.first_name = req.body.firstName;
+            req.session.user.staffData.last_name = req.body.lastName;
+            req.session.user.staffData.email = req.body.email;
+            req.session.user.staffData.contact_no = req.body.contactNo;
+            req.session.user.staffData.country = req.body.country;
+            res.redirect('/staff/edit_profile?success=Changes Saved Successfully');
+        } catch (e) {
+            res.redirect(`/staff/edit_profile?error=${e}`);
+        }
+    }
+
+    static async changePassword(req, res) {
+        try {
+            const { value, error } = await ChangePasswordInfo.validate(req.body);
+            if (error) throw (error);
+            await StaffService.changePassword(req.params.emp_id, value);
+            res.redirect('/staff/edit_profile?pwd_success=Password Changed Successfully#changePassword');
+        } catch (e) {
+            res.redirect(`/staff/edit_profile?pwd_error=${e}#changePassword`);
+        }
+    }
+
+    static async deleteOwnAccount(req, res) {
+        try {
+            await StaffService.deleteOwnAccount(req.params.emp_id, req.body.del_password);
+            req.session.user = undefined;
+            res.redirect('/staff/login?del_acc_success=Account Deleted Successfully');
+        } catch (err) {
+            res.redirect(`/staff/edit_profile?del_acc_error=${err}#delAccount`);
         }
     }
 }
