@@ -11,12 +11,12 @@ class Flight {
         return result.rows;
     }
 
-    static async getToBeDepartedFlights(today, staff_member_airport) {
+    static async getToBeDepartedFlights(staff_member_airport) {
         const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,departure_date
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-                        WHERE flight_state='Scheduled' AND departure_date<=$1 AND origin=$2
+                        WHERE flight_state='Scheduled' AND departure_date<=NOW()::DATE AND origin=$1
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC;`;
-        const result = await pool.query(query, [today, staff_member_airport]);
+        const result = await pool.query(query, [staff_member_airport]);
         return result.rows;
     }
 

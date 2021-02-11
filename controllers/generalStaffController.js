@@ -6,7 +6,6 @@ class GeneralStaffController {
             const assignedAirport = req.session.user.staffData.assigned_airport;
             const incomingFlights = await StaffService.getincomingPendingFlights(assignedAirport);
             const departingFlights = await StaffService.getToBeDepartedFlights(assignedAirport);
-            console.log(assignedAirport);
             res.render('staff_general_home', {
                 user: req.session.user,
                 error: req.query.error,
