@@ -116,6 +116,8 @@
                                                             </div>
                                                             <div class="flight-search-title">
                                                                 <h5 class="title">Schedule ID: <%= departingFlights[i].schedule_id %></h5>
+                                        
+                                                                
                                                             </div>
                                                         </div>
                                                         <div class="flight-search-body">
@@ -128,7 +130,14 @@
                                                         </div>
                                                     </div><!--new 1st div end-->
                                                     <div class="col-lg-8 mb-30"><!--new 2nd div-->
-                                                        <br/><h6>From:  <%= departingFlights[i].origin %></h6>
+                                                        <br/>
+                                                        <% if (departingFlights[i].state=="Delayed") {%>
+                                                            <h6 class="bg-warning text-white"> Scheduled Departure date: <%= departingFlights[i].departure_date %></h6>
+                                                            
+                                                        <% } else { %>
+                                                            <h6>Scheduled Departure date: <%= departingFlights[i].departure_date %></h6>
+                                                        <% } %>
+                                                        <h6>From:  <%= departingFlights[i].origin %></h6>
                                                         <h6>To:  <%= departingFlights[i].destination %> </h6>
                                                         <h6>Aircraft ID: <%= departingFlights[i].aircraft_id %> </h6>
                                                         <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->

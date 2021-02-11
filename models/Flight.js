@@ -12,7 +12,7 @@ class Flight {
     }
 
     static async getToBeDepartedFlights(today, staff_member_airport) {
-        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination
+        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,departure_date
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
                         WHERE flight_state='Scheduled' AND departure_date<=$1 AND origin=$2
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC;`;

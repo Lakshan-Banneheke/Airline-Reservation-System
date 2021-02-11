@@ -79,6 +79,14 @@ class StaffService {
     static async getToBeDepartedFlights(assigned_airport) {
         // eslint-disable-next-line max-len
         const toBeDepartedFlights = await Flight.getToBeDepartedFlights(ymd(new Date()), assigned_airport);
+        if (toBeDepartedFlights && toBeDepartedFlights.length > 0) {
+            toBeDepartedFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                if (flight.departure_date < ymd(new Date())) {
+                    flight.state = 'Delayed';
+                }
+            });
+        }
         return toBeDepartedFlights;
     }
 
