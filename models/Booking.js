@@ -17,14 +17,14 @@ class Booking {
 
     static async createBooking(values){
         if (values.custType !== 'registered'){
-            //TODO procedure to insert guest customer
+            values.custID = null;
+            values.custType = 'guest';
         }
-        const query = 'CALL insertBooking($1, $2, $3, $4, $5, $6)';
-        try{
-            await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, values.seatNo]);
-        } catch (e) {
-            console.log(e);
-        }
+        console.log(values);
+        const query = 'CALL insertBooking($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)';
+        //TODO seat number hardcoded
+        await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, ['5', '6'], values.custName, values.address, values.custDob, values.custGender, values.custPassport, values.mobile, values.custEmail, values.custType]);
+
     }
 
 }

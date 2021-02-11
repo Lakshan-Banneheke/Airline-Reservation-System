@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS Passenger_Seat CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
+DROP TABLE IF EXISTS Guest_Customer CASCADE;
 
 DROP TYPE IF EXISTS  booking_state_enum;
 DROP TYPE IF EXISTS  flight_state_enum;
@@ -336,6 +337,18 @@ CREATE TABLE Staff (
   account_state staff_account_state NOT NULL DEFAULT 'unverified'
 );
 
+CREATE TABLE Guest_Customer(
+  customer_id uuid4,
+  name VARCHAR(50) NOT NULL,
+  address varchar(100) NOT NULL,
+  dob DATE NOT NULL,
+  gender gender_enum,
+  passport_no VARCHAR(20) NOT NULL,
+  mobile VARCHAR(15) NOT NULL,
+  email VARCHAR(127) NOT NULL,
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 ---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
 
@@ -723,4 +736,6 @@ GRANT ALL ON TABLE public.session TO database_app;
 GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
+
+GRANT ALL ON TABLE public.guest_customer TO database_app;
 
