@@ -65,24 +65,25 @@ class StaffService {
         return Staff.verifyStaff(id);
     }
 
-    static async getOngoingFlights() {
-        const ongoingFlights = await Flight.getOngoingFlightDetails();
-        if (ongoingFlights && ongoingFlights.length > 0) {
-            ongoingFlights.forEach((flight) => {
+    static async getincomingPendingFlights(staff_member_airport) {
+        const incomingPending = await Flight.incomingPendingFlightDetails(staff_member_airport);
+        if (incomingPending && incomingPending.length > 0) {
+            incomingPending.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));
                 flight.arrival_date = ymd(new Date(flight.arrival_date));
             });
         }
-        return ongoingFlights;
+        return incomingPending;
     }
 
-    static async getToBeDepartedFlights() {
-        const toBeDepartedFlights = await Flight.getToBeDepartedFlights(ymd(new Date()));
+    static async getToBeDepartedFlights(assigned_airport) {
+        // eslint-disable-next-line max-len
+        const toBeDepartedFlights = await Flight.getToBeDepartedFlights(ymd(new Date()), assigned_airport);
         return toBeDepartedFlights;
     }
 
-    static async getUpcomingFlights() {
-        const upcomingFlights = await Flight.getUpcomingFlightDetails();
+    static async getUpcomingFlights(staff_member_airport) {
+        const upcomingFlights = await Flight.getUpcomingFlightDetails(staff_member_airport);
         if (upcomingFlights && upcomingFlights.length > 0) {
             upcomingFlights.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));

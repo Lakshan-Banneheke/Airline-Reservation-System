@@ -3,13 +3,15 @@ const StaffService = require('../services/StaffServices');
 class GeneralStaffController {
     static async homePage(req, res) {
         try {
-            const ongoingFlights = await StaffService.getOngoingFlights();
-            const departingFlights = await StaffService.getToBeDepartedFlights();
+            const assignedAirport = req.session.user.staffData.assigned_airport;
+            const incomingFlights = await StaffService.getincomingPendingFlights(assignedAirport);
+            const departingFlights = await StaffService.getToBeDepartedFlights(assignedAirport);
+            console.log(assignedAirport);
             res.render('staff_general_home', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
-                ongoingFlights,
+                incomingFlights,
                 departingFlights,
             });
         } catch (e) {
@@ -20,7 +22,8 @@ class GeneralStaffController {
 
     static async upcomingFlightsMain(req, res) {
         try {
-            const upcomingFlights = await StaffService.getUpcomingFlights();
+            const assignedAirport = req.session.user.staffData.assigned_airport;
+            const upcomingFlights = await StaffService.getUpcomingFlights(assignedAirport);
             res.render('staff_general_upcoming_flights_main', {
                 user: req.session.user,
                 error: req.query.error,
