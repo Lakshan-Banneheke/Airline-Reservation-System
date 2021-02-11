@@ -1,4 +1,5 @@
 <div class="plane">
+    <h4>Platinum</h4>
     <div class="cabin">
         <% const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         var capacity = seat_info[0]['platinum_seat_capacity'];
@@ -10,7 +11,7 @@
             var cols1 = columns.slice(0, seats_per_row/4);
             var cols2 = columns.slice(seats_per_row/4, 3);
             var cols3 = columns.slice(3, seats_per_row);
-                while (row <= rows){ %>
+            while (row <= rows){ %>
                 <div class="seat-row">
                     <% cols1.forEach(function (column) {
                     if (booked_seats.some(seat => seat.seat_id === row+column)) {%>
@@ -64,7 +65,7 @@
         }%>
 
     </div>
-
+    <h4>Business</h4>
     <div class="cabin">
         <% capacity = seat_info[0]['business_seat_capacity'];
         seats_per_row = seat_info[0]['business_seats_per_row'];
@@ -127,7 +128,7 @@
         } %>
 
     </div>
-
+    <h4>Economy</h4>
     <div class="cabin">
         <% capacity = seat_info[0]['economy_seat_capacity'];
         seats_per_row = seat_info[0]['economy_seats_per_row'];
