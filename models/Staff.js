@@ -32,7 +32,6 @@ class Staff {
     static async isEmailRegistered(email) {
         const query = 'SELECT emp_id FROM staff WHERE email=$1 LIMIT 1';
         const result = await pool.query(query, [email]);
-        console.log(result);
         return !(result.rowCount === 0);
     }
 
