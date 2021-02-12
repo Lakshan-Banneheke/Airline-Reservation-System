@@ -1,4 +1,5 @@
 const StaffService = require('../services/StaffServices');
+const Errors = require('../helpers/error');
 
 class ManagerController {
     static async homePage(req, res) {
@@ -19,11 +20,13 @@ class ManagerController {
     static async allGeneralStaffPage(req, res) {
         try {
             const staffMembers = await StaffService.getAllVerifiedGeneralStaff();
+            const airportCodes = await StaffService.getAllAirportCodes();
             res.render('staff_manager_all_general_staff', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
                 staffMembers,
+                airportCodes,
             });
         } catch (e) {
             console.log(e);
@@ -63,6 +66,31 @@ class ManagerController {
                 staffMembers: staffLike,
             };
             res.json(resObj);
+        } catch (e) {
+            res.json({
+                success: false,
+                error: e,
+            });
+        }
+    }
+
+    static async changeAssignedAirportOfStaff(req, res) {
+        try {
+            if (req.body.airport === '') {
+                throw new Errors.BadRequest('OOPS. Invalid Airport Code');
+            }
+            await StaffService.changeAssignedAirport(req.params.empId, req.body.airport);
+            res.redirect('/staff/manager/all_general_staff?success=Assigned Airport Changed Auccessfully');
+        } catch (e) {
+            console.log(e);
+            res.redirect(`/staff/manager/all_general_staff?error=${e}`);
+        }
+    }
+
+    static async getAirportCodesJson(req, res) {
+        try {
+            const airportCodes = await StaffService.getAllAirportCodes();
+            res.json({ airportCodes });
         } catch (e) {
             res.json({
                 success: false,

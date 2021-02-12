@@ -4,6 +4,19 @@ const errordiv = document.getElementById('match-list-error');
 
 const searchStaff = async searchText => {
         let response = await fetch(`/staff/manager/find?query=${searchText.toLowerCase()}`);//search db using this route
+        let resCodes = await fetch(`/staff/manager/get_airport_codes`);
+        const resCodesJson = await resCodes.json();
+        const airportCodes = resCodesJson.airportCodes;
+        console.log(resCodesJson.airportCodes);
+        let optionsList;
+        if(airportCodes && airportCodes.length>0){
+            optionsList = airportCodes.map((code)=>{
+               return(`<option value=${code.airport_code}> ${code.airport_code}</option>`)    
+            }).join('');
+        }else{
+            optionsList='';
+        } 
+        console.log(optionsList);
         response =await response.json();
         if (response.success){
             let outputHTML;
@@ -27,6 +40,43 @@ const searchStaff = async searchText => {
                                             </div>
                                             <div class="col-md-4 col-xs-12">
                                                 <p class="card-text"><i class="fas fa-envelope" style="margin-right: 6px;"></i>Email: ${match.email} </p>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#airportUpdateModal${match.emp_id}">
+                                                Change Assigned Airport
+                                            </button>
+                                        <!-- Modal -->
+                                            <div class="modal fade" id="airportUpdateModal${match.emp_id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Change Assigned Airport</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Select an airport from the dropdown below
+                                                        </div>
+                                                        <form class="p-3 text-left" method="POST" action="/staff/manager/change_airport/${match.emp_id}">
+                                                            <div>
+                                                                <div class="form-group" id="airport-field" style="display: block;">
+                                                                    <label for="airport">Select Airport</label>
+                                                                    <select id="airport" class="form-control" name="airport">
+                                                                        <option  selected value="">Choose...</option>
+                                                                        ${optionsList}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                 </div>

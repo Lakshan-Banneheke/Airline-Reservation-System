@@ -80,6 +80,11 @@ class Staff {
         const result = await pool.query(query, ['verified', 'general', `${text}%`]);
         return result.rows;
     }
+
+    static async changeAssignedAirport(empId, newAirportCode) {
+        const query = 'UPDATE staff SET assigned_airport=$1 WHERE category=$2 AND emp_id=$3';
+        await pool.query(query, [newAirportCode, 'general', empId]);
+    }
 }
 
 module.exports = Staff;

@@ -160,6 +160,10 @@ class StaffService {
     static async getGeneralStaffWhereNameLike(text) {
         return Staff.getGeneralStaffWhereNameLike(text);
     }
+
+    static async changeAssignedAirport(empId, newAirportCode) {
+        return Staff.changeAssignedAirport(empId, newAirportCode);
+    }
 }
 
 module.exports = StaffService;
