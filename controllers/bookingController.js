@@ -1,8 +1,7 @@
-const {GuestInfo} = require('./validators/guestInfo');
+const { GuestInfo } = require('./validators/guestInfo');
 const BookingService = require('../services/BookingServices');
 
 class BookingController {
-
     static async getBooking(req, res) {
         // console.log(req.params.schedule_id);
         let schedule_id;
@@ -12,14 +11,13 @@ class BookingController {
             schedule_id = req.query.schedule_id;
         }
 
-
         const flightInfo = await BookingService.getFlightInfo(schedule_id);
         const seat_info = await BookingService.getSeats(schedule_id);
 
         res.render('booking', {
-            schedule_id : schedule_id,
+            schedule_id,
             user: req.session.user,
-            seat_info: seat_info,
+            seat_info,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
             regemail: req.query.email,
@@ -41,7 +39,7 @@ class BookingController {
             mobile: req.query.mobile,
             custEmail: req.query.custEmail,
             flightInfo: flightInfo[0],
-            priceInfo: flightInfo[1]
+            priceInfo: flightInfo[1],
         });
     }
 
@@ -49,20 +47,25 @@ class BookingController {
         try {
             // const { value, error } = await GuestInfo.validate(req.body);
             // if (error) throw (error);
-            let booking_id = await BookingService.createBooking(req.body);
+            const booking_id = await BookingService.createBooking(req.body);
             req.session.booking_id = booking_id.insertbooking;
             return res.status(200).send({ result: 'redirect', url: '/payment' });
         } catch (err) {
-            return res.status(200).send({ result: 'redirect',  url: `/?registrationError=${err}
+            return res.status(200).send({
+                result: 'redirect',
+                url: `/?registrationError=${err}
                 &custEmail=${req.body.custEmail}&custName=${req.body.custName}&custDob=${req.body.custDob}&custGender=${req.body.custGender}&mobile=${req.body.mobile}&custPassport=${req.body.custPassport}&address=${req.body.address}&schedule_id=${req.body.schedule_id}
-            ` });
+            `,
+            });
         }
     }
 
     static async getPayment(req, res) {
-        let price = await BookingService.getPrice(req.session.booking_id);
+        const price = await BookingService.getPrice(req.session.booking_id);
+        
         res.render('payment', {
             user: req.session.user,
+            booking_id: req.session.booking_id,
             price: price.total_price,
             registrationError: req.query.registrationError,
             dbError: req.query.dbError,
@@ -81,9 +84,8 @@ class BookingController {
         });
     }
 
-
     static async cancelPayment(req, res) {
-        try{
+        try {
             await BookingService.cancelBooking(req.session.booking_id);
             res.render('payment_cancel', {
                 user: req.session.user,
@@ -101,14 +103,14 @@ class BookingController {
                 regcity: req.query.city,
                 regcountry: req.query.country,
             });
-        }catch (error){
+        } catch (error) {
             console.log(error);
-            return res.redirect("/booking/payment?dbError=${error}");
+            return res.redirect('/booking/payment?dbError=${error}');
         }
     }
 
     static async paymentSuccess(req, res) {
-        try{
+        try {
             await BookingService.successBooking(req.session.booking_id);
             res.render('payment_successful', {
                 user: req.session.user,
@@ -126,12 +128,20 @@ class BookingController {
                 regcity: req.query.city,
                 regcountry: req.query.country,
             });
-        }catch (error){
+        } catch (error) {
             console.log(error);
-            return res.redirect("/booking/payment?dbError=${error}");
+            return res.redirect('/booking/payment?dbError=${error}');
         }
+    }
 
-
+    static async deleteBooking(req, res) {
+        try {
+            await BookingService.cancelBooking(req.body.booking_id);
+            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+        } catch (error) {
+            console.log(error);
+            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+        }
     }
 }
 

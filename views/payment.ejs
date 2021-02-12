@@ -95,7 +95,10 @@
                                     <button type="submit" class="cmn-btn">Pay</button>
                                 </form>
                                 <hr>
+                              
                                 <form method="post" action="/booking/payment/cancel">
+                                    <input type="hidden" id="booking_id" value="<%= booking_id %>">
+
                                     <button type="submit" class="cmn-btn">Cancel</button>
                                 </form>
                             </div>
@@ -105,9 +108,55 @@
 
             </div>
 
-
+            <%console.log(booking_id)%>
         </div>
     </div>
 </section>
+<div id='seconds-counter'> </div>
+<script>
+    var seconds = 20;
+    var el = document.getElementById('seconds-counter');
 
+function incrementSeconds() {
+   
+    if (seconds>60){
+        mint=Math.floor(seconds/60);
+        sec=seconds%60;
+        el.innerText = "Time Remaining is  " +mint + " Minuites and "+ sec + " seconds.";
+    }
+    else{
+        el.innerText = "Time Remaining is  " + seconds + " seconds.";
+    }
+    seconds -= 1;
+    
+}
+
+    var cancel = setInterval(incrementSeconds, 1000);
+   
+    setTimeout(delBooking, 20000);
+    
+
+    function delBooking(){
+        alert("Your time has expired! Your booking will be deleted");
+        $.ajax({
+                    type: "DELETE",
+                    url: '/booking/deleteBooking',
+                    data: {
+                        'booking_id' : $('#booking_id').val(),
+                        
+                    },
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (response) {
+                        if (response.result === 'redirect') {
+                            //redirecting
+                            let baseurl = window.location.origin;
+                            let url = baseurl + response.url;
+                            window.location.href = url;
+                        }
+                    },
+                    error: function (res) {
+                    }
+                });
+    }
+</script>
 <%- include('_footer',{user}) %>

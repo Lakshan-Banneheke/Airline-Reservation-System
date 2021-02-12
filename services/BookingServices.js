@@ -34,6 +34,7 @@ class BookingService {
     static async cancelBooking(booking_id){
         return Booking.cancelBooking(booking_id);
     }
+    
 }
 
 module.exports = BookingService;
