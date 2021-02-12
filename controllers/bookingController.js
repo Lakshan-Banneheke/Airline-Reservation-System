@@ -23,20 +23,27 @@ class BookingController {
             regaddressLine2: req.query.addressLine2,
             regcity: req.query.city,
             regcountry: req.query.country,
+            custName: req.query.custName,
+            address: req.query.address,
+            custDob: req.query.custDob,
+            custGender: req.query.custGender,
+            custPassport: req.query.custPassport,
+            mobile: req.query.mobile,
+            custEmail: req.query.custEmail,
         });
     }
 
     static async createBooking(req, res) {
-        // try {
-        //     const { value, error } = await GuestInfo.validate(req.body);
-        //     if (error) throw (error);
-        //     await CustomerService.register(value);
-        //
-        //     return res.status(200).send({ result: 'redirect', url: '/confirm-payment' });
-        // } catch (err) {
-        //     return res.redirect();
-        // }
-
+        try {
+            // const { value, error } = await GuestInfo.validate(req.body);
+            // if (error) throw (error);
+            await BookingService.createBooking(req.body);
+            return res.status(200).send({ result: 'redirect', url: '/confirm-payment' });
+        } catch (err) {
+            return res.status(200).send({ result: 'redirect',  url: `/?registrationError=${err}
+                &custEmail=${req.body.custEmail}&custName=${req.body.custName}&custDob=${req.body.custDob}&custGender=${req.body.custGender}&mobile=${req.body.mobile}&custPassport=${req.body.custPassport}&address=${req.body.address}
+            ` });
+        }
     }
 }
 

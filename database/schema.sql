@@ -25,10 +25,11 @@ DROP TABLE IF EXISTS Route CASCADE;
 DROP TABLE IF EXISTS Flight_Schedule CASCADE;
 DROP TABLE IF EXISTS Seat_Price CASCADE;
 DROP TABLE IF EXISTS Seat_Booking CASCADE;
-DROP TABLE IF EXISTS Seat_Reservation CASCADE;
+DROP TABLE IF EXISTS Passenger_Seat CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
+DROP TABLE IF EXISTS Guest_Customer CASCADE;
 
 DROP TYPE IF EXISTS  booking_state_enum;
 DROP TYPE IF EXISTS  flight_state_enum;
@@ -143,7 +144,8 @@ END
 $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
--- CREATE OR REPLACE FUNCTION get_seat_price()
+-----Function to get the seat price----
+
 -- CREATE OR REPLACE FUNCTION get_price()
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
@@ -287,22 +289,24 @@ CREATE TABLE Seat_Price (
 
 CREATE TABLE Seat_Booking (
   booking_id SERIAL,
-  customer_id varchar(36),
-  schedule_id int,
+  customer_id varchar(36) NOT NULL,
+  schedule_id int NOT NULL,
   --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
-  total_price numeric(10,2),
-  state booking_state_enum,
+  total_price numeric(10,2) NOT NULL,
+  state booking_state_enum NOT NULL,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Seat_Reservation(
+CREATE TABLE Passenger_Seat(
     booking_id int,
     model_id int,
     seat_id varchar(10),
-    --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
-    price numeric(10,2),
+    price numeric(10, 2), -- price function to be implemented
+    name varchar(100) NOT NULL,
+    passport_no varchar(20) NOT NULL,
+    dob date NOT NULL,
     PRIMARY KEY (booking_id, model_id, seat_id),
     FOREIGN KEY(booking_id) REFERENCES Seat_Booking(booking_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -333,6 +337,18 @@ CREATE TABLE Staff (
   account_state staff_account_state NOT NULL DEFAULT 'unverified'
 );
 
+CREATE TABLE Guest_Customer(
+  customer_id uuid4,
+  name VARCHAR(50) NOT NULL,
+  address varchar(100) NOT NULL,
+  dob DATE NOT NULL,
+  gender gender_enum,
+  passport_no VARCHAR(20) NOT NULL,
+  mobile VARCHAR(15) NOT NULL,
+  email VARCHAR(127) NOT NULL,
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 ---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
 
@@ -713,11 +729,13 @@ GRANT ALL ON TABLE public.seat_booking TO database_app;
 
 GRANT ALL ON TABLE public.seat_price TO database_app;
 
-GRANT ALL ON TABLE public.seat_reservation TO database_app;
+GRANT ALL ON TABLE public.passenger_seat TO database_app;
 
 GRANT ALL ON TABLE public.session TO database_app;
 
 GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
+
+GRANT ALL ON TABLE public.guest_customer TO database_app;
 
