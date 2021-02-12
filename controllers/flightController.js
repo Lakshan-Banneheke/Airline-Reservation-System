@@ -5,7 +5,7 @@ class FlightController {
     static async getFlightByFilter(req, res) {
         try {
             // eslint-disable-next-line max-len
-            const allFlights = await FlightService.getAllFlightsByFilter(req.param('booking_date_from'), req.param('from'), req.param('to'));
+            const allFlights = await FlightService.getAllFlightsByFilter(req.query.booking_date_from, req.query.from, req.query.to);
             const upcomingFlights = await FlightService.getAllFlights();
             const airports = await FlightService.getLocation();
             res.render('flight_search', {

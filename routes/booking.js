@@ -5,6 +5,7 @@ router.post('/createBooking', BookingController.createBooking);
 router.get('/payment/cancel', BookingController.cancelPayment);
 router.get('/payment/success', BookingController.paymentSuccess);
 router.get('/payment', BookingController.getPayment);
+router.post('/', BookingController.getBooking);
 router.get('/', BookingController.getBooking);
 
 

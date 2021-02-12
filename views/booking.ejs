@@ -64,8 +64,7 @@
                     </div>
                     <% } %>
                     <form class="general-information" id="bookingForm">
-                        <%//TODO get schedule_id from ejs%>
-                        <input type="hidden" id="schedule_id" value="1">
+                        <input type="hidden" id="schedule_id" value="<%= schedule_id %>">
 
                     <%if (!user || user.type == 'guest') { %>
 

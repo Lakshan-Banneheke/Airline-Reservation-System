@@ -2,12 +2,20 @@ const {GuestInfo} = require('./validators/guestInfo');
 const BookingService = require('../services/BookingServices');
 
 class BookingController {
+
     static async getBooking(req, res) {
         // console.log(req.params.schedule_id);
-        let schedule_id = 80;
-        const seat_info = await BookingService.getSeats(schedule_id);
-        seat_info[1] = [{seat_id: '1A'}, {seat_id: '20B'}];
+        let schedule_id;
+        if (typeof req.body.schedule_id !== 'undefined') {
+            schedule_id = req.body.schedule_id;
+            console.log('A')
+        } else {
+            schedule_id = req.query.schedule_id;
+            console.log('B')
+        }
 
+        const seat_info = await BookingService.getSeats(schedule_id);
+        console.log(schedule_id);
         res.render('booking', {
             schedule_id : schedule_id,
             user: req.session.user,
@@ -43,7 +51,7 @@ class BookingController {
             return res.status(200).send({ result: 'redirect', url: '/payment' });
         } catch (err) {
             return res.status(200).send({ result: 'redirect',  url: `/?registrationError=${err}
-                &custEmail=${req.body.custEmail}&custName=${req.body.custName}&custDob=${req.body.custDob}&custGender=${req.body.custGender}&mobile=${req.body.mobile}&custPassport=${req.body.custPassport}&address=${req.body.address}
+                &custEmail=${req.body.custEmail}&custName=${req.body.custName}&custDob=${req.body.custDob}&custGender=${req.body.custGender}&mobile=${req.body.mobile}&custPassport=${req.body.custPassport}&address=${req.body.address}&schedule_id=${req.body.schedule_id}
             ` });
         }
     }
