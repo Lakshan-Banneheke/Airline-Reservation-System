@@ -517,6 +517,7 @@ DECLARE
 val_aircraft_id int;
 val_scheduled_departue_date DATE;
 val_scheduled_departure_time TIME;
+val_aircraft_state aircraft_state_enum;
 buffer_time interval='00:15:00'::interval;
 BEGIN
 	
@@ -525,6 +526,12 @@ BEGIN
     INTO val_aircraft_id,val_scheduled_departue_date,val_scheduled_departure_time
     FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
 
+    -- select aircraft state to check whether its on Ground
+    SELECT aircraft_state into val_aircraft_state FROM Aircraft_Instance WHERE aircraft_id=val_aircraft_id;
+
+    IF(val_aircraft_state != 'On-Ground') THEN
+        RAISE EXCEPTION 'Aircraft not yet On-Ground';
+    END IF;
     -- update the aircraft state
     UPDATE Aircraft_Instance SET aircraft_state='In-Air' WHERE aircraft_id=val_aircraft_id;
 
