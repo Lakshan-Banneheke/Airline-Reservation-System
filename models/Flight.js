@@ -11,8 +11,8 @@ class Flight {
         let result = null;
         // View all the flights available
         // eslint-disable-next-line max-len
-        if (vdepartureDate === undefined && vdeparture === undefined && vdestination === undefined) {
-            const query = 'SELECT schedule_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination FROM flight_schedule INNER JOIN route USING(route_id) ORDER BY departure_date;';
+        if ((vdepartureDate === undefined || vdepartureDate === '') && (vdeparture === undefined || vdeparture === '') && (vdestination === undefined || vdeparture === '')) {
+            const query = 'SELECT schedule_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination FROM flight_schedule INNER JOIN route USING(route_id) ORDER BY departure_date LIMIT 20;';
             result = await pool.query(query, []);
             return result.rows;
         } // Filter flights by From

@@ -24,7 +24,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
                     <div class="inner-banner-content">
-                        <h2 class="title">search flight - 03</h2>
+                        <h2 class="title">search flight</h2>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
     <!-- search-widget-area start -->
 
-
+<section id="search">
 
     <form id="form">
         <div class="search-widget-area pt-120">
@@ -118,6 +118,7 @@
             </div>
         </div>
     </form>
+</section>
     
     <!-- search-widget-area end -->
 
@@ -161,10 +162,15 @@
                                                     <%=(flight.arrival_date).toString().substring(0,15)+" "+flight.arrival_time_utc%>
                                                 </td>
                                                 <td>
-                                                    <form action='/booking' method=post><button type='submit'
-                                                            class='btn btn-outline-success'
-                                                            name='book-button'>Book</button><input type='hidden'
-                                                            name='schedule_id' value='<%=flight.schedule_id%>'></form>
+                                                    <form action='/booking' method=post>
+                                                        <div class="single-input  col-rt-in-3" style="justify-content: center;"></div>
+                                                        <button type='submit'
+                                                            class="cmn-btn" style="font-size: smaller;"
+                                                            name='book-button'>Book Flight</button><input type='hidden'
+                                                            name='schedule_id' value='<%=flight.schedule_id%>'></div></form>
+                                                            
+                                                              
+                                                            
                                                 </td>
 
                                             </tr>
@@ -182,7 +188,7 @@
 
                         <!-- flight-table-area end -->
 
-
+                    <a href="#search">Search more flights by Date</a>
                         <!-- flight-section start -->
                         <% if(upcomingFlights && upcomingFlights.length!=0) {%>
                             <section class="flight-section pt-120 pb-120">
@@ -210,7 +216,12 @@
                                                     </h3>
                                                 </div>
                                                 <div class="flight-details">
-                                                    <a href="flight-facilities.html">
+                                
+                                                    <form action="/booking" method="post">
+                                                    <input type="hidden" name="schedule_id" value="<%=flight.schedule_id%>"/>
+                    
+                                                    <button type="submit" style="background-color: white;">
+                                                    <a>
                                                         <h3 class="title">
                                                             <%=flight.origin%>
                                                         </h3>
@@ -219,6 +230,8 @@
                                                             <%=flight.destination%>
                                                         </h3>
                                                     </a>
+                                                    </button>
+                                                    </form>
                                                     <ul class="flight-content">
                                                         <li><i class="flaticon-clock"></i>
                                                             <%=flight.departure_time_utc.toString()+'-----'+flight.arrival_time_utc.toString()%>
