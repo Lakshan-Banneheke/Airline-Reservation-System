@@ -25,6 +25,16 @@ class Booking {
 
     }
 
+    static async getFlightInfo(schedule_id) {
+        const query1 = 'SELECT route_id, departure_date, departure_time_utc, arrival_date, arrival_time_utc, origin, destination, duration FROM flight_schedule NATURAL JOIN route WHERE schedule_id=$1';
+        const flightInfo = await pool.query(query1, [schedule_id]);
+        let route_id = flightInfo.rows[0].route_id;
+        const query2 = 'SELECT traveler_class_id, price FROM seat_price WHERE route_id=$1';
+        const priceInfo = await pool.query(query2, [route_id]);
+
+        return [flightInfo.rows[0], priceInfo.rows];
+    }
+
 }
 
 module.exports = Booking;

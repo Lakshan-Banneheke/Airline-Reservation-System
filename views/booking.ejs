@@ -238,82 +238,36 @@
                         <div class="widget-box mb-30">
                             <h3 class="caption">Flight details</h3>
                             <ul class="flight-category">
-                                <li><span class="category-date">fri 01/11/19</span></li>
-                                <li><a href="#">Dhaka (DCA)</a><span class="count">03:30</span></li>
-                                <li><a href="#">Paris</a><span class="count">13:10</span></li>
-                                <li><span class="category-date">fri 01/11/19</span></li>
-                                <li><a href="#">Paris</a><span class="count">15:30</span></li></li>
-                                <li><a href="#">Dhaka(Dca)</a><span class="count">09:10</span></li></li>
+                                <%console.log(flightInfo);%>
+                                <li><span class="category-date"><%=   flightInfo.departure_date.toString().substring(0,15)%></span></li>
+                                <li><a href="#"><%= flightInfo.origin%></a><span class="count"><%= flightInfo.departure_time_utc %></span></li>
+                                <hr>
+                                <li><span class="category-date"><%= flightInfo.arrival_date.toString().substring(0,15)%></span></li>
+                                <li><a href="#"><%= flightInfo.destination%></a><span class="count"><%= flightInfo.arrival_time_utc %></span></li></li>
                             </ul>
                         </div>
                         <div class="widget-box mb-30">
-                            <h3 class="caption">recent Flight</h3>
+                            <h3 class="caption">Seat Prices</h3>
                             <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Thuki air line</a></h5>
+                                <h5 class="title"><a href="#">Platinum</a></h5>
                                 <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
+                                    <span class="place">$<%= priceInfo[0].price%></span>
+
                                 </div>
                             </div>
                             <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Softking Air</a></h5>
+                                <h5 class="title"><a href="#">Business</a></h5>
                                 <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
+                                    <span class="place">$<%= priceInfo[1].price%></span>
                                 </div>
                             </div>
                             <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
+                                <h5 class="title"><a href="#">Economy</a></h5>
                                 <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
+                                    <span class="place">$<%= priceInfo[2].price%></span>
                                 </div>
                             </div>
-                            <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Thuki air line</a></h5>
-                                <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Softking Air</a></h5>
-                                <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="recent-flight-area">
-                                <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
-                                <div class="recent-flight-content d-flex flex-wrap">
-                                    <span class="place">dhaka to dubai</span>
-                                    <div class="time">
-                                        <span class="first-time">13:00</span>
-                                        <span class="middle-time">05h00</span>
-                                        <span class="last-time">08:10</span>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>

@@ -14,8 +14,10 @@ class BookingController {
             console.log('B')
         }
 
+
+        const flightInfo = await BookingService.getFlightInfo(schedule_id);
         const seat_info = await BookingService.getSeats(schedule_id);
-        console.log(schedule_id);
+
         res.render('booking', {
             schedule_id : schedule_id,
             user: req.session.user,
@@ -40,6 +42,8 @@ class BookingController {
             custPassport: req.query.custPassport,
             mobile: req.query.mobile,
             custEmail: req.query.custEmail,
+            flightInfo: flightInfo[0],
+            priceInfo: flightInfo[1]
         });
     }
 
