@@ -1,0 +1,56 @@
+<%- include('_staff_header',{user}) %>
+<div class="container py-4">
+    <div class="text-center">
+        <h3>All General Staff Members</h3>
+    </div>
+    <hr>
+    <div>
+        <% if (error) {%>
+            <div class="alert alert-danger text-center" role="alert">
+                <%=error%>
+            </div>
+        <% } %>
+        <% if (success) {%>
+            <div class="alert alert-success text-center" role="alert">
+                <%=success%>
+            </div>
+        <% } %>
+    </div>
+    <div class="text-center align-items-center mb-3">
+        <input type="search" name="search" class="form-control" placeholder="Search by Name" autocomplete="off" id="search" style="border-color: black;text-transform:capitalize;">
+    </div>
+    <div id="match-list">
+        <% if(staffMembers && staffMembers.length>0) {%>
+            <% staffMembers.forEach(function(staff){%>
+                <div class="card mb-2 shadow rounded border-secondary">
+                    <div class="card-body">
+                            <h5 class="card-title">
+                                <%=staff.first_name%> <%=staff.last_name%>
+                                <small>
+                                    (<%=staff.emp_id%>)
+                                </small>
+                            </h5>  
+                            <div class="row text-black" style="letter-spacing: 3;">
+                                <div class="col-md-4 col-xs-12">
+                                    <p class="card-text"><i class="fas fa-plane-departure" style="margin-right: 6px;"></i>Assigned Airport: <%=staff.assigned_airport%></p>
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <p class="card-text"><i class="fas fa-phone" style="margin-right: 6px;"></i>Contact No: <%=staff.contact_no%></p>
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <p class="card-text"><i class="fas fa-envelope" style="margin-right: 6px;"></i>Email: <%=staff.email%> %> </p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            <%});%>
+
+        <%}else {%>
+            <div class="alert alert-warning text-center">
+                No Verified General Staff Members
+            </div>
+        <%}%>
+    </div>
+    <div id="match-list-error"></div>
+</div>
+<%- include('_staff_footer') %>

@@ -16,6 +16,21 @@ class ManagerController {
         }
     }
 
+    static async allGeneralStaffPage(req, res) {
+        try {
+            const staffMembers = await StaffService.getAllVerifiedGeneralStaff();
+            res.render('staff_manager_all_general_staff', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                staffMembers,
+            });
+        } catch (e) {
+            console.log(e);
+            res.send(500).render('500');
+        }
+    }
+
     static async verifyStaff(req, res) {
         try {
             await StaffService.verifyStaff(req.body.empId);
@@ -31,6 +46,28 @@ class ManagerController {
             res.redirect('/staff/manager?success=Account Disapproval Successful.');
         } catch (e) {
             res.redirect(`/staff/manager?error=${e}`);
+        }
+    }
+
+    static async searchGeneralStaff(req, res) {
+        try {
+            let staffLike;
+            if (req.query.query !== '') {
+                staffLike = await StaffService.getGeneralStaffWhereNameLike(req.query.query);
+            } else {
+                staffLike = await StaffService.getAllVerifiedGeneralStaff();
+            }
+
+            const resObj = {
+                success: true,
+                staffMembers: staffLike,
+            };
+            res.json(resObj);
+        } catch (e) {
+            res.json({
+                success: false,
+                error: e,
+            });
         }
     }
 }

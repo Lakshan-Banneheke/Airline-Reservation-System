@@ -152,6 +152,14 @@ class StaffService {
         const newhashedPassword = await bcrypt.hash(new_pwd, 10);
         return Staff.updatePassword(empId, newhashedPassword);
     }
+
+    static async getAllVerifiedGeneralStaff() {
+        return Staff.getAllVerifiedGeneralStaff();
+    }
+
+    static async getGeneralStaffWhereNameLike(text) {
+        return Staff.getGeneralStaffWhereNameLike(text);
+    }
 }
 
 module.exports = StaffService;

@@ -9,11 +9,11 @@ const AdminController = require('../controllers/adminController');
 const ManagerController = require('../controllers/managerController');
 
 router.use('/general', ifGeneralStaff, require('./generalStaff'));
+router.use('/manager', ifManager, require('./manager'));
 
 router.get('/register', ifNotLoggedIn, StaffController.registerPage);
 router.get('/login', ifNotLoggedIn, StaffController.loginPage);
 router.get('/admin', ifAdmin, AdminController.homePage);
-router.get('/manager', ifManager, ManagerController.homePage);
 router.get('/edit_profile', ifStaff, StaffController.editProfilePage);
 router.get('/logout', ifStaff, StaffController.logout);
 
