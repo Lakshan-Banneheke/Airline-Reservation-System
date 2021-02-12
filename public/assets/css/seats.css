@@ -6,6 +6,11 @@ body {
   perspective: 900px;
   transform-style: preserve-3d;
 }
+
+h4 {
+  padding-top: 10px;
+  text-align:center
+}
 .plane {
   transform-style: preserve-3d;
 }
@@ -16,12 +21,12 @@ body {
   width: 80vw;
   margin: 25px auto;
   transition: transform 1s ease;
-  transform: rotateX(0deg) translateZ(-500px) translateY(-200px);
-  transform-style: preserve-3d;
+  transform: translateZ(-1px) translateY(-1px);
+  /*transform-style: preserve-3d;*/
 }
-.cabin:hover {
-  transform: rotateX(20deg) translateZ(50px) translateY(0px);
-}
+/*.cabin:hover {*/
+/*  transform: rotateX(20deg) translateZ(50px) translateY(0px);*/
+/*}*/
 .seat-row {
   display: flex;
   transform-style: preserve-3d;
