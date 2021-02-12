@@ -65,7 +65,8 @@
                             <div class="form-group row">
                                 <label class="col-lg-4 col-form-label">Price</label>
                                 <div class="col-lg-8">
-                                    <input type="text" class="form-control" value="$ 1000.00" disabled>
+                                    <% console.log(price)%>
+                                    <input type="text" class="form-control" value="$<%= price%>" disabled>
                                 </div>
                             </div>
 
@@ -84,8 +85,13 @@
                         <div class="row justify-content-center">
 
                             <div class="col-lg-12 text-center">
-                                <a href="/booking/payment/success" class="cmn-btn">Pay</a>
-                                <a href="/booking/payment/cancel" class="cmn-btn">Cancel</a>
+                                <form method="post" action="/booking/payment/success">
+                                    <button type="submit" class="cmn-btn">Pay</button>
+                                </form>
+                                <hr>
+                                <form method="post" action="/booking/payment/cancel">
+                                    <button type="submit" class="cmn-btn">Cancel</button>
+                                </form>
                             </div>
                         </div>
                     </div>

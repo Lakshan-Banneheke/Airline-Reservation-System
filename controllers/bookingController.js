@@ -8,10 +8,8 @@ class BookingController {
         let schedule_id;
         if (typeof req.body.schedule_id !== 'undefined') {
             schedule_id = req.body.schedule_id;
-            console.log('A')
         } else {
             schedule_id = req.query.schedule_id;
-            console.log('B')
         }
 
 
@@ -51,7 +49,8 @@ class BookingController {
         try {
             // const { value, error } = await GuestInfo.validate(req.body);
             // if (error) throw (error);
-            await BookingService.createBooking(req.body);
+            let booking_id = await BookingService.createBooking(req.body);
+            req.session.booking_id = booking_id.insertbooking;
             return res.status(200).send({ result: 'redirect', url: '/payment' });
         } catch (err) {
             return res.status(200).send({ result: 'redirect',  url: `/?registrationError=${err}
@@ -61,8 +60,10 @@ class BookingController {
     }
 
     static async getPayment(req, res) {
+        let price = await BookingService.getPrice(req.session.booking_id);
         res.render('payment', {
             user: req.session.user,
+            price: price.total_price,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
             regemail: req.query.email,
@@ -81,43 +82,54 @@ class BookingController {
 
 
     static async cancelPayment(req, res) {
-        console.log("payment cancel");
-        res.render('payment_cancel', {
-            user: req.session.user,
-            registrationError: req.query.registrationError,
-            loginError: req.query.loginError,
-            regemail: req.query.email,
-            regfirstName: req.query.firstName,
-            reglastName: req.query.lastName,
-            regdob: req.query.dob,
-            reggender: req.query.gender,
-            regcontactNo: req.query.contactNo,
-            regpassportNo: req.query.passportNo,
-            regaddressLine1: req.query.addressLine1,
-            regaddressLine2: req.query.addressLine2,
-            regcity: req.query.city,
-            regcountry: req.query.country,
-        });
+        try{
+            await BookingService.cancelBooking(req.session.booking_id);
+            res.render('payment_cancel', {
+                user: req.session.user,
+                registrationError: req.query.registrationError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
+        }catch (error){
+            console.log(error);
+            return res.redirect("/booking/payment?dbError=${error}");
+        }
     }
 
     static async paymentSuccess(req, res) {
-        console.log("payment success");
-        res.render('payment_successful', {
-            user: req.session.user,
-            registrationError: req.query.registrationError,
-            loginError: req.query.loginError,
-            regemail: req.query.email,
-            regfirstName: req.query.firstName,
-            reglastName: req.query.lastName,
-            regdob: req.query.dob,
-            reggender: req.query.gender,
-            regcontactNo: req.query.contactNo,
-            regpassportNo: req.query.passportNo,
-            regaddressLine1: req.query.addressLine1,
-            regaddressLine2: req.query.addressLine2,
-            regcity: req.query.city,
-            regcountry: req.query.country,
-        });
+        try{
+            await BookingService.successBooking(req.session.booking_id);
+            res.render('payment_successful', {
+                user: req.session.user,
+                registrationError: req.query.registrationError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
+        }catch (error){
+            console.log(error);
+            return res.redirect("/booking/payment?dbError=${error}");
+        }
+
 
     }
 }

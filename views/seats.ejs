@@ -69,8 +69,8 @@
     <div class="cabin">
         <% capacity = seat_info[0]['business_seat_capacity'];
         seats_per_row = seat_info[0]['business_seats_per_row'];
-        rows = capacity / seats_per_row;
-        if (seats_per_row == 6){
+        rows = capacity / seats_per_row + rows;
+        if (seats_per_row === 6){
             cols1 = columns.slice(0, seats_per_row/3);
             cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3);
             cols3 = columns.slice(2*seats_per_row/3, seats_per_row);
@@ -132,7 +132,7 @@
     <div class="cabin">
         <% capacity = seat_info[0]['economy_seat_capacity'];
         seats_per_row = seat_info[0]['economy_seats_per_row'];
-        rows = capacity / seats_per_row;
+        rows = capacity / seats_per_row + rows;
         if (seats_per_row == 10){
             cols1 = columns.slice(0, seats_per_row/3);
             cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3+1);

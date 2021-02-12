@@ -22,6 +22,18 @@ class BookingService {
         }
         return flightInfo;
     }
+
+    static async getPrice(booking_id){
+        return Booking.getPrice(booking_id);
+    }
+
+    static async successBooking(booking_id){
+        return Booking.successBooking(booking_id);
+    }
+
+    static async cancelBooking(booking_id){
+        return Booking.cancelBooking(booking_id);
+    }
 }
 
 module.exports = BookingService;

@@ -19,10 +19,9 @@ class Booking {
             values.custID = null;
             values.custType = 'guest';
         }
-        console.log(values);
-        const query = 'CALL insertBooking($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)';
-        await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, values.seatNo, values.custName, values.address, values.custDob, values.custGender, values.custPassport, values.mobile, values.custEmail, values.custType]);
-
+        const query = 'SELECT insertBooking($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)';
+        let booking_id = await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, values.seatNo, values.custName, values.address, values.custDob, values.custGender, values.custPassport, values.mobile, values.custEmail, values.custType]);
+        return booking_id.rows[0];
     }
 
     static async getFlightInfo(schedule_id) {
@@ -33,6 +32,22 @@ class Booking {
         const priceInfo = await pool.query(query2, [route_id]);
 
         return [flightInfo.rows[0], priceInfo.rows];
+    }
+
+    static async getPrice(booking_id){
+        const query = 'SELECT total_price FROM seat_booking WHERE booking_id = $1';
+        let price = await pool.query(query,[booking_id]);
+        return price.rows[0];
+    }
+
+    static async successBooking(booking_id){
+        const query = 'UPDATE seat_booking SET state = \'Paid\' WHERE booking_id = $1';
+        await pool.query(query,[booking_id]);
+    }
+
+    static async cancelBooking(booking_id){
+        const query = ' DELETE FROM seat_booking WHERE booking_id = $1;';
+        await pool.query(query,[booking_id]);
     }
 
 }
