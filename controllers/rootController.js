@@ -1,7 +1,13 @@
+const FlightService = require('../services/flightServices');
+
 class RootController {
     static async root(req, res) {
+        const upcomingFlights = await FlightService.getAllFlights();
+        const airports = await FlightService.getLocation();
         res.render('index', {
             // pass these to every page as you can register or login from any page
+            upcomingFlights,
+            airports,
             user: req.session.user,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,

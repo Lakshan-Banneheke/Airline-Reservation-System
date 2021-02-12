@@ -1,5 +1,4 @@
 const FlightService = require('../services/flightServices');
-// const logger = require('../config/logger');
 
 class FlightController {
     static async getFlightByFilter(req, res) {
