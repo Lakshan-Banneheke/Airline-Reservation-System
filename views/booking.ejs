@@ -58,7 +58,14 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <form class="general-information" id="bookingForm" action="create-booking">
+                    <% if(registrationError) {%>
+                    <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                        <%=registrationError%>
+                    </div>
+                    <% } %>
+                    <form class="general-information" id="bookingForm">
+                        <%//TODO get schedule_id from ejs%>
+                        <input type="hidden" id="schedule_id" value="1">
 
                     <%if (!user || user.type == 'guest') { %>
 
@@ -68,62 +75,76 @@
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Full Name</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" id="custName" value="<%=custName%>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Address</label>
                                     <div class="col-lg-8">
-                                        <textarea name="adress" id="adress"></textarea>
+                                        <textarea name="adress" id="adress" required><%=address%></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Date Of Birth</label>
                                     <div class="col-lg-8">
-                                        <input type="date" class="form-control">
+                                        <input type="date" id="custDob" class="form-control" value="<%=custDob%>" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Sex</label>
+                                    <label class="col-lg-4 col-form-label">Gender</label>
                                     <div class="col-lg-8">
-                                        <select class="select-bar">
+                                        <select class="select-bar" id="custGender" required>
                                             <option data-display="- Select Gender -">- Select Gender -</option>
-                                            <option value="1">Male</option>
-                                            <option value="2">Female</option>
+                                            <% if(custGender=='Male') {%>
+                                                <option value="Male" selected>Male</option>
+                                            <%}else{%>
+                                                <option value="Male">Male</option>
+                                            <%}%>
+                                            <% if(custGender=='Female') {%>
+                                                <option value="Female" selected>Female</option>
+                                            <%}else{%>
+                                                <option value="Female">Female</option>
+                                            <%}%>
+                                            <% if(custGender=='Other') {%>
+                                                <option value="Other" selected>Other</option>
+                                            <%}else{%>
+                                                <option value="Other">Other</option>
+                                            <%}%>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Passport Number</label>
+                                    <label class="col-lg-4 col-form-label" >Passport Number</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control">
+                                        <input type="text" id="custPassport" class="form-control" value="<%=custPassport%>" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Mobile </label>
+                                    <label class="col-lg-4 col-form-label" >Mobile </label>
                                     <div class="col-lg-8">
-                                        <input type="tel" class="form-control">
+                                        <input type="tel" id="mobile" class="form-control" value="<%=mobile%>" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Email</label>
+                                    <label class="col-lg-4 col-form-label" >Email</label>
                                     <div class="col-lg-8">
-                                        <input type="email" class="form-control">
+                                        <input type="email" id="custEmail" class="form-control" value="<%=custEmail%>" required>
                                     </div>
                                 </div>
                         </div>
                     </div>
 
              <%} else { %>
+                        <input type="hidden" id="custID" value="<%=user.customerData.customer_id%>">
                     <div class="booking-registration-form">
                         <div class="booking-form-area">
                             <h3 class="title">General information</h3>
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Full Name</label>
+                                    <label class="col-lg-4 col-form-label" >Full Name</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<%=user.customerData.first_name%> <%=user.customerData.last_name%>" disabled>
+                                        <input type="text" class="form-control" id="custName" value="<%=user.customerData.first_name%> <%=user.customerData.last_name%>" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -135,35 +156,36 @@
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Date Of Birth</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<%=user.customerData.dob.substring(0,10)%>" disabled>
+                                        <input type="text" class="form-control" id="custDob" value="<%=user.customerData.dob.substring(0,10)%>" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-lg-4 col-form-label">Sex</label>
+                                    <label class="col-lg-4 col-form-label">Gender</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<%=user.customerData.gender%>" disabled>
+                                        <input type="text" class="form-control" id="custGender" value="<%=user.customerData.gender%>" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Passport Number</label>
                                     <div class="col-lg-8">
-                                        <input type="text" class="form-control" value="<%=user.customerData.passport_no%>" disabled>
+                                        <input type="text" class="form-control" id="custPassport" value="<%=user.customerData.passport_no%>" disabled>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Mobile </label>
                                     <div class="col-lg-8">
-                                        <input type="tel" class="form-control" value="<%=user.customerData.contact_no%>" disabled>
+                                        <input type="tel" class="form-control" id="mobile" value="<%=user.customerData.contact_no%>" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-lg-4 col-form-label">Email</label>
                                     <div class="col-lg-8">
-                                        <input type="email" class="form-control" value="<%=user.customerData.email%>" disabled >
+                                        <input type="email" class="form-control" id="custEmail" value="<%=user.customerData.email%>" disabled >
                                     </div>
                                 </div>
+                            <input type="hidden" id="custType" value="<%=user.customerData.type%>">
 
                         </div>
                     </div>
@@ -176,7 +198,7 @@
                     <div class="form-group row">
                         <label class="col-lg-4 col-form-label">No. of Passengers (Max: 5)</label>
                         <div class="col-lg-8">
-                            <select class="select-bar" id="passengers">
+                            <select class="select-bar" id="passengers" required>
                                 <option data-display="- Select -">- Select -</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -189,7 +211,16 @@
                     </div>
                 </div>
 
+                        <div class="educational-registration-form">
+                            <div class="booking-form-area">
+                                <div class="row justify-content-center">
 
+                                    <div class="col-lg-12 text-center">
+                                        <button class="cmn-btn" type="submit">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
             </form>
 
@@ -197,16 +228,7 @@
 
 
 
-            <div class="educational-registration-form">
-                        <div class="booking-form-area">
-                            <div class="row justify-content-center">
 
-                                <div class="col-lg-12 text-center">
-                                    <a href="#" class="cmn-btn">Confirm</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
 

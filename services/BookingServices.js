@@ -8,8 +8,11 @@ class BookingService {
         if (!seats) {
             throw new Errors.BadRequest('Schedule ID is incorrect.');
         }
-
         return seats;
+    }
+
+    static async createBooking(values){
+        return Booking.createBooking(values);
     }
 }
 

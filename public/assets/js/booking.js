@@ -1,31 +1,30 @@
 let bookingForm = $('#bookingForm');
 
-
 let start ='<div class="passengerCount"> <div class="booking-registration-form"> <div class="booking-form-area"> <h3 class="title">Passenger information</h3>'
 let end = '</div></div></div>'
 
 let passengerinfo = '<br><div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Full Name of Passenger</label>' +
                         '<div class="col-lg-8">' +
-                            '<input type="text" class="form-control">' +
+                            '<input type="text" class="form-control" name="passName[]" required>' +
                         '</div>' +
                     '</div>' +
                     '<div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Passport Number</label>' +
                         '<div class="col-lg-8">' +
-                            '<input type="text" class="form-control">' +
+                            '<input type="text" class="form-control" name="passPassport[]" required>' +
                         '</div>' +
                     '</div>' +
                     '<div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Date of Birth</label>' +
                         '<div class="col-lg-8">' +
-                            '<input type="date" class="form-control">' +
+                            '<input type="date" class="form-control" name="passDob[]" required>' +
                         '</div>' +
                     '</div>' +
                     '<div class="form-group row">' +
                         '<label class="col-lg-4 col-form-label">Seat Number</label>' +
                         '<div class="col-lg-8">' +
-                            '<select class="select-bar seatNumber">' +
+                            '<select class="select-bar seatNumber" name="seatNo[]" id="seatNo" required>' +
 
                             '</select>' +
                         '</div>' +
@@ -59,13 +58,15 @@ $(".seat-check").click(function () {
 })
 
 
+
+
 $("#passengers").change(function() {
     bookingForm.children('.passengerCount').remove();
     let passengerList = '';
     for(let i=0; i<this.value; i++){
         passengerList += passengerinfo
     }
-    bookingForm.append(start + passengerList + end);
+    $('.educational-registration-form').before(start + passengerList + end)
     $('.seatNumber').each(function () {
         $(this).html(dropdown);
     })

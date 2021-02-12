@@ -2,12 +2,12 @@ const Joi = require('joi');
 
 const GuestInfo = Joi.object(
 ).options({ abortEarly: false }).keys({
-    email: Joi.string().email().required(),
-    fullName: Joi.string().required(),
-    dob: Joi.string().required(),
-    gender: Joi.string().required().valid('Male', 'Female', 'Other'),
-    contactNo: Joi.string().trim().required().label('Contact Number'),
-    passportNo: Joi.string().required().label('Passport Number'),
+    custEmail: Joi.string().email().required(),
+    custName: Joi.string().required(),
+    custDob: Joi.string().required(),
+    custGender: Joi.string().required().valid('Male', 'Female', 'Other'),
+    mobile: Joi.string().trim().required().label('Contact Number'),
+    custPassport: Joi.string().required().label('Passport Number'),
     address: Joi.string().required()
 });
 
