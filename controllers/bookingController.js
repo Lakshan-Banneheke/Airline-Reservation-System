@@ -65,6 +65,7 @@ class BookingController {
             user: req.session.user,
             price: price.total_price,
             registrationError: req.query.registrationError,
+            dbError: req.query.dbError,
             loginError: req.query.loginError,
             regemail: req.query.email,
             regfirstName: req.query.firstName,

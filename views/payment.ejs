@@ -57,6 +57,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+                <% if(dbError) {%>
+                <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                    <%=dbError%>
+                </div>
+                <% } %>
                 <form class="general-information" id="bookingForm" action="create-booking">
 
                     <div class="booking-registration-form">
@@ -85,6 +90,7 @@
                         <div class="row justify-content-center">
 
                             <div class="col-lg-12 text-center">
+
                                 <form method="post" action="/booking/payment/success">
                                     <button type="submit" class="cmn-btn">Pay</button>
                                 </form>
@@ -100,92 +106,6 @@
             </div>
 
 
-
-
-            <div class="col-lg-4 col-sm-8">
-                <div class="sidebar">
-                    <div class="widget-box mb-30">
-                        <h3 class="caption">Flight details</h3>
-                        <ul class="flight-category">
-                            <li><span class="category-date">fri 01/11/19</span></li>
-                            <li><a href="#">Dhaka (DCA)</a><span class="count">03:30</span></li>
-                            <li><a href="#">Paris</a><span class="count">13:10</span></li>
-                            <li><span class="category-date">fri 01/11/19</span></li>
-                            <li><a href="#">Paris</a><span class="count">15:30</span></li></li>
-                            <li><a href="#">Dhaka(Dca)</a><span class="count">09:10</span></li></li>
-                        </ul>
-                    </div>
-                    <div class="widget-box mb-30">
-                        <h3 class="caption">recent Flight</h3>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Thuki air line</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Softking Air</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Thuki air line</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Softking Air</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="recent-flight-area">
-                            <h5 class="title"><a href="#">Dhaka Air Line</a></h5>
-                            <div class="recent-flight-content d-flex flex-wrap">
-                                <span class="place">dhaka to dubai</span>
-                                <div class="time">
-                                    <span class="first-time">13:00</span>
-                                    <span class="middle-time">05h00</span>
-                                    <span class="last-time">08:10</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </section>
