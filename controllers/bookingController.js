@@ -40,7 +40,7 @@ class BookingController {
             // const { value, error } = await GuestInfo.validate(req.body);
             // if (error) throw (error);
             await BookingService.createBooking(req.body);
-            return res.status(200).send({ result: 'redirect', url: '/confirm-payment' });
+            return res.status(200).send({ result: 'redirect', url: '/payment' });
         } catch (err) {
             return res.status(200).send({ result: 'redirect',  url: `/?registrationError=${err}
                 &custEmail=${req.body.custEmail}&custName=${req.body.custName}&custDob=${req.body.custDob}&custGender=${req.body.custGender}&mobile=${req.body.mobile}&custPassport=${req.body.custPassport}&address=${req.body.address}

@@ -33,7 +33,7 @@
                 if(custDob!==""){
                     try{
                         let datePicked = new Date(custDob);
-
+                        let cutoffDate  = new Date(Date.now() - (1000*60*60*24*365*18));
                         if(Date.now()<datePicked)
                             error_msgs+='<br>Pick a valid Date of Birth';
                     }catch{
@@ -99,7 +99,8 @@
             } else {
                 let bookingForm = $('#bookingForm');
                 bookingForm.children('.reg-error').remove();
-                bookingForm.prepend('<span class="alert alert-danger reg-error" style="z-index 999; width: 100%">'+error_msgs+'</span>');
+
+                $('.educational-registration-form').before('<span class="alert alert-danger reg-error" style="z-index 999; width: 100%">'+error_msgs+'</span>');
                 // $('#map').height('576px');
                 $('.reg-error');
             }
