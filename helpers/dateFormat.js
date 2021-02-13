@@ -9,6 +9,17 @@ const ymd = (dateObj) => {
     return format;
 };
 
+const hms = (dateObj) => {
+    const hour = (`0${dateObj.getHours() + 1}`).slice(-2);
+
+    const minute = (`0${dateObj.getMinutes() + 1}`).slice(-2);
+    const second = (`0${dateObj.getSeconds() + 1}`).slice(-2);
+
+    const format = `${hour}:${minute}:${second}`;
+
+    return format;
+};
 module.exports = {
     ymd,
+    hms,
 };

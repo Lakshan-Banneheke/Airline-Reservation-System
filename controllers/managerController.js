@@ -17,6 +17,26 @@ class ManagerController {
         }
     }
 
+    static async allFlightsPage(req, res) {
+        try {
+            const ongoingAllFlights = await StaffService.getongoingAllFlights();
+            const allUpcomingFlights = await StaffService.getAllUpcomingFlights();
+            const allArrivedFlights = await StaffService.getAllArrivedFlights();
+
+            res.render('staff_manager_all_flights', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                ongoingAllFlights,
+                allUpcomingFlights,
+                allArrivedFlights,
+            });
+        } catch (e) {
+            console.log(e);
+            res.render('500');
+        }
+    }
+
     static async allGeneralStaffPage(req, res) {
         try {
             const staffMembers = await StaffService.getAllVerifiedGeneralStaff();

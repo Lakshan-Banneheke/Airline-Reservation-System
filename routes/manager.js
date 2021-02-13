@@ -3,6 +3,7 @@ const ifManager = require('../middleware/ifManager');
 const ManagerController = require('../controllers/managerController');
 
 router.get('/', ifManager, ManagerController.homePage);
+router.get('/all_flights', ifManager, ManagerController.allFlightsPage);
 router.get('/all_general_staff', ifManager, ManagerController.allGeneralStaffPage);
 router.get('/find', ifManager, ManagerController.searchGeneralStaff);
 router.get('/get_airport_codes', ifManager, ManagerController.getAirportCodesJson);
