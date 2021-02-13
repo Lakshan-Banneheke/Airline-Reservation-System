@@ -79,8 +79,22 @@ class StaffService {
         return Staff.verifyStaff(id);
     }
 
-    static async getongoingAllFlights() {
-        const ongoingAllFlights = await Flight.ongoingAllFlights();
+    static async getAllArrivedFlights() {
+        const allArrivedFlights = await Flight.getAllArrivedFlights();
+        if (allArrivedFlights && allArrivedFlights.length > 0) {
+            allArrivedFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+                flight.actual_arrival = `${ymd(new Date(flight.actual_arrival))}  ${hms(new Date(flight.actual_arrival))}`;
+            });
+        }
+        // console.log(allArrivedFlights);
+        return allArrivedFlights;
+    }
+
+    static async getAllOngoingFlights() {
+        // const ongoingAllFlights = await Flight.ongoingAllFlights();
+        const ongoingAllFlights = await Flight.getAllOngoingFlights();
         if (ongoingAllFlights && ongoingAllFlights.length > 0) {
             ongoingAllFlights.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));
@@ -91,17 +105,16 @@ class StaffService {
         return ongoingAllFlights;
     }
 
-    static async getAllArrivedFlights() {
-        const allArrivedFlights = await Flight.getAllArrivedFlights();
-        if (allArrivedFlights && allArrivedFlights.length > 0) {
-            allArrivedFlights.forEach((flight) => {
+    static async getAllUpcomingFlights() {
+        const upcomingFlights = await Flight.getAllUpcomingFlights();
+        if (upcomingFlights && upcomingFlights.length > 0) {
+            upcomingFlights.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));
                 flight.arrival_date = ymd(new Date(flight.arrival_date));
-                flight.actual_arrival = `${ymd(new Date(flight.actual_arrival))}  ${hms(new Date(flight.actual_arrival))}`;
             });
         }
-        console.log(allArrivedFlights);
-        return allArrivedFlights;
+        // console.log(upcomingFlights);
+        return upcomingFlights;
     }
 
     static async getincomingPendingFlights(staff_member_airport) {
@@ -127,18 +140,6 @@ class StaffService {
             });
         }
         return toBeDepartedFlights;
-    }
-
-    static async getAllUpcomingFlights() {
-        const upcomingFlights = await Flight.getAllUpcomingFlights();
-        if (upcomingFlights && upcomingFlights.length > 0) {
-            upcomingFlights.forEach((flight) => {
-                flight.departure_date = ymd(new Date(flight.departure_date));
-                flight.arrival_date = ymd(new Date(flight.arrival_date));
-            });
-        }
-        // console.log(upcomingFlights);
-        return upcomingFlights;
     }
 
     static async getUpcomingFlights(staff_member_airport) {

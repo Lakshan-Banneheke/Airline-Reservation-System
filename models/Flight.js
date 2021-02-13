@@ -2,7 +2,16 @@
 const pool = require('../config/db');
 
 class Flight {
-    static async ongoingAllFlights() {
+    static async getAllArrivedFlights() {
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination,actual_arrival
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Landed'
+                        ORDER BY get_timestamp(arrival_date,arrival_time_utc) DESC;`;
+        const result = await pool.query(query);
+        return result.rows;
+    }
+
+    static async getAllOngoingFlights() {
         const query = `SELECT schedule_id,aircraft_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,duration,origin,destination,flight_state
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
                         WHERE (flight_state =$1 OR flight_state=$2) OR (flight_state=$3 AND departure_date<=NOW()::DATE)
@@ -11,11 +20,11 @@ class Flight {
         return result.rows;
     }
 
-    static async getAllArrivedFlights() {
-        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination,actual_arrival
+    static async getAllUpcomingFlights() {
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-                        WHERE flight_state='Landed'
-                        ORDER BY get_timestamp(arrival_date,arrival_time_utc) DESC;`;
+                        WHERE flight_state='Scheduled'  AND departure_date>NOW()::DATE
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
         const result = await pool.query(query);
         return result.rows;
     }
@@ -36,16 +45,6 @@ class Flight {
                         AND (SELECT aircraft_state FROM aircraft_instance WHERE aircraft_id=flight_schedule.aircraft_id)='On-Ground'
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC;`;
         const result = await pool.query(query, [staff_member_airport]);
-        return result.rows;
-    }
-
-    static async getAllUpcomingFlights() {
-        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
-                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-                        WHERE flight_state='Scheduled'  AND departure_date>NOW()::DATE
-                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
-        const result = await pool.query(query);
-
         return result.rows;
     }
 

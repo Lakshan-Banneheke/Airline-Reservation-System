@@ -19,7 +19,7 @@ class ManagerController {
 
     static async allFlightsPage(req, res) {
         try {
-            const ongoingAllFlights = await StaffService.getongoingAllFlights();
+            const ongoingAllFlights = await StaffService.getAllOngoingFlights();
             const allUpcomingFlights = await StaffService.getAllUpcomingFlights();
             const allArrivedFlights = await StaffService.getAllArrivedFlights();
 
