@@ -88,19 +88,31 @@
                 <div class="educational-registration-form">
                     <div class="booking-form-area">
                         <div class="row justify-content-center">
+                            <div  class="alert alert-danger" role="alert">
+                                Your booking will be <b>cancelled</b> at browser close or at the end of 10 minuites if the payment is not completed
+                            
+                            <div id='seconds-counter' class="alert alert-danger" role="alert" style="text-align: center;">
+                               
+                              </div>
+                            </div>
 
                             <div class="col-lg-12 text-center">
-
+                                <div class="row" style="align-items: center;">
+                                    <div class="col-md-6">
                                 <form method="post" action="/booking/payment/success">
-                                    <button type="submit" class="cmn-btn">Pay</button>
+                                    <input type="hidden" id="booking_id" value="<%= booking_id %>">
+                                    <button type="submit" class="cmn-btn" onclick="setFalse()">Pay</button>
                                 </form>
-                                <hr>
+                                </div>
+                                <div class="col-md-6">
                               
                                 <form method="post" action="/booking/payment/cancel">
                                     <input type="hidden" id="booking_id" value="<%= booking_id %>">
 
                                     <button type="submit" class="cmn-btn">Cancel</button>
                                 </form>
+                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -112,7 +124,7 @@
         </div>
     </div>
 </section>
-<div id='seconds-counter'> </div>
+
 
 <script src="/assets/js/payment.js"></script>
 

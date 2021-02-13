@@ -1,5 +1,7 @@
 <!-- header-section start -->
 <%- include('_header',{user}) %>
+<!--link rel="stylesheet" href="/assets/css/ticketStyle.css"-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/0.7.4/tailwind.min.css">
 <!-- header-section end -->
 <!-- register-section start -->
 <%- include('_signup',{user,registrationError}) %>
@@ -61,9 +63,96 @@
 
                     <div class="booking-registration-form">
                         <div class="booking-form-area">
-                            <div class="alert alert-success text-center" role="alert" style="z-index: 999;">
-                                <h5>Payment was Successful!!!</h5>
+                            <div class="text-center" >
+                                <h1 style="color:green;"><i class="fas fa-check-circle" style="size: 30%;"></i>Payment Successful!</h1>
+                                <br>
+                                <h3>Thank You for your payment of $<%=bookingDetails[0].total_price%> for B Airways</h3>
+                                <p>Reference Customer ID: <%=bookingDetails[0].customer_id%></p>
                             </div>
+                            <% if(bookingDetails && bookingDetails.length!=0) {%>
+                              <% bookingDetails.forEach(function(booking){%>
+                            <div class="flex font-sans justify-center items-center h-screen">
+                                <div class="w-full max-w-sm mx-4 shadow-lg rounded-lg">
+                                  
+                                  <div class="py-4 px-6 flex justify-between items-end bg-white rounded-lg rounded-b-none">
+                                    <div>
+                                      
+                                    </div>
+                                    <div>
+                                      <span class="uppercase font-bold text-grey-darkest tracking-wide text-sm">Boarding pass</span>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="flex bg-red justify-around items-center py-16 px-6 sm:px-12 bg-destination" style="background-color: orangered;">
+                                    <div class="flex-1 text-5xl font-bold text-white tracking-wide text-shadow-lg"><%=flight_details.origin%></div>
+                                    <div class="mx-8">
+                                      <img class="h-12" src="http://www.freeiconspng.com/uploads/description-white-plane-icon-2-27.png" alt="" />
+                                    </div>
+                                    <div class="flex-1 text-right text-5xl font-bold text-white tracking-wide text-shadow-lg"><%=flight_details.destination%></div>
+                                  </div>
+                              
+                                  
+                                  <div class="flex bg-purple-400 px-6 sm:px-12 py-4" style="background-color: indianred;">
+                                    <div class="w-2/5">
+                                      <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">date</span>
+                                      <span class="uppercase text-white block tracking-wide text-sm"><%=(flight_details.departure_date).toString().substring(0,15)%></span>   
+                                    </div>
+                                    <div class="w-1/5">
+                                      <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">gate</span>
+                                      <span class="uppercase text-white block tracking-wide text-sm">51b</span>
+                                    </div>
+                                    <div class="w-2/5">
+                                      <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">boarding</span>
+                                      <span class="uppercase text-white block tracking-wide text-sm"><%=flight_details.boarding_time_utc%></span>
+                                    </div>
+                                  </div>
+                                  
+                              
+                                  <div class="py-8 px-6 sm:px-12 bg-white bg-plane rounded-lg rounded-t-none">
+                                    <div class="flex">
+                                      <div class="w-3/5">
+                                        <div class="mb-3">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Passenger</h4>
+                                          <p class="font-semibold tracking-wide text-purple-400" class="passenger-name"><%=booking.name %> </p>
+                                          <p><small></small></p>
+                                        </div>
+                                        <div class="mb-3">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Departure</h4>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.departure_time_utc%></p>
+                                        </div>
+                                        <div class="">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Estimate arrive</h4>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.arrival_time_utc%></p>
+                                        </div>
+                                        </div>
+                                      <div class="small-3 columns">
+                                        <div class="mb-3">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Class</h4>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=booking.class_name%></p>
+                                        </div>
+                                        <div class="mb-3">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Seat</h4>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%= booking.seat_id %></p>
+                                        </div>
+                                        <div class="">
+                                          <h4 class="text-xs uppercase tracking-wide text-grey-darker">Flight</h4>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.schedule_id%></p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                   
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                              
+                              <%});%>
+                            <% }else{ %>
+                              <div class=" alert alert-warning text-center">
+                                                          <strong>No Flights available</strong>
+                          </div>
+                          <%}%>
 
 
                         </div>
@@ -71,7 +160,11 @@
 
 
                 </form>
-
+                
+                  
+                  
+                  
+                  
 
 
 

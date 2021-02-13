@@ -1,6 +1,6 @@
 const { GuestInfo } = require('./validators/guestInfo');
 const BookingService = require('../services/BookingServices');
-
+const FlightService = require('../services/flightServices');
 class BookingController {
     static async getBooking(req, res) {
         // console.log(req.params.schedule_id);
@@ -112,8 +112,14 @@ class BookingController {
     static async paymentSuccess(req, res) {
         try {
             await BookingService.successBooking(req.session.booking_id);
+            const bookingDetails = await BookingService.getBookingDetails(req.session.booking_id);
+            const schedule_id=bookingDetails[0].schedule_id;
+            const flight_details = await FlightService.getFlightByID(schedule_id);
+
             res.render('payment_successful', {
                 user: req.session.user,
+                flight_details,
+                bookingDetails: bookingDetails[1],
                 registrationError: req.query.registrationError,
                 loginError: req.query.loginError,
                 regemail: req.query.email,

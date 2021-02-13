@@ -34,6 +34,10 @@ class BookingService {
     static async cancelBooking(booking_id){
         return Booking.cancelBooking(booking_id);
     }
+
+    static async getBookingDetails(booking_id){
+        return Booking.getBookingDetails(booking_id);
+    }
     
 }
 

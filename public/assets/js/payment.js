@@ -9,7 +9,7 @@ function incrementSeconds() {
         el.innerText = "Time Remaining is  " +mint + " Minuites and "+ sec + " seconds.";
     }
     else{
-        el.innerText = "Time Remaining is  " + seconds + " seconds.";
+        el.innerText ="Time Remaining is  " + seconds + " seconds.";
     }
     seconds -= 1;
 
@@ -18,8 +18,19 @@ function incrementSeconds() {
 let cancel = setInterval(incrementSeconds, 1000);
 
 setTimeout(delBooking, 20000);
-
-window.onbeforeunload = delBooking;
+//TODO
+var show_close_alert=true;
+//window.onbeforeunload = delBooking;
+$("form").bind("submit", function (){
+    show_close_alert=false;
+    
+});
+$(window).bind("beforeunload", function () {
+    if(show_close_alert){
+        delBooking();
+    }
+    
+});
 
 function delBooking(){
     $.ajax({
