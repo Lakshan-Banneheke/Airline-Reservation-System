@@ -68,7 +68,12 @@
                             <div class="rt-input-group rt-input-group--style">
                                 <div class="single-input  col-rt-in-3">
                                     <select name="from" id="dropdown" class="select-bar">
+                                        <% if(from===undefined || from=='') {%>
                                         <option value='' selected>--Select FROM Airport--</option>
+                                        <%} else{%>
+                                            <option value=<%=from %> selected><b><%=from %></b></option>
+                                            <option value='' >--Select FROM Airport--</option>
+                                            <%}%>
                                         <% if(airports && airports.length!=0) {%>
                                             <% airports.forEach(function(airport){%>
                                                 <option value=<%=airport.airport_code %> ><%= airport.name %>
@@ -83,7 +88,12 @@
 
                                 <div class="single-input  col-rt-in-3">
                                     <select name="to" id="dropdown" class="select-bar">
-                                        <option value='' selected>--Select TO Airport--</option>
+                                        <% if(to===undefined || to=='') {%>
+                                            <option value='' selected>--Select TO Airport--</option>
+                                            <%} else{%>
+                                                <option value=<%=to %> selected><b><%=to %></b></option>
+                                                <option value='' >--Select TO Airport--</option>
+                                                <%}%>
                                         <% if(airports && airports.length!=0) {%>
                                             <% airports.forEach(function(airport){%>
                                                 <option value=<%=airport.airport_code %> ><%= airport.name %>
@@ -178,20 +188,31 @@
                                 </tbody>
                         </table>
                     </div>
-
+                    <div class="col-lg-12 text-center">
+                    <div class="row" style="align-items: center;">
+                    <div class="col-md-6">
+                    <a href="#search"><h6 style="color: orangered;">Click here to Search more flights by Date</h6></a>
+                    </div>
+                    <div class="col-md-6">
+                    <a href="/customer/ViewFlights"><h6 style="color: orangered;">Click here to View All Upcoming Flights</h6></a>
+                    </div>
+                    </div>
+                    </div>
 
                     <% }else{ %>
-                        <div class=" alert alert-warning text-center">
-                                                    <strong>No Flights available</strong>
+                        <div class=" alert alert-danger text-center">
+                                                    <strong><h4>Sorry, No Flights available</h4></strong>
+                                                    <p>There are no flights availabe  <%=booking_date_from? 'on ': ''%> <%=booking_date_from%> <%=from? 'from ': ''%> <%= from%> <%=to? 'to ': ''%> <%= to%>  </p>
+                                                    <a href="#upcomingFlights"><p style="color: red;">Click here to View Upcoming Flights</p></a>
                     </div>
                     <%}%>
 
                         <!-- flight-table-area end -->
 
-                    <a href="#search">Search more flights by Date</a>
+                    
                         <!-- flight-section start -->
                         <% if(upcomingFlights && upcomingFlights.length!=0) {%>
-                            <section class="flight-section pt-120 pb-120">
+                            <section class="flight-section pt-120 pb-120" id="upcomingFlights">
                                 <div class="container">
                                     <div class="row justify-content-center">
                                         <div class="col-lg-6 text-center">

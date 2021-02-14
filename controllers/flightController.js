@@ -10,6 +10,9 @@ class FlightController {
             res.render('flight_search', {
                 error: req.query.error,
                 success: req.query.success,
+                booking_date_from:req.query.booking_date_from,
+                from:req.query.from,
+                to:req.query.to,
                 allFlights,
                 upcomingFlights,
                 airports,

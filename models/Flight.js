@@ -12,37 +12,37 @@ class Flight {
         // View all the flights available
         // eslint-disable-next-line max-len
         if ((vdepartureDate === undefined || vdepartureDate === '') && (vdeparture === undefined || vdeparture === '') && (vdestination === undefined || vdeparture === '')) {
-            const query = 'SELECT schedule_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination FROM flight_schedule INNER JOIN route USING(route_id) ORDER BY departure_date LIMIT 20;';
+            const query = 'SELECT schedule_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination FROM flight_schedule INNER JOIN route USING(route_id)  WHERE departure_date>=NOW() ORDER BY departure_date LIMIT 20;';
             result = await pool.query(query, []);
             return result.rows;
         } // Filter flights by From
         if (vdestination === '' && vdepartureDate === '') {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 ORDER BY departure_date;';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 AND departure_date>=NOW() ORDER BY departure_date;';
             result = await pool.query(query, [vdeparture]);
             return result.rows;
         } // Filter flights by Date of departure
         if (vdeparture === '' && vdestination === '') {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE departure_date=$1 ORDER BY departure_date; ';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE departure_date=$1 AND departure_date>=NOW() ORDER BY departure_date; ';
             result = await pool.query(query, [vdepartureDate]);
             return result.rows;
         } // Filter flights by To
         if (vdeparture === '' && vdepartureDate === '') {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE destination=$1 ORDER BY departure_date;';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE destination=$1 AND departure_date>=NOW() ORDER BY departure_date;';
             result = await pool.query(query, [vdestination]);
             return result.rows;
         } // Filter flights by Departure date and origin
         if (vdestination === '') {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE departure_date=$1 AND origin=$2 ORDER BY departure_time_utc;';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE departure_date=$1 AND origin=$2  AND departure_date>=NOW() ORDER BY departure_time_utc;';
             result = await pool.query(query, [vdepartureDate, vdeparture]);
             return result.rows;
         } // Filter flights by To and From
         if (vdepartureDate === '') {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 AND destination=$2  ORDER BY departure_date; ';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 AND destination=$2  AND departure_date>=NOW() ORDER BY departure_date; ';
             result = await pool.query(query, [vdeparture, vdestination]);
             return result.rows;
         } // Filter flights by To, From and Departure date
         if (!(vdepartureDate === '' || vdeparture === '' || vdestination === '')) {
-            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 AND destination=$2 AND departure_date=$3 ORDER BY departure_time_utc; ';
+            const query = 'SELECT schedule_id,departure_date,arrival_date,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route USING(route_id) WHERE origin=$1 AND destination=$2 AND departure_date=$3 AND departure_date>=NOW() ORDER BY departure_time_utc; ';
             result = await pool.query(query, [vdeparture, vdestination, vdepartureDate]);
             return result.rows;
         }
