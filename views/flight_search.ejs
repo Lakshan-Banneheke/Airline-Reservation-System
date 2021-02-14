@@ -163,14 +163,14 @@
                                                 </td>
                                                 <td>
                                                     <form action='/booking' method=post>
-                                                        <div class="single-input  col-rt-in-3" style="justify-content: center;"></div>
+                                                        <div class="single-input  col-rt-in-3" style="justify-content: center;">
                                                         <button type='submit'
                                                             class="cmn-btn" style="font-size: smaller;"
                                                             name='book-button'>Book Flight</button><input type='hidden'
                                                             name='schedule_id' value='<%=flight.schedule_id%>'></div></form>
                                                             
-                                                              
-                                                            
+
+
                                                 </td>
 
                                             </tr>
@@ -468,6 +468,4 @@
             </div>
         </div>
     </div>
-
-
 <%- include('_footer',{user}) %>

@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 class Flight {
     static async getFlightByID(id) {
-        const query = 'SELECT schedule_id,departure_time_utc,arrival_time_utc,origin,destination FROM flight_schedule  INNER JOIN route ON flight_schedule.route_id=route.route_id WHERE flight_id=$1 AND departure_time_utc> NOW() ORDER BY departure_time_utc LIMIT 10; ';
+        const query = `SELECT schedule_id,departure_time_utc,departure_time_utc-interval '1 hour' AS boarding_time_utc, arrival_time_utc,departure_date,arrival_date,origin,destination FROM flight_schedule  INNER JOIN route ON flight_schedule.route_id=route.route_id WHERE schedule_id=$1; `;
         const result = await pool.query(query, [id]);
         return result.rows[0];
     }

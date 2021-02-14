@@ -19,10 +19,44 @@ class Booking {
             values.custID = null;
             values.custType = 'guest';
         }
-        console.log(values);
-        const query = 'CALL insertBooking($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)';
-        await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, values.seatNo, values.custName, values.address, values.custDob, values.custGender, values.custPassport, values.mobile, values.custEmail, values.custType]);
+        const query = 'SELECT insertBooking($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)';
+        let booking_id = await pool.query(query,[values.custID, values.schedule_id, values.passName, values.passPassport, values.passDob, values.seatNo, values.custName, values.address, values.custDob, values.custGender, values.custPassport, values.mobile, values.custEmail, values.custType]);
+        return booking_id.rows[0];
+    }
 
+    static async getFlightInfo(schedule_id) {
+        const query1 = 'SELECT route_id, departure_date, departure_time_utc, arrival_date, arrival_time_utc, origin, destination, duration FROM flight_schedule NATURAL JOIN route WHERE schedule_id=$1';
+        const flightInfo = await pool.query(query1, [schedule_id]);
+        let route_id = flightInfo.rows[0].route_id;
+        const query2 = 'SELECT traveler_class_id, price FROM seat_price WHERE route_id=$1';
+        const priceInfo = await pool.query(query2, [route_id]);
+
+        return [flightInfo.rows[0], priceInfo.rows];
+    }
+
+    static async getPrice(booking_id){
+        const query = 'SELECT total_price FROM seat_booking WHERE booking_id = $1';
+        let price = await pool.query(query,[booking_id]);
+        return price.rows[0];
+    }
+
+    static async successBooking(booking_id){
+        const query = 'UPDATE seat_booking SET state = \'Paid\' WHERE booking_id = $1';
+        await pool.query(query,[booking_id]);
+    }
+
+    static async cancelBooking(booking_id){
+        const query = ' DELETE FROM seat_booking WHERE booking_id = $1;';
+        await pool.query(query,[booking_id]);
+    }
+
+    static async getBookingDetails(booking_id){
+        const query1 = 'SELECT  booking_id,passenger_seat.seat_id as seat_id,passenger_seat.model_id as model_id,price,name,customer_id,schedule_id,total_price,class_name FROM passenger_seat NATURAL JOIN seat_booking,aircraft_seat,traveller_class WHERE booking_id = $1 AND passenger_seat.model_id=aircraft_seat.model_id AND passenger_seat.seat_id=aircraft_seat.seat_id AND aircraft_seat.traveller_class_id=traveller_class.class_id';
+        const query2 = 'SELECT schedule_id FROM seat_booking WHERE booking_id = $1';
+        let result1 = await pool.query(query1,[booking_id]);
+        let result2=await pool.query(query2,[booking_id]);
+        console.log([result2.rows[0], result1.rows])
+        return [result2.rows[0], result1.rows];
     }
 
 }

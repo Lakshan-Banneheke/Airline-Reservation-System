@@ -4207,3 +4207,39 @@ td{
     width: 50%;
     text-align: center;
 }
+
+/*css from code pen to boarding pass*/
+.bg-plane{
+
+    background-position: center center;
+    background-size: 150%;
+    background-repeat: no-repeat;
+  }
+    
+  .bg-destination
+  
+   { background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;}
+    
+  .text-shadow
+   { text-shadow: 0 2px 4px rgba(0,0,0,0.10)}
+  
+  .text-shadow-md
+   { text-shadow: 0 4px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08)}
+  
+    .text-shadow-lg
+    {text-shadow: 0 15px 30px rgba(0,0,0,0.11), 0 5px 15px rgba(0,0,0,0.08)}
+    
+    
+  body
+   { background: #d9414a;
+    background: -webkit-linear-gradient(to right, #8c5a9b, #d9414a);
+    background: linear-gradient(to right, #8c5a9b, #d9414a);}
+    
+    
+  .bg-purple-400
+    {background-color: #a41ae4;}
+    
+  .text-purple-400
+    {color: #7b4295;}

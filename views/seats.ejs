@@ -69,8 +69,8 @@
     <div class="cabin">
         <% capacity = seat_info[0]['business_seat_capacity'];
         seats_per_row = seat_info[0]['business_seats_per_row'];
-        rows = capacity / seats_per_row;
-        if (seats_per_row == 6){
+        rows = capacity / seats_per_row + rows;
+        if (seats_per_row === 6){
             cols1 = columns.slice(0, seats_per_row/3);
             cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3);
             cols3 = columns.slice(2*seats_per_row/3, seats_per_row);
@@ -132,7 +132,7 @@
     <div class="cabin">
         <% capacity = seat_info[0]['economy_seat_capacity'];
         seats_per_row = seat_info[0]['economy_seats_per_row'];
-        rows = capacity / seats_per_row;
+        rows = capacity / seats_per_row + rows;
         if (seats_per_row == 10){
             cols1 = columns.slice(0, seats_per_row/3);
             cols2 = columns.slice(seats_per_row/3, 2*seats_per_row/3+1);
@@ -192,40 +192,40 @@
     </div>
 </div>
 
-<div class="aircraft-details">
-    <div class="aircraft-details-actions">
-        <button type="button" class="btn btn-utility btn-info"><span class="icon icon-information"></span></button>
-        <button type="button" class="btn btn-utility btn-close"><span class="icon icon-close"></span></button>
+<!--<div class="aircraft-details">-->
+<!--    <div class="aircraft-details-actions">-->
+<!--        <button type="button" class="btn btn-utility btn-info"><span class="icon icon-information"></span></button>-->
+<!--        <button type="button" class="btn btn-utility btn-close"><span class="icon icon-close"></span></button>-->
 
-    </div>
-    <table>
-        <caption>Aircraft Specifications</caption>
-        <tr>
-            <th scope="row" rowspan="2">Seat width/pitch</th>
-            <td>Frist Class 18.5"/37"</td>
-        </tr>
-        <tr>
-            <td>Economy Class: 17"/32"</td>
-        </tr>
-        <tr>
-            <th scope="row">Accommodation</th>
-            <td>261 passengers</td>
-        </tr>
-        <tr>
-            <th scope="row">Cruising Speed</th>
-            <td>535mph</td>
-        </tr>
-        <tr>
-            <th scope="row">Range</th>
-            <td>3,740 miles</td>
-        </tr>
-        <tr>
-            <th scope="row">Engine</th>
-            <td>2 wing-mounted turbofans</td>
-        </tr>
-        <tr>
-            <th scope="row">Accommodation</th>
-            <td>261 passengers</td>
-        </tr>
-    </table>
-</div>
+<!--    </div>-->
+<!--    <table>-->
+<!--        <caption>Aircraft Specifications</caption>-->
+<!--        <tr>-->
+<!--            <th scope="row" rowspan="2">Seat width/pitch</th>-->
+<!--            <td>Frist Class 18.5"/37"</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>Economy Class: 17"/32"</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th scope="row">Accommodation</th>-->
+<!--            <td>261 passengers</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th scope="row">Cruising Speed</th>-->
+<!--            <td>535mph</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th scope="row">Range</th>-->
+<!--            <td>3,740 miles</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th scope="row">Engine</th>-->
+<!--            <td>2 wing-mounted turbofans</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <th scope="row">Accommodation</th>-->
+<!--            <td>261 passengers</td>-->
+<!--        </tr>-->
+<!--    </table>-->
+<!--</div>-->
