@@ -1,3 +1,271 @@
-<%- include('_staff_header',{user}) %>
-    <h3>General Home</h3>
+<%- include('_staff_header_general',{user}) %>
+<div class="hold-transition sidebar-mini">
+    <div class="container py-4">
+
+        <% if(user.staffData){%>
+            <h3>Welcome <%=user.staffData.first_name%></h3>
+            <p class="text-secondary">Assigned Airport - <%=user.staffData.assigned_airport%></p>
+        <%}else{%>
+            <h3>Welcome!</h3>
+        <%}%>
+        <hr>
+        <div>
+            <% if (error) {%>
+                <div class="alert alert-danger text-center" role="alert" style="background-color: #f8d7da;color:#721c24;">
+                    <%=error%>
+                </div>
+            <% } %>
+    
+            <% if (success) {%>
+                <div class="alert alert-success text-center" role="alert" style="background-color: #d4edda;color:#588c64;">
+                    <%=success%>
+                </div>
+            <% } %>
+        </div>
+        <div>
+            <div class="nav-tabs-boxed">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#ongoingflights" role="tab"
+                            aria-controls="ongoingflights" aria-selected="true">Incoming Pending Flights</a></li>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#departingflights" role="tab"
+                        aria-controls="departingflights" aria-selected="false">Departing Flights</a></li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" role="tabpanel" id="ongoingflights">
+                    <div class="card mt-3" style="background-color: #c6eaec;"><!--card1 start-->
+                        <div class="card-header">
+                          <h3 class="card-title">Incoming Pending Flights</h3>
+                        </div>
+                        <div class="card-body">
+                    
+                            <% if (incomingFlights && incomingFlights.length > 0){ %>
+                                <% for (var i = 0; i < incomingFlights.length; i++) { %>
+                                
+                                    <!--ongoing flights start-->
+                                    <div class="col-lg-12 mb-30">
+                                        <div class="flight-search-box">
+                                            <div class="row"><!--row start-->
+                                                <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                                    <div class="flight-search-item d-flex flex-wrap">
+                                                        <div class="flight-search-thumb">
+                                                            <i class="fa fa-plane" aria-hidden="true"></i>
+                                                            
+                                                        </div>
+                                                        <div class="flight-search-title">
+                                                            <h5 class="title">Schedule ID: <%= incomingFlights[i].schedule_id %></h5>
+                                                            <%if (incomingFlights[i].flight_state=="Delayed-Departure") { %>
+                                                                <h5><span class="badge badge-danger ">delayed departure</span></h5>
+                                                            
+                                                            <% }else{ %>
+                                                                <h5><span class="badge badge-info ">Departed on-time</span></h5>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flight-search-body">
+                                                        <h5 class="flight-start"><%= incomingFlights[i].departure_time_utc %></h5>
+                                                        <h5 class="flight-middle"><%= ("0"+incomingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+incomingFlights[i].duration.minutes).slice(-2) %></h5>
+                                                        <h5 class="flight-end"> <%= incomingFlights[i].arrival_time_utc %></h5>
+                                                    </div>
+                                                    <div class="flight-place">
+                                                        <p><span class="start-place">Departed at</span></p>
+                                                    </div>
+                                                </div><!--new 1st div end-->
+                                                <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                                    <br/><h6>From:  <%= incomingFlights[i].origin %></h6>
+                                                    <h6>To:  <%= incomingFlights[i].destination %> </h6>
+                                                    <h6>Aircraft ID: <%= incomingFlights[i].aircraft_id %> </h6>
+                                                    <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
+                                                    <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Arrival</button><input type='hidden' name='arrival_schedule_id' value='<%= incomingFlights[i].schedule_id %>'></form>
+                                                </div><!--new 2nd div-->
+                                        </div><!--raw end-->
+                                        </div>
+                                    </div>
+                                    <!--ongoing flights end-->
+            
+                                <% } %>
+                            <% } else { %>
+                                <div class="alert alert-warning text-center" role="alert" style="background-color: #fff3cd; color:#a08330;">
+                                    No Pending Incoming Flights Available
+                                </div>
+                            <% } %>
+            
+                        </div>
+                    </div><!--card1 end-->
+                </div>
+                <div class="tab-pane" role="tabpanel" id="departingflights">
+                    <!--card2 start-->
+                        <div class="card mt-3" style="background-color: #b1dfc0;">
+                            <div class="card-header">
+                            <h3 class="card-title">Departing Flights for Today</h3>
+                            </div>
+                            
+                            <div class="card-body">
+                                
+                                <% if (departingFlights && departingFlights.length > 0){ %>
+                                    <% for (var i = 0; i < departingFlights.length; i++) { %>
+                                    
+                                        <!--ongoing flights start-->
+                                        <div class="col-lg-12 mb-30">
+                                            <div class="flight-search-box">
+                                                <div class="row"><!--row start-->
+                                                    <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                                        <div class="flight-search-item d-flex flex-wrap">
+                                                            <div class="flight-search-thumb">
+                                                                <i class="fa fa-plane" aria-hidden="true"></i>
+                                                                
+                                                            </div>
+                                                            <div class="flight-search-title">
+                                                                <h5 class="title">Schedule ID: <%= departingFlights[i].schedule_id %></h5>
+                                        
+                                                                
+                                                            </div>
+                                                        </div>
+                                                        <div class="flight-search-body">
+                                                            <h5 class="flight-start"><%= departingFlights[i].departure_time_utc %></h5>
+                                                            <h5 class="flight-middle"><%= ("0"+departingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+departingFlights[i].duration.minutes).slice(-2) %></h5>
+                                                            <h5 class="flight-end"> <%= departingFlights[i].arrival_time_utc %></h5>
+                                                        </div>
+                                                        <div class="flight-place">
+                                                            <p><span class="start-place">Scheduled time:</span></p>
+                                                        </div>
+                                                    </div><!--new 1st div end-->
+                                                    <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                                        <br/>
+                                                        <% if (departingFlights[i].state=="Delayed") {%>
+                                                            <h6 class="bg-warning text-white"> Scheduled Departure date: <%= departingFlights[i].departure_date %></h6>
+                                                            
+                                                        <% } else { %>
+                                                            <h6>Scheduled Departure date: <%= departingFlights[i].departure_date %></h6>
+                                                        <% } %>
+                                                        <h6>From:  <%= departingFlights[i].origin %></h6>
+                                                        <h6>To:  <%= departingFlights[i].destination %> </h6>
+                                                        <h6>Aircraft ID: <%= departingFlights[i].aircraft_id %> </h6>
+                                                        <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
+                                                        <form action='/staff/general/markDepartureFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Departure</button><input type='hidden' name='departing_schedule_id' value='<%= departingFlights[i].schedule_id %>'></form>
+                                                    </div><!--new 2nd div-->
+                                            </div><!--raw end-->
+                                            </div>
+                                        </div>
+                                        <!--ongoing flights end-->
+
+                                    <% } %>
+                                <% } else { %>
+                                    <div class="alert alert-warning text-center" role="alert" style="background-color: #fff3cd; color:#a08330;">
+                                        No Departing Flights for Today Available
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div><!--card2 end-->
+                </div>
+            </div>
+        </div>
+        
+
+        
+
+
+
+        <hr>
+        <!-- button cards starting-->
+        <div class="row">
+            <!-- ./col -->
+            <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-primary">
+                <div class="inner">
+                <h3 class="text-light">Upcoming</h3>
+
+                <h6 class="text-light">Tomorrow onwards</h6>
+                </div>
+                <div class="icon">
+                <i class="fas fa-plane-departure"></i>
+                </div>
+                <a href="/staff/general/upcomingFlightsMain" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box text-white bg-green">
+                <div class="inner">
+                <h3 class="text-light">Arrived</h3>
+
+                <h6 class="text-light">Upto yesterday</h6>
+                </div>
+                <div class="icon">
+                <i class="fas fa-plane-arrival"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-4 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-secondary">
+                <div class="inner">
+                <h3 class="text-light">Something</h3>
+
+                <h6 class="text-light">add here</h6>
+                </div>
+                <div class="icon">
+                <i class="fa fa-file" aria-hidden="true"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                More info <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- cards ending-->
+
+
+        
+
+
+
+
+
+
+
+
+
+            <!--search form
+            <form action="enhanced-results.html">
+                <div class="row">
+                    <div class="col-md-8 offset-md-1">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label>Search:</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="search" class="form-control form-control-lg" placeholder="Type your keywords here" >
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-lg btn-default">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>-->
+
+
+           
+        
+
+
+          
+
+    </div><!--container div closed-->
+</div>
 <%- include('_staff_footer') %>

@@ -4,21 +4,50 @@
         <h3>Managment Panel</h3>
     </div>
     <br>
+    <% if (error) {%>
+        <div class="alert alert-danger text-center" role="alert">
+            <%=error%>
+        </div>
+    <% } %>
+    <% if (success) {%>
+        <div class="alert alert-success text-center" role="alert">
+            <%=success%>
+        </div>
+    <% } %>
+
+    <!-- Cards Starting -->
+    <div class="row p-3 justify-content-center" >
+        <div class="card p-3 m-2 text-center col-md-3 col-sm-12 rouned-lg shadow bg-success manager-card">
+            <div class="card-body text-white">
+                <a class="card-block stretched-link text-decoration-none" href="/staff/manager/all_flights"></a>
+                <i class="fas fa-plane-departure fa-4x mt-4 text-black-50 "></i>
+                <h4 class="card-text mt-4">All Flights  <i class="fa fa-arrow-circle-right"></i></h4>
+            </div>
+        </div>
+        <div class="card p-3 m-2 text-center col-md-3 col-sm-12 rouned-lg shadow bg-primary manager-card">
+            <div class="card-body text-white">
+                <a class="card-block stretched-link text-decoration-none" href='/staff/manager/all_general_staff'></a>
+                <i class="fas fa-user fa-4x mt-4 text-black-50"></i>
+            <h4 class="card-text mt-4">General Staff  <i class="fa fa-arrow-circle-right"></i></h4>
+            </div>
+        </div>
+        <div class="card p-3 m-2 text-center col-md-3 col-sm-12 rouned-lg shadow bg-secondary manager-card">
+            <div class="card-body text-white ">
+                <a class="card-block stretched-link text-decoration-none" href=''></a>
+                <i class="fas fa-file-pdf fa-4x mt-4 text-black-50"></i>
+            <h4 class="card-text mt-4">Reports  <i class="fa fa-arrow-circle-right"></i></h4>
+            </div>
+        </div>
+            
+
+    </div>
+    <!-- Cards ending -->
+
     <div class="card-deck">
         <div class="card p-3">
             <div class="text-center">
                 <h4>New Users Waiting for Verification</h4>
             </div>
-            <% if (error) {%>
-                <div class="alert alert-danger text-center" role="alert">
-                    <%=error%>
-                </div>
-            <% } %>
-            <% if (success) {%>
-                <div class="alert alert-success text-center" role="alert">
-                    <%=success%>
-                </div>
-            <% } %>
             <div class="text-center">
                 Image Here
             </div>
@@ -44,7 +73,11 @@
                                         <tr>
                                             <td><%=staff.emp_id%></td>
                                             <td><%=staff.first_name+' '+staff.last_name%></td>
-                                            <td><%=staff.category.toUpperCase()%></td>
+                                            <% if(staff.category=='general'){%>
+                                                <td><%=staff.category.toUpperCase()%><br>Airport: <%=staff.assigned_airport%></td>
+                                            <%}else{%>
+                                                <td><%=staff.category.toUpperCase()%></td>
+                                            <%}%>
                                             <td><%=staff.email%></td>
                                             <td><%=staff.contact_no%></td>
                                             <td><form action='/staff/manager/verify_staff' method=post><button type='submit' class='btn btn-outline-success' name='verify-button'>Approve</button><input type='hidden' name='empId' value='<%=staff.emp_id%>'></form></td>

@@ -1,0 +1,136 @@
+<%- include('_staff_header',{user}) %>
+<div class="container py-4">
+    <div class="card p-3 border shadow rounded">
+        <div class="row card-body">
+
+        
+            <div class="col-md-6 col-sm-12 text-center align-self-center">
+                Image here
+                <br>
+            </div>
+            
+                <form action="/staff/edit_profile/<%=user.staffId%>" method="POST" class="col-md-6 col-sm-12">
+                    <h2 class="text-center">Edit Information</h2>
+                    <hr>
+                    <% if (success) { %>
+                        <div class="alert alert-success" role="alert">
+                            <%=success%>
+                        </div>
+                    <% } %>
+                    <% if (error) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%=error%>
+                        </div>
+                    <% } %>
+                    <div class="form-group">
+                        <label for='firstName'>First Name</label>
+                        <input type='text' name='firstName' value="<%=firstName%>" placeholder="First Name" class="form-control" required maxlength="50" style="text-transform: capitalize;">
+                    </div>
+                    <div class="form-group ">
+                        <label for='lastName'>Last Name</label>
+                        <input type='text' name='lastName' value="<%=lastName%>" placeholder="Last Name" class="form-control" required maxlength="50" style="text-transform: capitalize;">
+                    </div>
+                    <div class="form-group ">
+                        <label for='email'>Email</label>
+                        <input type='email' name='email' value="<%=email%>" placeholder="Email" class="form-control" required maxlength="50">
+                    </div>  
+                    <div class="form-group">
+                        <label for="contactNO">Contact Number</label>
+                        <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact Number" required  maxlength="15" value="<%=contactNo%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Last Name" required maxlength="50" style="text-transform: capitalize;" value="<%=country%>">
+                    </div>
+                    <div class="text-right">
+                        <input type="submit" value='Submit and Save' class="btn btn-outline-primary">
+                    </div>
+
+                </form>
+            
+        </div>
+    </div>
+
+</div>
+<a name='changePassword'></a>
+<div class='container py-4 mt-3'>
+
+    <form method="POST" action="/staff/change_password/<%=user.staffId%>" class="card p-3 border rounded shadow">
+        <h2 class="text-center">Change Password</h2>
+        <hr>
+        <% if (pwd_success) { %>
+            <div class="alert alert-success" role="alert">
+                <%=pwd_success%>
+            </div>
+        <% } %>
+        <% if (pwd_error) { %>
+            <div class="alert alert-danger" role="alert">
+                <%=pwd_error%>
+            </div>
+        <% } %>
+        <div class="form-group">
+            <label for='old_pwd'>Current Password</label>
+            <input type='password' name='old_pwd' id="old_pwd" class="form-control" required maxlength="40">
+        </div>
+        <div class="form-group">
+            <label for='new_pwd'>New Password<small> (min 5 max 20 characters long)</small></label>
+            <input type='password' name='new_pwd' id="new_pwd" class="form-control" required maxlength="40">
+        </div>
+        <div class="form-group">
+            <label for='confirm_pwd'>Confirm New Password</label>
+            <input type='password' name='confirm_pwd' id="confirm_pwd" class="form-control" required maxlength="40">
+        </div>
+        <div class="text-right">
+            <input type="submit" value='Change and Save New Password' class="btn btn-outline-primary" required>
+        </div>
+    </form>
+</div>
+
+<a name='delAccount'></a>
+<div class="container py-4">
+    <div class="card p-3 text-center shadow rounded border-danger" style="color:maroon" >
+        <h3>Delete My Account</h3>
+        <% if (del_acc_error) { %>
+            <div class="alert alert-danger" role="alert">
+                <%=del_acc_error%>
+            </div>
+        <% } %>
+        <p>Once you have deleted your account there is no way of recovering..</p>
+        <div>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                Delete My Account
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete the account?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            All the data will be lost and no recovery possible
+                        </div>
+                        <form class="p-3 text-left" method="POST" action="/staff/delete_my_account/<%=user.staffId%>">
+                            <div>
+                                <label for="del_password">Please Enter Your Password (required)</label>
+                                <input type="password" name="del_password" class="form-control" required/>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Delete Account</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<%- include('_staff_footer') %>

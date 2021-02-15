@@ -33,6 +33,7 @@ const StaffRegInfo = Joi.object(
     country: Joi.string().trim().min(2).max(30)
         .required(),
     securityKey: Joi.string().allow(''),
+    airport: Joi.string().allow(''),
 });
 
 const StaffLoginInfo = Joi.object().keys({
@@ -41,4 +42,37 @@ const StaffLoginInfo = Joi.object().keys({
     password: Joi.string().trim().required(),
 });
 
-module.exports = { StaffRegInfo, StaffLoginInfo };
+const staffEditInfo = Joi.object(
+).options({ abortEarly: false }).keys({
+    firstName: Joi.string().trim().min(2).max(30)
+        .required()
+        .label('First Name'),
+    lastName: Joi.string().trim().min(2).max(30)
+        .required()
+        .label('Last Name'),
+    contactNo: Joi.string().trim().required()
+        .min(10)
+        .message('"Contact Number" must be at least 10 digits')
+        .max(15)
+        .message('"Contact Number" must be less than 15 digits')
+        .regex(/^\d+$/)
+        .message('"Contact Number" contains invalid characters'),
+    email: Joi.string().trim().email().required()
+        .label('E-mail'),
+    country: Joi.string().trim().min(2).max(30)
+        .required(),
+});
+
+const ChangePasswordInfo = Joi.object().options({ abortEarly: false }).keys({
+    old_pwd: Joi.string().trim().required().label('Old Password'),
+    new_pwd: Joi.string().trim().min(5).max(20)
+        .required()
+        .label('Password'),
+    confirm_pwd: Joi.string().trim().required().valid(Joi.ref('new_pwd'))
+        .label('Confirmation Password')
+        .messages({ 'any.only': '{{#label}} does not match "New Password"' }),
+});
+
+module.exports = {
+    StaffRegInfo, StaffLoginInfo, staffEditInfo, ChangePasswordInfo,
+};

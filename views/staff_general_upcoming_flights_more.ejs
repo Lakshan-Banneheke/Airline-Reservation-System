@@ -1,0 +1,84 @@
+
+<%- include('_staff_header_general',{user}) %>
+<div class="hold-transition sidebar-mini">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <img src="/assets/images/blog-10.jpg" class="card-img-top" alt="...">
+                </br>
+                </br>
+                <% if (error) {%>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <%=error%>
+                    </div>
+                <% } %>
+
+                <% if (success) {%>
+                    <div class="alert alert-success text-center" role="alert">
+                        <%=success%>
+                    </div>
+                <% } %>
+                <div id="accordion">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            General Details
+                          </button>
+                        </h5>
+                      </div>
+                  
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                          <li>Model name: <%= moreInfoGeneral.model_name %></li>
+                          <li>Variant: <%= moreInfoGeneral.variant %></li>
+                          <li>Economic Seat Capacity: <%= moreInfoGeneral.economy_seat_capacity %></li>
+                          <li>Business Seat Capacity: <%= moreInfoGeneral.business_seat_capacity %></li>
+                          <li>Platinum Seat Capacity: <%= moreInfoGeneral.platinum_seat_capacity %></li>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Passenger Details
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Booking ID</th>
+                                      <th scope="col">Customer ID</th>
+                                      <th scope="col">Customer Name</th>
+                                      <th scope="col">No.of seats</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      <% for (var i = 0; i <25; i++) { %>
+                                      
+                                    <tr>
+                                      <th scope="row">1</th>
+                                      <td>Mark</td>
+                                      <td>Otto</td>
+                                      <td>@mdo</td>
+                                    </tr>
+                                    <% } %>
+                                  </tbody>
+                              </table>
+                        </div>
+                      </div>
+                </div>
+
+
+
+            </div><!--card body end-->
+          </div><!--card end-->
+    </div><!--container div closed-->
+</div>
+<%- include('_staff_footer') %>
+
+
