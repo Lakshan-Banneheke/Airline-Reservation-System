@@ -1,4 +1,4 @@
-let seconds = 20;
+let seconds = 600;
 let el = document.getElementById('seconds-counter');
 
 function incrementSeconds() {
@@ -17,7 +17,7 @@ function incrementSeconds() {
 
 let cancel = setInterval(incrementSeconds, 1000);
 
-setTimeout(delBooking, 20000);
+setTimeout(delBooking, 602000);
 //TODO
 var show_close_alert=true;
 //window.onbeforeunload = delBooking;

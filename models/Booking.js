@@ -55,7 +55,6 @@ class Booking {
         const query2 = 'SELECT schedule_id FROM seat_booking WHERE booking_id = $1';
         let result1 = await pool.query(query1,[booking_id]);
         let result2=await pool.query(query2,[booking_id]);
-        console.log([result2.rows[0], result1.rows])
         return [result2.rows[0], result1.rows];
     }
 

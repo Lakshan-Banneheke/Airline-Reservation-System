@@ -3,7 +3,6 @@ const BookingService = require('../services/BookingServices');
 const FlightService = require('../services/flightServices');
 class BookingController {
     static async getBooking(req, res) {
-        // console.log(req.params.schedule_id);
         let schedule_id;
         if (typeof req.body.schedule_id !== 'undefined') {
             schedule_id = req.body.schedule_id;
@@ -45,8 +44,6 @@ class BookingController {
 
     static async createBooking(req, res) {
         try {
-            // const { value, error } = await GuestInfo.validate(req.body);
-            // if (error) throw (error);
             const booking_id = await BookingService.createBooking(req.body);
             req.session.booking_id = booking_id.insertbooking;
             return res.status(200).send({ result: 'redirect', url: '/payment' });

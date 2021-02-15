@@ -2,7 +2,6 @@ const Errors = require('../helpers/error');
 const Booking = require('../models/Booking');
 
 class BookingService {
-
     static async getSeats(schedule_id) {
         const seats = await Booking.getSeats(schedule_id);
         if (!seats) {
@@ -11,7 +10,7 @@ class BookingService {
         return seats;
     }
 
-    static async createBooking(values){
+    static async createBooking(values) {
         return Booking.createBooking(values);
     }
 
@@ -23,22 +22,21 @@ class BookingService {
         return flightInfo;
     }
 
-    static async getPrice(booking_id){
+    static async getPrice(booking_id) {
         return Booking.getPrice(booking_id);
     }
 
-    static async successBooking(booking_id){
+    static async successBooking(booking_id) {
         return Booking.successBooking(booking_id);
     }
 
-    static async cancelBooking(booking_id){
+    static async cancelBooking(booking_id) {
         return Booking.cancelBooking(booking_id);
     }
 
-    static async getBookingDetails(booking_id){
+    static async getBookingDetails(booking_id) {
         return Booking.getBookingDetails(booking_id);
     }
-    
 }
 
 module.exports = BookingService;

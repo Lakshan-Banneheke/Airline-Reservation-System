@@ -9,6 +9,8 @@ DROP PROCEDURE IF EXISTS deleteSchedule;
 DROP PROCEDURE IF EXISTS handleFlightArrival;
 DROP PROCEDURE IF EXISTS handleFlightDeparture;
 DROP PROCEDURE IF EXISTS registerStaff;
+DROP PROCEDURE IF EXISTS insert_route_price;
+DROP PROCEDURE IF EXISTS insert_seats;
 
 DROP FUNCTION IF EXISTS insertBooking;
 
@@ -277,7 +279,7 @@ BEGIN
 
     INSERT INTO seat_booking(customer_id, schedule_id, total_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
 
-    SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule;
+    SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
 
     WHILE j < pass_count+1 LOOP
             INSERT INTO Passenger_Seat VALUES(val_booking_id, val_model_id, seatNo[j], seat_price[j], passName[j], passPassport[j], passDob[j]);
