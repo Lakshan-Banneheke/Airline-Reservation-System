@@ -44,7 +44,11 @@
                                         <tr>
                                             <td><%=staff.emp_id%></td>
                                             <td><%=staff.first_name+' '+staff.last_name%></td>
-                                            <td><%=staff.category.toUpperCase()%></td>
+                                            <% if(staff.category=='general'){%>
+                                                <td><%=staff.category.toUpperCase()%><br>Airport: <%=staff.assigned_airport%></td>
+                                            <%}else{%>
+                                                <td><%=staff.category.toUpperCase()%></td>
+                                            <%}%>
                                             <td><%=staff.email%></td>
                                             <td><%=staff.contact_no%></td>
                                             <td><form action='/staff/admin/verify_staff' method=post><button type='submit' class='btn btn-outline-success' name='verify-button'>Approve</button><input type='hidden' name='empId' value='<%=staff.emp_id%>'></form></td>

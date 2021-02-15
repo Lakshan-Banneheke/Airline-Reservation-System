@@ -1,6 +1,17 @@
 <%- include('_staff_header',{user}) %>
 
  <div class="container py-4">
+     <script>
+        function showAirportField(that) {
+            console.log(document.getElementById("airport").value)
+            if (that.value == "general") {
+                document.getElementById("airport-field").style.display ="block";
+            } else {
+                document.getElementById("airport").value = "";
+                document.getElementById("airport-field").style.display = "none";
+            }
+        }
+     </script>
      <div class="card  rounded shadow-lg">
         <div class="row card-body">
             <div class="col-md-6 col-sm-12 text-center">
@@ -60,7 +71,7 @@
                     </div>
                     <div class="form-group">
                         <label for="category">Staff Category</label>
-                        <select id="category" class="form-control" name="category" required>
+                        <select id="category" class="form-control" name="category" required onchange="showAirportField(this);">
                             <option  selected>Choose...</option>
                             <% if( category=='admin') { %>
                                 <option value="admin" selected>Admin</option>
@@ -77,6 +88,21 @@
                             <% }else{  %>
                                 <option value="general">General</option>
                             <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group" id="airport-field" style="display: block;">
+                        <label for="airport">Assigned Airport<small class="text-secondary"> (only if General Staff)</small></label>
+                        <select id="airport" class="form-control" name="airport">
+                            <option  selected value="">Choose...</option>
+                            <% if(airportCodes && airportCodes.length>0){ %>
+                                <% airportCodes.forEach(function(code){ %>
+                                    <% if( airport==code.airport_code ) { %>
+                                        <option value='<%=code.airport_code%>' selected><%=code.airport_code%></option>
+                                    <% }else{  %>
+                                        <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                                    <% } %>
+                                <% }); %>
+                            <% } %> 
                         </select>
                     </div>
                     <div class="form-group">
