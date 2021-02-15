@@ -1,0 +1,129 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">booking flight</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Payment</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">booking</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+<!-- booking-registration-section start -->
+<section class="booking-registration-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <% if(dbError) {%>
+                <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                    <%=dbError%>
+                </div>
+                <% } %>
+                <form class="general-information" id="bookingForm" action="create-booking">
+
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title">Payment information</h3>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Price</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" value="$<%= price%>" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </form>
+
+
+
+
+
+                <div class="educational-registration-form">
+                    <div class="booking-form-area">
+                        <div class="row justify-content-center">
+                            <div  class="alert alert-danger" role="alert">
+                                Your booking will be <b>cancelled</b> at browser close or at the end of 10 minuites if the payment is not completed
+                            
+                            <div id='seconds-counter' class="alert alert-danger" role="alert" style="text-align: center;">
+                               
+                              </div>
+                            </div>
+
+                            <div class="col-lg-12 text-center">
+                                <div class="row" style="align-items: center;">
+                                    <div class="col-md-6">
+                                <form method="post" action="/booking/payment/success">
+                                    <input type="hidden" id="booking_id" value="<%= booking_id %>">
+                                    <button type="submit" class="cmn-btn" onclick="setFalse()">Pay</button>
+                                </form>
+                                </div>
+                                <div class="col-md-6">
+                              
+                                <form method="post" action="/booking/payment/cancel">
+                                    <input type="hidden" id="booking_id" value="<%= booking_id %>">
+
+                                    <button type="submit" class="cmn-btn">Cancel</button>
+                                </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<script src="/assets/js/payment.js"></script>
+
+<%- include('_footer',{user}) %>

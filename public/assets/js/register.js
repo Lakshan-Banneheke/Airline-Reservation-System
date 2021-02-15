@@ -28,8 +28,8 @@
             if(dob!=""){
                 try{
                 var datePicked = new Date(dob);
-                
-                if(Date.now()<datePicked)
+                let cutoffDate  = new Date(Date.now() - (1000*60*60*24*365*18));
+                if(cutoffDate<datePicked)
                     error_msgs+='<br>Pick a valid Date of Birth';
                 }catch{
                     error_msgs+='<br>Pick a valid Date of Birth';

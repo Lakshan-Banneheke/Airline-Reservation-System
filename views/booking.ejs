@@ -1,0 +1,277 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+    <form class="header-form">
+        <div class="skip"><i class="fas fa-times"></i></div>
+        <div class="header-form-area">
+            <input type="text" placeholder="Search Here">
+            <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+        </div>
+    </form>
+
+
+    <!-- banner-section start -->
+    <section class="inner-banner-section pt-120 pb-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="inner-banner-content">
+                        <h2 class="title">booking flight</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner-section end -->
+
+
+    <!-- breadcrumb-section start -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">booking</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-section end -->
+<%- include('seats') %>
+
+    <a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+    <!-- booking-registration-section start -->
+    <section class="booking-registration-section pt-120 pb-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <% if(registrationError) {%>
+                    <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                        <%=registrationError%>
+                    </div>
+                    <% } %>
+                    <form class="general-information" id="bookingForm">
+                        <input type="hidden" id="schedule_id" value="<%= schedule_id %>">
+
+                    <%if (!user || user.type == 'guest') { %>
+
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title">General information</h3>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Full Name</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custName" value="<%=custName%>" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Address</label>
+                                    <div class="col-lg-8">
+                                        <textarea name="adress" id="adress" required><%=address%></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Date Of Birth</label>
+                                    <div class="col-lg-8">
+                                        <input type="date" id="custDob" class="form-control" value="<%=custDob%>" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Gender</label>
+                                    <div class="col-lg-8">
+                                        <select class="select-bar" id="custGender" required>
+                                            <option data-display="- Select Gender -">- Select Gender -</option>
+                                            <% if(custGender=='Male') {%>
+                                                <option value="Male" selected>Male</option>
+                                            <%}else{%>
+                                                <option value="Male">Male</option>
+                                            <%}%>
+                                            <% if(custGender=='Female') {%>
+                                                <option value="Female" selected>Female</option>
+                                            <%}else{%>
+                                                <option value="Female">Female</option>
+                                            <%}%>
+                                            <% if(custGender=='Other') {%>
+                                                <option value="Other" selected>Other</option>
+                                            <%}else{%>
+                                                <option value="Other">Other</option>
+                                            <%}%>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" >Passport Number</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" id="custPassport" class="form-control" value="<%=custPassport%>" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" >Mobile </label>
+                                    <div class="col-lg-8">
+                                        <input type="tel" id="mobile" class="form-control" value="<%=mobile%>" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" >Email</label>
+                                    <div class="col-lg-8">
+                                        <input type="email" id="custEmail" class="form-control" value="<%=custEmail%>" required>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+             <%} else { %>
+                        <input type="hidden" id="custID" value="<%=user.customerData.customer_id%>">
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title">General information</h3>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" >Full Name</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custName" value="<%=user.customerData.first_name%> <%=user.customerData.last_name%>" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Address</label>
+                                    <div class="col-lg-8">
+                                        <textarea class="form-control" name="adress" id="adress" disabled><%=user.customerData.address_line1+",\n"+user.customerData.address_line2+",\n"+user.customerData.city+",\n"+user.customerData.country+"."%></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Date Of Birth</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custDob" value="<%=user.customerData.dob.substring(0,10)%>" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Gender</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custGender" value="<%=user.customerData.gender%>" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Passport Number</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custPassport" value="<%=user.customerData.passport_no%>" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Mobile </label>
+                                    <div class="col-lg-8">
+                                        <input type="tel" class="form-control" id="mobile" value="<%=user.customerData.contact_no%>" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Email</label>
+                                    <div class="col-lg-8">
+                                        <input type="email" class="form-control" id="custEmail" value="<%=user.customerData.email%>" disabled >
+                                    </div>
+                                </div>
+                            <input type="hidden" id="custType" value="<%=user.customerData.type%>">
+
+                        </div>
+                    </div>
+
+             <%}%>
+
+
+                <div class="booking-registration-form">
+                    <div class="booking-form-area">
+                    <div class="form-group row">
+                        <label class="col-lg-4 col-form-label">No. of Passengers (Max: 5)</label>
+                        <div class="col-lg-8">
+                            <select class="select-bar" id="passengers" required>
+                                <option data-display="- Select -">- Select -</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                        <div class="educational-registration-form">
+                            <div class="booking-form-area">
+                                <div class="row justify-content-center">
+
+                                    <div class="col-lg-12 text-center">
+                                        <button class="cmn-btn" type="submit">Create Booking</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            </form>
+
+
+
+
+
+
+                </div>
+
+
+
+
+                <div class="col-lg-4 col-sm-8">
+                    <div class="sidebar">
+                        <div class="widget-box mb-30">
+                            <h3 class="caption">Flight details</h3>
+                            <ul class="flight-category">
+                                <li><span class="category-date"><%=   flightInfo.departure_date.toString().substring(0,15)%></span></li>
+                                <li><a href="#"><%= flightInfo.origin%></a><span class="count"><%= flightInfo.departure_time_utc %></span></li>
+                                <hr>
+                                <li><span class="category-date"><%= flightInfo.arrival_date.toString().substring(0,15)%></span></li>
+                                <li><a href="#"><%= flightInfo.destination%></a><span class="count"><%= flightInfo.arrival_time_utc %></span></li></li>
+                            </ul>
+                        </div>
+                        <div class="widget-box mb-30">
+                            <h3 class="caption">Seat Prices</h3>
+                            <div class="recent-flight-area">
+                                <h5 class="title"><a href="#">Platinum</a></h5>
+                                <div class="recent-flight-content d-flex flex-wrap">
+                                    <span class="place">$<%= priceInfo[0].price%></span>
+
+                                </div>
+                            </div>
+                            <div class="recent-flight-area">
+                                <h5 class="title"><a href="#">Business</a></h5>
+                                <div class="recent-flight-content d-flex flex-wrap">
+                                    <span class="place">$<%= priceInfo[1].price%></span>
+                                </div>
+                            </div>
+                            <div class="recent-flight-area">
+                                <h5 class="title"><a href="#">Economy</a></h5>
+                                <div class="recent-flight-content d-flex flex-wrap">
+                                    <span class="place">$<%= priceInfo[2].price%></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<%- include('_footer',{user}) %>

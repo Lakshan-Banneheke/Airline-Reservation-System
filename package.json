@@ -40,13 +40,9 @@
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "node-pg-migrate": "^5.9.0",
+    "nodemon": "^2.0.7",
     "pg": "^8.5.1",
     "winston": "^3.3.3"
   },
-  "devDependencies": {
-    "eslint": "^7.15.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-security": "^1.4.0"
-  }
+  "devDependencies": {}
 }

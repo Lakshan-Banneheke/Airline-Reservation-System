@@ -42,72 +42,68 @@
 
 
     <!-- search-widget-area start -->
-    <div class="search-widget-area search-widget-area--style">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="search-widget">
-                        <div class="checkbox-form d-flex flex-wrap">
-                            <div class="checkbox-area">
-                                <input type="checkbox">
-                                <label>One Way</label>
+    <form id="form" action="customer/ViewFlights">
+        <div class="search-widget-area pt-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="search-widget">
+                            
+
+                            <div class="rt-input-group rt-input-group--style">
+                                <div class="single-input  col-rt-in-3">
+                                    <select name="from" id="dropdown" class="select-bar">
+                                        <option value='' selected>--Select FROM Airport--</option>
+                                        <% if(airports && airports.length!=0) {%>
+                                            <% airports.forEach(function(airport){%>
+                                                <option value=<%=airport.airport_code %> ><%= airport.name %>
+                                                </option>
+                                                <%});%>
+                                                    <%}%>
+                                    </select>
+
+                                    <span class="input-iconbadge"><img src="/assets/images/icon-1.png" alt=""
+                                            draggable="false"></span>
+                                </div>
+
+                                <div class="single-input  col-rt-in-3">
+                                    <select name="to" id="dropdown" class="select-bar">
+                                        <option value='' selected>--Select TO Airport--</option>
+                                        <% if(airports && airports.length!=0) {%>
+                                            <% airports.forEach(function(airport){%>
+                                                <option value=<%=airport.airport_code %> ><%= airport.name %>
+                                                </option>
+                                                <%});%>
+                                                    <%}%>
+                                    </select>
+                                    <div class="suggestions"></div>
+                                    <span class="input-iconbadge"><img src="/assets/images/icon-1.png" alt=""
+                                            draggable="false"></span>
+                                </div>
                             </div>
-                            <div class="checkbox-area">
-                                <input type="checkbox">
-                                <label>Round Trip</label>
+
+                            <div class="rt-input-group rt-input-group--style">
+                                <div class="single-input  col-rt-in-4">
+                                    <input type='text' id="booking_date_from" name="booking_date_from"
+                                        class='datepicker-here' data-language='en' placeholder="Departure Date">
+                                    <span class="input-iconbadge"><img src="/assets/images/icon-2.png" alt=""
+                                            draggable="false"></span>
+                                </div>
+
+                                <div class="single-input  col-rt-in-3">
+                                    <form id="mform">
+                                        <button type="submit" value="Submit " class="cmn-btn">Search</button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="checkbox-area">
-                                <input type="checkbox">
-                                <label>Multi City</label>
-                            </div>
-                        </div>
-                        <div class="rt-input-group">
-                            <div class="single-input  col-rt-in-3">
-                                <input type="text" placeholder="form:">
-                                <span class="input-iconbadge"><img src="assets/images/icon-1.png" alt="" draggable="false"></span>
-                                <span class="input-iconbadge-right"><img src="assets/images/icon-5.png" alt="" draggable="false"></span>
-                            </div>
-                            <div class="single-input  col-rt-in-3">
-                                <input type="text" placeholder="to:">
-                                <span class="input-iconbadge"><img src="assets/images/icon-1.png" alt="" draggable="false"></span>
-                            </div>
-                            <div class="single-input  col-rt-in-3">
-                                <input type='text' id="booking_date_from" name="booking_date_from" class='datepicker-here' data-language='en' placeholder="depart">
-                                <span class="input-iconbadge"><img src="assets/images/icon-2.png" alt="" draggable="false"></span>
-                            </div>
-                            <div class="single-input  col-rt-in-3">
-                                <input type='text' id="booking_date_from" name="booking_date_from" class='datepicker-here' data-language='en' placeholder="return">
-                                <span class="input-iconbadge"><img src="assets/images/icon-2.png" alt="" draggable="false"></span>
-                            </div>
-                            <div class="single-input  col-rt-in-3">
-                                <input type="submit" class="cmn-btn" value="search">
-                            </div>
-                        </div>
-                        <div class="rt-input-group rt-input-group--style">
-                            <div class="single-input  col-rt-in-3">
-                                <select class="select-bar">
-                                    <option data-display="Passengers">Passengers</option>
-                                    <option value="1">Option-1</option>
-                                    <option value="2">Option-2</option>
-                                    <option value="3">Option-3</option>
-                                </select>
-                                <span class="input-iconbadge"><img src="assets/images/icon-3.png" alt="" draggable="false"></span>
-                            </div>
-                            <div class="single-input  col-rt-in-3">
-                                <select class="select-bar">
-                                    <option data-display="Business">Business</option>
-                                    <option value="1">Option-1</option>
-                                    <option value="2">Option-2</option>
-                                    <option value="3">Option-3</option>
-                                </select>
-                                <span class="input-iconbadge"><img src="assets/images/icon-4.png" alt="" draggable="false"></span>
-                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
+
     <!-- search-widget-area end -->
 
 
@@ -179,141 +175,67 @@
 
 
     <!-- flight-section start -->
-    <section class="flight-section pt-120 pb-120">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 text-center">
-                    <div class="section-header">
-                        <h2 class="section-title">upcoming Flight</h2>
-                        <span class="title-border title-border-center"></span>
-                        <p> Augue eros ultrices amet, viverra nec nunc massa magna. Sit a, lacus mattis odio sem placerat ante, lacus aliquam sit id ligula est ante fringilla </p>
+    <% if(upcomingFlights && upcomingFlights.length!=0) {%>
+        <section class="flight-section pt-120 pb-120">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="section-header">
+                            <h2 class="section-title">upcoming Flight</h2>
+                            <span class="title-border title-border-center"></span>
+                            <p> Augue eros ultrices amet, viverra nec nunc massa magna. Sit a,
+                                lacus mattis odio sem placerat ante, lacus aliquam sit id ligula
+                                est ante fringilla </p>
+                        </div>
                     </div>
                 </div>
+                <div class="row justify-content-center mb-30-none">
+                <% upcomingFlights.forEach(function(flight){%>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
+                        <div class="flight-item">
+                            <div class="flight-thumb">
+                                <img src="/assets/images/flight-1.jpg" alt="image">
+                                <h3 class="flight-overlay">from$<%=flight.price%>
+                                </h3>
+                            </div>
+                            <div class="flight-details">
+                                
+                                <form action="/booking" method="post">
+                                <input type="hidden" name="schedule_id" value="<%=flight.schedule_id%>"/>
+
+                                <button type="submit" style="background-color: white;">
+                                <a>
+                                    <h3 class="title">
+                                        <%=flight.origin%>
+                                    </h3>
+                                    <i class="flaticon-exchange"></i>
+                                    <h3 class="title">
+                                        <%=flight.destination%>
+                                    </h3>
+                                </a>
+                                </button>
+                                </form>
+                                <ul class="flight-content">
+                                    <li><i class="flaticon-clock"></i>
+                                        <%=flight.departure_time_utc.toString()+'-----'+flight.arrival_time_utc.toString()%>
+                                    </li>
+                                    <li><i class="flaticon-calendar"></i>
+                                        <%=flight.departure_date.toString().substring(0,15)+'-'+flight.arrival_date.toString().substring(0,15)%>
+                                    </li>
+                                    <li><i class="flaticon-plane"></i> B Airways</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <%});%>
             </div>
-            <div class="row justify-content-center mb-30-none">
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-1.jpg" alt="image">
-                            <h3 class="flight-overlay">form $250</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">las vegas</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 13:00 ----- 13h00 ----- 08:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 14 - dec 22</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
+            <% }else{ %>
+                <div class="alert alert-warning text-center">
+                    <strong>No Flights available</strong>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-2.jpg" alt="image">
-                            <h3 class="flight-overlay">form $400</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">singapur</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 14:00 ----- 15h00 ----- 10:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 15 - dec 30</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-3.jpg" alt="image">
-                            <h3 class="flight-overlay">form $658</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">Dubai  city</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 15:00 ----- 10h00 ----- 10:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 09 - dec 30</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-4.jpg" alt="image">
-                            <h3 class="flight-overlay">form $479</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">thailand</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 14:00 ----- 15h00 ----- 11:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 14 - dec 22</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-5.jpg" alt="image">
-                            <h3 class="flight-overlay">form $350</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">Canada</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 09:00 ----- 18h00 ----- 08:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 15 - dec 30</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
-                    <div class="flight-item">
-                        <div class="flight-thumb">
-                            <img src="assets/images/flight-6.jpg" alt="image">
-                            <h3 class="flight-overlay">form $590</h3>
-                        </div>
-                        <div class="flight-details">
-                            <a href="flight-facilities.html">
-                                <h3 class="title">Dhaka</h3>
-                                <i class="flaticon-exchange"></i>
-                                <h3 class="title">london</h3>
-                            </a>
-                            <ul class="flight-content">
-                                <li><i class="flaticon-clock"></i> 13:00 ----- 13h00 ----- 08:10</li>
-                                <li><i class="flaticon-calendar"></i> dec 09 - dec 30</li>
-                                <li><i class="flaticon-plane"></i> dhaka air line</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                <%}%>
     <!-- flight-section end -->
 
 

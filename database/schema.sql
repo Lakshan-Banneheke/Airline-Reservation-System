@@ -9,6 +9,10 @@ DROP PROCEDURE IF EXISTS deleteSchedule;
 DROP PROCEDURE IF EXISTS handleFlightArrival;
 DROP PROCEDURE IF EXISTS handleFlightDeparture;
 DROP PROCEDURE IF EXISTS registerStaff;
+DROP PROCEDURE IF EXISTS insert_route_price;
+DROP PROCEDURE IF EXISTS insert_seats;
+
+DROP FUNCTION IF EXISTS insertBooking;
 
 DROP DOMAIN IF EXISTS UUID4 CASCADE;
 
@@ -26,10 +30,11 @@ DROP TABLE IF EXISTS Route CASCADE;
 DROP TABLE IF EXISTS Flight_Schedule CASCADE;
 DROP TABLE IF EXISTS Seat_Price CASCADE;
 DROP TABLE IF EXISTS Seat_Booking CASCADE;
-DROP TABLE IF EXISTS Seat_Reservation CASCADE;
+DROP TABLE IF EXISTS Passenger_Seat CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
+DROP TABLE IF EXISTS Guest_Customer CASCADE;
 
 DROP TYPE IF EXISTS  booking_state_enum;
 DROP TYPE IF EXISTS  flight_state_enum;
@@ -146,8 +151,145 @@ $CODE$
 LANGUAGE plpgsql IMMUTABLE;
 
 
--- CREATE OR REPLACE FUNCTION get_seat_price()
--- CREATE OR REPLACE FUNCTION get_price()
+-- -FUNCTION TO FIND AIRPORT ADDRESS
+CREATE OR REPLACE FUNCTION getLocation(val_airport_code varchar)
+RETURNS text
+
+AS $$
+DECLARE
+val_location_id int;
+val_parent_id int=0;
+loc_address text:='('||val_airport_code||')';
+val_name varchar;
+
+
+BEGIN
+raise notice 'Counter %', val_airport_code;
+SELECT location_id INTO val_location_id FROM airport WHERE airport_code=val_airport_code;
+SELECT location_id INTO val_parent_id FROM airport WHERE airport_code=val_airport_code;
+
+WHILE val_parent_id >0 LOOP
+SELECT name,parent_id INTO val_name,val_parent_id FROM location WHERE location_id=val_location_id;
+raise notice 'Couddnter %', val_location_id;
+loc_address:=loc_address||' '||val_name;
+raise notice ' %',loc_address;
+val_location_id:=val_parent_id;
+END LOOP;
+RETURN loc_address;
+END;
+$$
+LANGUAGE plpgsql IMMUTABLE;
+
+
+--------Function to get the price of a seat----------
+CREATE OR REPLACE FUNCTION get_seat_price(val_schedule_id int, val_seat_id text)
+RETURNS numeric
+AS $CODE$
+DECLARE
+    val_route_id int;
+    val_model_id int;
+    val_aircraft_id int;
+    val_traveler_class_id int;
+    val_price numeric;
+BEGIN
+    SELECT route_id, aircraft_id INTO val_route_id, val_aircraft_id FROM flight_schedule WHERE schedule_id = val_schedule_id;
+    SELECT model_id INTO val_model_id FROM aircraft_instance WHERE aircraft_id = val_aircraft_id;
+    SELECT traveller_class_id INTO val_traveler_class_id FROM aircraft_seat WHERE model_id = val_model_id AND seat_id = val_seat_id;
+    SELECT price into val_price FROM seat_price WHERE route_id = val_route_id AND traveler_class_id = val_traveler_class_id;
+    RETURN val_price;
+END
+$CODE$
+LANGUAGE plpgsql IMMUTABLE;
+
+
+------Function to check for seat overlaps--------
+CREATE OR REPLACE FUNCTION check_seat_overlaps(val_schedule_id int, seatNo varchar(10)[])
+RETURNS bool
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	bookingIDs int[];
+	bookedSeats varchar(10)[];
+	bookingID int;
+BEGIN
+	bookingIDs := ARRAY (SELECT booking_id FROM seat_booking WHERE schedule_id=val_schedule_id);
+
+	FOREACH bookingID in ARRAY bookingIDs
+	LOOP
+		bookedSeats := bookedSeats || ARRAY (SELECT seat_id FROM passenger_seat WHERE booking_id = bookingID);
+	END LOOP;
+
+	IF (seatNo && bookedSeats) THEN
+		RETURN true;
+	ELSE
+	    RETURN false;
+	END IF;
+END;
+$$;
+
+-----------Function to create a booking ----------
+CREATE OR REPLACE FUNCTION insertBooking(
+    val_customer_id uuid4,
+    val_schedule_id int,
+    passName text[],
+    passPassport text[],
+    passDob date[],
+    seatNo varchar(10)[],
+    val_name VARCHAR(50),
+    val_address varchar(100),
+    val_dob DATE,
+    val_gender gender_enum,
+    val_passport_no VARCHAR(20),
+    val_mobile VARCHAR(15),
+    val_email VARCHAR(127),
+    val_type VARCHAR(20)
+)
+RETURNS int
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    pass_count int := array_length(passName, 1);
+    i int = 1;
+    j int = 1;
+    tot_price numeric(10,2) = 0;
+    seat_price numeric(10,2)[];
+    temp_price numeric(10,2);
+    val_booking_id int;
+    val_model_id int;
+
+BEGIN
+
+    IF (check_seat_overlaps(val_schedule_id, seatNo) = true) THEN
+        RAISE EXCEPTION 'The selected seats have been taken. Please select new seats';
+    END IF;
+
+    IF (val_type = 'guest') THEN
+        val_customer_id := generate_uuid4();
+        INSERT INTO customer values (val_customer_id,'guest');
+        INSERT INTO guest_customer(customer_id, name, address, dob, gender, passport_no, mobile, email)
+        values (val_customer_id, val_name, val_address, val_dob, val_gender, val_passport_no, val_mobile, val_email);
+    END IF;
+
+    WHILE i < pass_count+1 LOOP
+            temp_price = get_seat_price(val_schedule_id, seatNo[i]);
+            tot_price = tot_price + temp_price;
+            seat_price = array_append(seat_price, temp_price);
+            i = i + 1;
+    END LOOP;
+
+    INSERT INTO seat_booking(customer_id, schedule_id, total_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
+
+    SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
+
+    WHILE j < pass_count+1 LOOP
+            INSERT INTO Passenger_Seat VALUES(val_booking_id, val_model_id, seatNo[j], seat_price[j], passName[j], passPassport[j], passDob[j]);
+            j = j + 1;
+    END LOOP;
+    RETURN val_booking_id;
+END;
+$$;
+
+
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
@@ -228,6 +370,9 @@ CREATE TABLE Aircraft_Model (
   economy_seat_capacity int NOT NULL,
   business_seat_capacity int NOT NULL,
   platinum_seat_capacity int NOT NULL,
+  economy_seats_per_row int NOT NULL,
+  business_seats_per_row int NOT NULL,
+  platinum_seats_per_row int NOT NULL,
   max_load numeric(10,2), 
   fuel_capacity numeric(10,2),
   avg_airspeed int,
@@ -291,28 +436,29 @@ CREATE TABLE Seat_Price (
 
 CREATE TABLE Seat_Booking (
   booking_id SERIAL,
-  customer_id varchar(36),
-  schedule_id int,
-  --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
-  total_price numeric(10,2),
-  state booking_state_enum,
+  customer_id varchar(36) NOT NULL,
+  schedule_id int NOT NULL,
+  total_price numeric(10,2) NOT NULL,
+  state booking_state_enum NOT NULL,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Seat_Reservation(
+CREATE TABLE Passenger_Seat(
     booking_id int,
     model_id int,
     seat_id varchar(10),
-    --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
-    price numeric(10,2),
+    price numeric(10, 2), 
+    name varchar(100) NOT NULL,
+    passport_no varchar(20) NOT NULL,
+    dob date NOT NULL,
     PRIMARY KEY (booking_id, model_id, seat_id),
     FOREIGN KEY(booking_id) REFERENCES Seat_Booking(booking_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(model_id,seat_id) REFERENCES Aircraft_Seat(model_id,seat_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---Table to keep guest info about bookings if done by a guest
+
 
 CREATE TABLE Customer_Review (
   review_id varchar(100),
@@ -339,6 +485,18 @@ CREATE TABLE Staff (
   FOREIGN KEY(assigned_airport) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE Guest_Customer(
+  customer_id uuid4,
+  name VARCHAR(50) NOT NULL,
+  address varchar(100) NOT NULL,
+  dob DATE NOT NULL,
+  gender gender_enum,
+  passport_no VARCHAR(20) NOT NULL,
+  mobile VARCHAR(15) NOT NULL,
+  email VARCHAR(127) NOT NULL,
+  PRIMARY KEY (customer_id),
+  FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 ---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
 
@@ -355,6 +513,9 @@ ALTER TABLE "session"
     ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
+-----------------------------------VIEWS SCHEMA ----------------------------------------
+CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 
@@ -636,6 +797,88 @@ BEGIN
 
 END;
 $$;
+
+---------------------PROCEDURE FOR ADDING SEATS---------------------------
+CREATE OR REPLACE PROCEDURE insert_seats()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+	   temp_model_id int;
+	   model_count int;
+       current_seat int;
+       row_num int;
+       col char;
+	   platinum int;
+	   business int;
+	   economy int;
+       economy_row int;
+       business_row int;
+       platinum_row int;
+       cols char[] DEFAULT array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+       columns_economy char[];
+       columns_business char[];
+       columns_platinum char[];
+BEGIN
+	SELECT COUNT(model_id) INTO model_count FROM aircraft_model;
+	temp_model_id = 1;
+
+	while temp_model_id <= model_count loop
+		SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity, economy_seats_per_row, business_seats_per_row, platinum_seats_per_row INTO economy, business, platinum, economy_row, business_row, platinum_row
+			FROM aircraft_model WHERE model_id=temp_model_id;
+
+        columns_platinum = cols[: platinum_row];
+
+		current_seat = 1;
+		row_num = 1;
+		while current_seat <= platinum loop
+            foreach col in array columns_platinum loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 1);
+                    current_seat = current_seat + 1;
+            end loop;
+			row_num = row_num + 1;
+		end loop;
+
+        columns_business = cols[: business_row];
+		current_seat = 1;
+
+        while current_seat <= business loop
+                foreach col in array columns_business loop
+                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 2);
+                        current_seat = current_seat + 1;
+                end loop;
+                row_num = row_num + 1;
+        end loop;
+        columns_economy = cols[: economy_row];
+        current_seat = 1;
+
+        while current_seat <= economy loop
+                foreach col in array columns_economy loop
+                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 3);
+                        current_seat = current_seat + 1;
+                end loop;
+                row_num = row_num + 1;
+        end loop;
+        temp_model_id = temp_model_id + 1;
+	end loop;
+
+END;
+$$;
+
+
+---------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
+CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
+LANGUAGE plpgsql
+AS $$
+
+BEGIN
+	INSERT INTO seat_price VALUES ($1,1,$2);
+	INSERT INTO seat_price VALUES ($1,2,$3);
+	INSERT INTO seat_price VALUES ($1,3,$4);
+
+END;
+$$;
+
+
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
 
 
@@ -660,6 +903,11 @@ GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, 
 GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying, val_airport character varying) TO database_app;
 
 GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
+
+
+--GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
+--
+--GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 
@@ -703,11 +951,16 @@ GRANT ALL ON TABLE public.seat_booking TO database_app;
 
 GRANT ALL ON TABLE public.seat_price TO database_app;
 
-GRANT ALL ON TABLE public.seat_reservation TO database_app;
+GRANT ALL ON TABLE public.passenger_seat TO database_app;
 
 GRANT ALL ON TABLE public.session TO database_app;
 
 GRANT ALL ON TABLE public.staff TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
+
+GRANT ALL ON TABLE public.temp_airport TO database_app;
+                                                                                                                                
+GRANT ALL ON TABLE public.guest_customer TO database_app;
+
 

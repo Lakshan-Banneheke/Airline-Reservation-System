@@ -1,37 +1,5 @@
 INSERT INTO organizational_info VALUES ('B Airways','+61396906345','info@bairways.com','314, 3rd Floor, Gotham Towers, Melbourne, Victoria, Australia','2229993949');
 
-
---------------------- INSERTING STAFF CATOGARIES-----------------------
--- INSERT INTO staff_category (cat_name) VALUES ('Admin');
--- INSERT INTO staff_category (cat_name) VALUES ('Manager');
--- INSERT INTO staff_category (cat_name) VALUES ('Airline Staff');
-
---------------------- INSERTING STAFF  MEMBERS-----------------------
-----Password generated from 'https://bcrypt-generator.com/' with 10 rounds. All passwords are '12345'
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(1,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Avishka Shamendra','+61777888888','avishkas@bairways.com','1998-04-09','Male','Australia');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(2,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Lakshan Banneheke','+61777889999','lakshanb@bairways.com','1998-03-02','Male','Australia');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(2,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Dhaura Pathirana','+33777889988','dhaura@bairways.com','1998-10-01','Male','France');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(3,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Thushani Jayasekera','+61765889922','thushanijb@bairways.com','1998-06-07','Female','Australia');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(3,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Shashini Wimalarathne','+49766889999','shashiniw@bairways.com','1998-08-14','Female','Germany');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(3,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Pasindu Abeysinghe','+01747889999','pasindu@bairways.com','1998-08-15','Male','USA');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(3,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Gayangi Senevirathne','+64889889999','gayangis@bairways.com','1998-10-02','Female','New Zealand');
-
--- INSERT INTO staff(category,password,name,contact_no,email,dob,gender,country)
--- VALUES(3,'$2y$10$OcewsZinyIdxnKtVEdo3A.9I7z0OblgX.MG5YIR4GPq7Ia/z/Vp1a','Binoy Peries','+61788889779','binoyp@bairways.com','1998-04-15','Male','Australia');
-
 ---------------------INSERTING LOCATIONS---------------------------
 INSERT INTO location(name) VALUES ('Sri Lanka');
 INSERT INTO location(name, parent_id) VALUES ('Hambantota',1);
@@ -78,14 +46,14 @@ INSERT INTO airport(airport_code,location_id) VALUES('SIN',17);
 ---------------------INSERTING AIRCRAFT MODELS---------------------------
 
 --max_load in kg -- speed in kmph -- fuel_capacity in litres--
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 737','MAX 10','Boeing Commercial Airplanes',150,25,10,88300,25941,838);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
+VALUES('Boeing 737','MAX 10','Boeing Commercial Airplanes',150,24,12,6,4,4,88300,25941,838);
 
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 757','300','Boeing Commercial Airplanes',200,30,13,123830,43400,918);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
+VALUES('Boeing 757','300','Boeing Commercial Airplanes',198,32,12,6,4,4,123830,43400,918);
 
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,max_load,fuel_capacity,avg_airspeed)
-VALUES('Airbus A380','800','Airbus',505,50,20,575000,323546,903);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
+VALUES('Airbus A380','800','Airbus',500,48,20,10,6,4,575000,323546,903);
 
 ---------------------INSERTING AIRCRAFT INSTANCES---------------------------
 INSERT INTO aircraft_instance (model_id,airport_code,aircraft_state) VALUES (1,'BIA','On-Ground');
@@ -174,62 +142,12 @@ INSERT INTO traveller_class(class_name) VALUES ('Economy');
 ---------------------INSERTING ROUTES-----------------------------
 
 
----------------------PROCEDURE FOR ADDING SEATS---------------------------
-CREATE OR REPLACE PROCEDURE insert_seats()
-LANGUAGE plpgsql
-AS $$
-DECLARE
-	   temp_model_id int;
-	   model_count int;
-       current_seat int;
-	   platinum int;
-	   business int;
-	   economy int;
-BEGIN
 
-	SELECT COUNT(model_id) INTO model_count FROM aircraft_model;
-	temp_model_id = 1;
-	
-	while temp_model_id <= model_count loop
-		SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity INTO economy, business, platinum 
-			FROM aircraft_model WHERE model_id=temp_model_id;
-		
-		current_seat = 1;
-		while current_seat <= platinum loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 1);
-			current_seat = current_seat + 1;
-		end loop;
-		business = business + current_seat;
-		while current_seat < business loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 2);
-			current_seat = current_seat + 1;
-		end loop;
-		economy = economy + current_seat;
-		while current_seat < economy loop
-			INSERT INTO aircraft_seat VALUES(temp_model_id, current_seat, 3);
-			current_seat = current_seat + 1;
-		end loop;
-        temp_model_id = temp_model_id + 1;
-	end loop;
-	
-END;
-$$;
 
 CALL insert_seats();
 
 
----------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
-CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
-LANGUAGE plpgsql
-AS $$
 
-BEGIN
-	INSERT INTO seat_price VALUES ($1,1,$2);
-	INSERT INTO seat_price VALUES ($1,2,$3);
-	INSERT INTO seat_price VALUES ($1,3,$4);
-
-END;
-$$;
 
 CALL insert_route_price(1,800,500,145);
 CALL insert_route_price(2,700,600,161);
