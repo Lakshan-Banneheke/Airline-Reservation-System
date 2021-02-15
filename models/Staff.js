@@ -66,6 +66,25 @@ class Staff {
         const query = 'UPDATE staff SET password=$1 WHERE emp_id=$2';
         await pool.query(query, [password, empId]);
     }
+
+    static async getAllVerifiedGeneralStaff() {
+        const query = 'SELECT emp_id,first_name,last_name,email,contact_no,gender,country,assigned_airport FROM staff WHERE account_state=$1 AND category=$2 ORDER BY first_name ASC,last_name ASC';
+        const result = await pool.query(query, ['verified', 'general']);
+        return result.rows;
+    }
+
+    static async getGeneralStaffWhereNameLike(text) {
+        const query = `SELECT emp_id,first_name,last_name,email,contact_no,gender,country,assigned_airport 
+                        FROM staff WHERE account_state=$1 AND category=$2 AND CONCAT(LOWER(first_name),' ',LOWER(last_name)) LIKE $3
+                        ORDER BY first_name ASC,last_name ASC`;
+        const result = await pool.query(query, ['verified', 'general', `${text}%`]);
+        return result.rows;
+    }
+
+    static async changeAssignedAirport(empId, newAirportCode) {
+        const query = 'UPDATE staff SET assigned_airport=$1 WHERE category=$2 AND emp_id=$3';
+        await pool.query(query, [newAirportCode, 'general', empId]);
+    }
 }
 
 module.exports = Staff;

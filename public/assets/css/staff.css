@@ -18,3 +18,11 @@ html{
 
     *::-webkit-scrollbar-thumb {
     background-color: #000000; }
+
+
+.manager-card{
+    transition: transform .3s;
+}
+.manager-card:hover{
+    transform: scale(1.05);
+}

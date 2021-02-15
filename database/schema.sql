@@ -46,7 +46,8 @@ CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
 'Departed-On-Time',
 'Delayed-Departure',
-'Landed'
+'Landed',
+'Cancelled'
 );
 
  CREATE TYPE aircraft_state_enum AS ENUM( 

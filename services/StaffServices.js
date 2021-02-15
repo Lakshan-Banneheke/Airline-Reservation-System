@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 const bcrypt = require('bcrypt');
@@ -6,7 +7,7 @@ const Errors = require('../helpers/error');
 const Staff = require('../models/Staff');
 const Flight = require('../models/Flight');
 const Airport = require('../models/Airport');
-const { ymd } = require('../helpers/dateFormat');
+const { ymd, hms } = require('../helpers/dateFormat');
 
 class StaffService {
     static async register({
@@ -76,6 +77,44 @@ class StaffService {
 
     static async verifyStaff(id) {
         return Staff.verifyStaff(id);
+    }
+
+    static async getAllArrivedFlights() {
+        const allArrivedFlights = await Flight.getAllArrivedFlights();
+        if (allArrivedFlights && allArrivedFlights.length > 0) {
+            allArrivedFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+                flight.actual_arrival = `${ymd(new Date(flight.actual_arrival))}  ${hms(new Date(flight.actual_arrival))}`;
+            });
+        }
+        // console.log(allArrivedFlights);
+        return allArrivedFlights;
+    }
+
+    static async getAllOngoingFlights() {
+        // const ongoingAllFlights = await Flight.ongoingAllFlights();
+        const ongoingAllFlights = await Flight.getAllOngoingFlights();
+        if (ongoingAllFlights && ongoingAllFlights.length > 0) {
+            ongoingAllFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        // console.log(ongoingAllFlights);
+        return ongoingAllFlights;
+    }
+
+    static async getAllUpcomingFlights() {
+        const upcomingFlights = await Flight.getAllUpcomingFlights();
+        if (upcomingFlights && upcomingFlights.length > 0) {
+            upcomingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        // console.log(upcomingFlights);
+        return upcomingFlights;
     }
 
     static async getincomingPendingFlights(staff_member_airport) {
@@ -151,6 +190,18 @@ class StaffService {
         }
         const newhashedPassword = await bcrypt.hash(new_pwd, 10);
         return Staff.updatePassword(empId, newhashedPassword);
+    }
+
+    static async getAllVerifiedGeneralStaff() {
+        return Staff.getAllVerifiedGeneralStaff();
+    }
+
+    static async getGeneralStaffWhereNameLike(text) {
+        return Staff.getGeneralStaffWhereNameLike(text);
+    }
+
+    static async changeAssignedAirport(empId, newAirportCode) {
+        return Staff.changeAssignedAirport(empId, newAirportCode);
     }
 }
 
