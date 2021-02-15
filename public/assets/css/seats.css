@@ -3,8 +3,6 @@ body {
   background-color: #f5f5f5;
   font-family: "Helvetica Neue", Arial, "Lucida Grande", sans-serif;
   font-size: 15px;
-  perspective: 900px;
-  transform-style: preserve-3d;
 }
 
 h4 {
