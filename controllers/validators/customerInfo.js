@@ -1,4 +1,4 @@
-const Joi = require('joi').extend(require('@joi/date'));
+const Joi = require('joi');
 
 const CustomerRegInfo = Joi.object(
 ).options({ abortEarly: false }).keys({

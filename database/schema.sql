@@ -4,6 +4,11 @@ DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
 DROP PROCEDURE IF EXISTS decreaseNumBookings;
+DROP PROCEDURE IF EXISTS scheduleFlights;
+DROP PROCEDURE IF EXISTS deleteSchedule;
+DROP PROCEDURE IF EXISTS handleFlightArrival;
+DROP PROCEDURE IF EXISTS handleFlightDeparture;
+DROP PROCEDURE IF EXISTS registerStaff;
 
 DROP DOMAIN IF EXISTS UUID4 CASCADE;
 
@@ -24,7 +29,6 @@ DROP TABLE IF EXISTS Seat_Booking CASCADE;
 DROP TABLE IF EXISTS Seat_Reservation CASCADE;
 DROP TABLE IF EXISTS Customer_Review CASCADE;
 DROP TABLE IF EXISTS Staff CASCADE;
-DROP TABLE IF EXISTS Staff_Category CASCADE;
 DROP TABLE IF EXISTS session CASCADE;
 
 DROP TYPE IF EXISTS  booking_state_enum;
@@ -32,16 +36,19 @@ DROP TYPE IF EXISTS  flight_state_enum;
 DROP TYPE IF EXISTS  aircraft_state_enum;
 DROP TYPE IF EXISTS  gender_enum;
 DROP TYPE IF EXISTS  customer_state_enum;
+DROP TYPE IF EXISTS  staff_category;
+DROP TYPE IF EXISTS  staff_account_state;
 
+SET TIME ZONE 'Etc/UTC';
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
 CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
-'Delayed',
-'Departed',
-'In-Air',
-'Arrived',
-'Cancelled');
+'Departed-On-Time',
+'Delayed-Departure',
+'Landed',
+'Cancelled'
+);
 
  CREATE TYPE aircraft_state_enum AS ENUM( 
  'On-Ground',
@@ -60,6 +67,17 @@ CREATE TYPE customer_state_enum AS ENUM(
 'guest',
 'registered'
 );
+
+CREATE TYPE staff_category AS ENUM(
+'admin',
+'manager',
+'general'
+);
+
+CREATE TYPE staff_account_state AS ENUM(
+'verified',
+'unverified'
+);
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
@@ -68,7 +86,8 @@ CHECK (VALUE ~ '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{
 
 ----------------------------------  FUNCTION SCHEMA  ------------------------------------
 
---Function to create UUID for tables
+----Function to create UUID for tables
+
 CREATE OR REPLACE FUNCTION generate_uuid4 ()
     RETURNS char( 36
 )
@@ -85,11 +104,43 @@ END
 $$
 LANGUAGE PLpgSQL;
 
+----- Function to get a time stamp from date and time
+
+CREATE OR REPLACE FUNCTION get_timestamp(val_date DATE, val_time TIME)
+RETURNS timestamp
+AS $CODE$
+DECLARE
+val_datetime timestamp;
+BEGIN
+  val_datetime := (val_date||' '||val_time)::timestamp ;
+  RETURN val_datetime;
+END
+$CODE$
+LANGUAGE plpgsql IMMUTABLE;
+
+-----Function to calculate age
+
 CREATE OR REPLACE FUNCTION get_age( birthday date )
 RETURNS int
 AS $CODE$
 BEGIN
     RETURN date_part('year', age(birthday))::int;
+END
+$CODE$
+LANGUAGE plpgsql IMMUTABLE;
+
+----Function to calculate arrival time for a flight
+
+CREATE OR REPLACE FUNCTION get_arrival(val_route_id int, val_departure_datetime timestamp)
+RETURNS timestamp
+AS $CODE$
+DECLARE
+  val_duration interval;
+  val_arrival_datetime timestamp;
+BEGIN
+  SELECT duration INTO val_duration FROM route WHERE route_id=val_route_id;
+  val_arrival_datetime = val_departure_datetime + val_duration;
+  RETURN val_arrival_datetime;
 END
 $CODE$
 LANGUAGE plpgsql IMMUTABLE;
@@ -131,7 +182,6 @@ CREATE TABLE Registered_Customer (
   last_name VARCHAR(30) NOT NULL,
   category varchar(30), --Default no category
   dob DATE NOT NULL,
-  age INT GENERATED ALWAYS AS (get_age(dob)) STORED NOT NULL,
   gender gender_enum,
   contact_no VARCHAR(15) NOT NULL,
   passport_no VARCHAR(20) NOT NULL,
@@ -208,19 +258,23 @@ CREATE TABLE Route (
   route_id SERIAL,
   origin varchar(10) NOT NULL,
   destination varchar(10) NOT NULL,
-  duration time NOT NULL,
+  duration interval NOT NULL,
   PRIMARY KEY (route_id),
   FOREIGN KEY(origin) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(destination) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Flight_Schedule (
-  schedule_id varchar(24),
-  route_id int,
-  aircraft_id int,
-  date date,
-  departure_time_gmt timestamp,
-  arrival_time_gmt timestamp,
+  schedule_id SERIAL,
+  route_id int NOT NULL ,
+  aircraft_id int NOT NULL,
+  departure_date date NOT NULL,
+  departure_time_utc time NOT NULL,
+  arrival_date date generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::DATE) stored NOT NULL,
+  arrival_time_utc time generated always as (get_arrival(route_id,get_timestamp(departure_date,departure_time_utc))::TIME) stored NOT NULL,
+  actual_departed TIMESTAMP,
+  actual_arrival TIMESTAMP,
+  flight_state flight_state_enum NOT NULL DEFAULT 'Scheduled',
   PRIMARY KEY (schedule_id),
   FOREIGN KEY(route_id) REFERENCES Route(route_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(aircraft_id) REFERENCES Aircraft_Instance(aircraft_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -236,9 +290,9 @@ CREATE TABLE Seat_Price (
 );
 
 CREATE TABLE Seat_Booking (
-  booking_id varchar(24),
+  booking_id SERIAL,
   customer_id varchar(36),
-  schedule_id varchar(24),
+  schedule_id int,
   --price numeric GENERATED ALWAYS AS (get_price()) STORED, -- price function to be implemented
   total_price numeric(10,2),
   state booking_state_enum,
@@ -248,7 +302,7 @@ CREATE TABLE Seat_Booking (
 );
 
 CREATE TABLE Seat_Reservation(
-    booking_id varchar(24),
+    booking_id int,
     model_id int,
     seat_id varchar(10),
     --price numeric GENERATED ALWAYS AS (get__seat_price()) STORED, -- price function to be implemented
@@ -268,25 +322,21 @@ CREATE TABLE Customer_Review (
   FOREIGN KEY(customer_id) REFERENCES Registered_Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE Staff_Category (
-  cat_id SERIAL,
-  cat_name varchar(20) NOT NULL,
-  PRIMARY KEY (cat_id)
-);
-
 
 CREATE TABLE Staff (
-  emp_id uuid4 DEFAULT generate_uuid4 (),
-  category int NOT NULL,
-  password varchar(70) NOT NULL,
-  name varchar(50) NOT NULL,
+  emp_id char(6) PRIMARY KEY, --Bxxxxx
+  category staff_category NOT NULL,
+  password varchar(255) NOT NULL,
+  first_name varchar(127) NOT NULL,
+  last_name varchar(127) NOT NULL,
   contact_no varchar(15) NOT NULL,
   email varchar(70) NOT NULL UNIQUE,
   dob date NOT NULL,
   gender gender_enum NOT NULL,
   country varchar(30) NOT NULL,
-  PRIMARY KEY (emp_id),
-  FOREIGN KEY(category) REFERENCES Staff_Category(cat_id) ON DELETE CASCADE ON UPDATE CASCADE
+  assigned_airport varchar(10),
+  account_state staff_account_state NOT NULL DEFAULT 'unverified',
+  FOREIGN KEY(assigned_airport) REFERENCES Airport(airport_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -306,7 +356,7 @@ ALTER TABLE "session"
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
---------------------------------     TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
+--------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 
 
 
@@ -345,29 +395,283 @@ BEGIN
 END;
 $$;
 
+-------------------------- Procedure to register staff member -------------------------------------
+CREATE OR REPLACE PROCEDURE registerStaff(
+  val_emp_id CHAR(6),
+  val_category staff_category,
+  val_password varchar(255),
+  val_first_name VARCHAR(30),
+  val_last_name VARCHAR(30),
+  val_contact_no VARCHAR(15),
+  val_email VARCHAR(127),
+  val_dob DATE,
+  val_gender gender_enum,
+  val_country VARCHAR(30),
+  val_airport VARCHAR(10)        
+)
+
+LANGUAGE plpgsql    
+AS $$
+DECLARE
+val_existing_employee  char(6) := (SELECT emp_id from staff where emp_id = val_emp_id);
+BEGIN
+    if (val_existing_employee is null) then
+        if (val_category='admin') then
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'verified');
+        elsif(val_category='general') then
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state,assigned_airport)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified',val_airport);
+        else
+            INSERT INTO staff(emp_id,category,password,first_name,last_name,contact_no,email,dob,gender,country,account_state)
+            VALUES (val_emp_id,val_category,val_password,val_first_name,val_last_name,val_contact_no,val_email,val_dob,val_gender,val_country,'unverified');
+        end if;
+    else
+        RAISE EXCEPTION 'Emmployee ID % is already registered', val_emp_id;
+    end if;
+END;
+$$;
+
+----------Procedure to insert scheduled flights---------------
+CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+    rec RECORD;
+    departure_timestamp timestamp;
+    temp_departure_timestamp timestamp;
+    temp_arrival_timestamp timestamp;
+    maintainance_time interval='02:00:00'::interval;
+    dest varchar(10);
+    org varchar(10);
+BEGIN
+    departure_timestamp:=get_timestamp(val_departure_date,val_departure_time_utc);
+    
+	
+	IF (departure_timestamp < CURRENT_TIMESTAMP at time zone 'utc'+INTERVAL '1 day') THEN
+		RAISE EXCEPTION 'Departure time has to be after % UTC ',current_timestamp at time zone 'utc'+INTERVAL '1 day';
+		RETURN;
+	END IF;	
+
+    SELECT * INTO rec FROM flight_schedule f WHERE aircraft_id = val_aircraft_id 
+    ORDER BY get_timestamp(f.arrival_date,f.arrival_time_utc) DESC LIMIT 1;
+	IF(rec is NULL) THEN
+		INSERT INTO flight_schedule
+            (route_id,aircraft_id,departure_date,departure_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc); 
+		RETURN;
+	END IF;	
+	
+    temp_arrival_timestamp = get_timestamp(rec.arrival_date,rec.arrival_time_utc);
+
+    IF (temp_arrival_timestamp + maintainance_time < departure_timestamp) THEN
+        SELECT destination INTO dest FROM Route WHERE route_id=rec.route_id;
+        SELECT origin INTO org FROM Route WHERE route_id=val_route_id;
+
+        IF (dest=org) THEN	
+            INSERT INTO flight_schedule
+            (route_id,aircraft_id,departure_date,departure_time_utc)
+            VALUES(val_route_id,val_aircraft_id,val_departure_date,val_departure_time_utc); 
+        ELSE 
+                RAISE EXCEPTION 'Aircraft is not in the required Airport';
+        END IF;	
+        
+    ELSE
+        RAISE EXCEPTION 'Aircraft schedule is overlapping';
+
+    END IF;
+	
+	
+END;
+$$;
 
 
+----------Procedure to delete scheduled flights---------------
+CREATE OR REPLACE PROCEDURE deleteSchedule(val_schedule_id int)
+
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+temp_schedule_id int;
+BEGIN
+
+SELECT schedule_id INTO  temp_schedule_id FROM flight_schedule WHERE aircraft_id=
+(SELECT aircraft_id FROM flight_schedule WHERE schedule_id=val_schedule_id) 
+	ORDER BY get_timestamp(flight_schedule.arrival_date,flight_schedule.arrival_time_utc) DESC LIMIT 1;
+
+IF (temp_schedule_id = val_schedule_id) THEN
+	DELETE FROM flight_schedule WHERE schedule_id=val_schedule_id;
+ELSE
+	 RAISE EXCEPTION 'Only the last flight can be deleted ';
+
+END IF;
+END;
+$$;
+
+------------Procedure to handle departure of a flight -------
+
+CREATE OR REPLACE PROCEDURE handleFlightDeparture(val_schedule_id int)
+
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+val_aircraft_id int;
+val_scheduled_departue_date DATE;
+val_scheduled_departure_time TIME;
+val_aircraft_state aircraft_state_enum;
+buffer_time interval='00:15:00'::interval;
+BEGIN
+	
+    -- select the aircraft id  related to the flight
+    SELECT aircraft_id,departure_date,departure_time_utc 
+    INTO val_aircraft_id,val_scheduled_departue_date,val_scheduled_departure_time
+    FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
+
+    -- select aircraft state to check whether its on Ground
+    SELECT aircraft_state into val_aircraft_state FROM Aircraft_Instance WHERE aircraft_id=val_aircraft_id;
+
+    IF(val_aircraft_state != 'On-Ground') THEN
+        RAISE EXCEPTION 'Aircraft not yet On-Ground';
+    END IF;
+    -- update the aircraft state
+    UPDATE Aircraft_Instance SET aircraft_state='In-Air' WHERE aircraft_id=val_aircraft_id;
+
+    --update flight state
+    IF(get_timestamp(val_scheduled_departue_date,val_scheduled_departure_time)+buffer_time >= NOW()) THEN
+      UPDATE Flight_Schedule SET flight_state='Departed-On-Time',actual_departed=NOW() WHERE schedule_id=val_schedule_id;
+    ELSE
+      UPDATE Flight_Schedule SET flight_state='Delayed-Departure',actual_departed=NOW() WHERE schedule_id=val_schedule_id;
+    END IF;
+    RETURN;
+END;
+$$;
+
+
+
+------------Procedure to handle delays/arrival of a flight -------
+
+
+CREATE OR REPLACE PROCEDURE handleFlightArrival(val_schedule_id int)
+
+LANGUAGE plpgsql    
+AS $$ 
+DECLARE
+val_arrival_timestamp TIMESTAMP:= NOW();
+val_arrival_date date := NOW()::DATE;
+val_arrival_time_utc time := TO_CHAR(NOW()::TIME,'HH24:MI:SS')::TIME;
+val_aircraft_id int;
+val_flight_departue_date DATE;
+val_flight_departure_time TIME;
+ref_arrival_date DATE;
+ref_arrival_time TIME;
+temp_schedule_id int;
+temp_departure_date DATE;
+temp_departure_time TIME;
+temp_arrival_date DATE;
+temp_arrival_time TIME;
+schedule_record RECORD;
+maintainance_time interval='02:00:00'::interval;
+calculated_delay_interval interval;
+calculated_departure_timestamp timestamp;
+calculated_arrival_timestamp timestamp;
+
+
+BEGIN
+	
+    -- select the aircraft id  related to the flight
+    SELECT aircraft_id,departure_date,departure_time_utc 
+    INTO val_aircraft_id,val_flight_departue_date,val_flight_departure_time
+    FROM Flight_Schedule WHERE schedule_id=val_schedule_id;
+
+    -- update that flight with the actual arrival time
+    UPDATE flight_schedule SET actual_arrival= val_arrival_timestamp,flight_state='Landed'
+    WHERE schedule_id=val_schedule_id;
+
+    UPDATE Aircraft_Instance SET aircraft_state='On-Ground' WHERE aircraft_id=val_aircraft_id;
+
+
+    --Init refrenceing arrival and departure times to the value of the flight in consideration
+    ref_arrival_date = val_arrival_date ;
+    ref_arrival_time = val_arrival_time_utc;
+
+
+    --select all the schedule_ids the specific aircraft 
+	--which have departure times after the departure time of the arrived flight
+	--ordered them by departure time
+	FOR schedule_record IN SELECT * FROM Flight_Schedule 
+    WHERE aircraft_id = val_aircraft_id
+    AND get_timestamp(departure_date,departure_time_utc)>get_timestamp(val_flight_departue_date,val_flight_departure_time)
+    ORDER BY departure_date ASC, departure_time_utc ASC
+        LOOP
+            --SELECT schedule_id,departure_date,departure_time _utc,arrival_date,arrival_time _utc 
+            --INTO temp_schedule_id,temp_departure_date,temp_departure_time,temp_arrival_date,temp_arrival_time FROM schedule_record;
+            temp_schedule_id = schedule_record.schedule_id;
+            temp_departure_date = schedule_record.departure_date;
+            temp_departure_time = schedule_record.departure_time_utc;
+            temp_arrival_date = schedule_record.arrival_date;
+            temp_arrival_time = schedule_record.arrival_time_utc; 
+
+            IF (get_timestamp(ref_arrival_date,ref_arrival_time)+maintainance_time >= get_timestamp(temp_departure_date,temp_departure_time)) THEN
+
+                calculated_delay_interval = (get_timestamp(ref_arrival_date,ref_arrival_time)+maintainance_time - get_timestamp(temp_departure_date,temp_departure_time))::interval;
+                calculated_departure_timestamp = get_timestamp(temp_departure_date,temp_departure_time) + calculated_delay_interval;
+                calculated_arrival_timestamp = get_timestamp(temp_arrival_date,temp_arrival_time) + calculated_delay_interval;
+
+                UPDATE Flight_schedule 
+                SET departure_date = calculated_departure_timestamp::DATE,
+                departure_time_utc = calculated_departure_timestamp::TIME
+                WHERE schedule_id = temp_schedule_id;
+
+                ref_arrival_date = calculated_arrival_timestamp::DATE;
+                ref_arrival_time = calculated_arrival_timestamp::TIME;
+
+            ELSE
+                EXIT;
+            END IF;
+
+        END LOOP;
+
+		
+		return;
+
+END;
+$$;
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
+
+
+
 
 GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.registercustomer(email character varying, password character varying, first_name character varying, last_name character varying,dob date, gender gender_enum, contact_no character varying, passport_no character varying, address_line1 character varying, address_line2 character varying, country character varying, city character varying) TO database_app;
+GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id integer, val_departure_datetime timestamp without time zone) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
+GRANT EXECUTE ON FUNCTION public.get_timestamp(val_date date, val_time time without time zone) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.beforeseatbookingcancellation() TO database_app;
+GRANT EXECUTE ON PROCEDURE public.deleteschedule(val_schedule_id integer) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.handleflightarrival(val_schedule_id integer) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.handleflightdeparture(val_schedule_id integer) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, val_password character varying, val_first_name character varying, val_last_name character varying, val_dob date, val_gender gender_enum, val_contact_no character varying, val_passport_no character varying, val_address_line1 character varying, val_address_line2 character varying, val_city character varying, val_country character varying) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying, val_airport character varying) TO database_app;
+
+GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_instance_aircraft_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.aircraft_model_model_id_seq TO database_app;
 
+GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
+
 GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
 
-GRANT ALL ON SEQUENCE public.staff_category_cat_id_seq TO database_app;
+GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.traveller_class_class_id_seq TO database_app;
 
@@ -404,8 +708,6 @@ GRANT ALL ON TABLE public.seat_reservation TO database_app;
 GRANT ALL ON TABLE public.session TO database_app;
 
 GRANT ALL ON TABLE public.staff TO database_app;
-
-GRANT ALL ON TABLE public.staff_category TO database_app;
 
 GRANT ALL ON TABLE public.traveller_class TO database_app;
 

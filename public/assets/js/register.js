@@ -38,8 +38,8 @@
             if(Genders.indexOf(gender)==-1){
                 error_msgs+="<br>Gender must be Male, Female or Other";
             }
-            if(!(5<password.length && password.length<11)){
-                error_msgs+="<br>Password must be more than 5 less than 11 characters";
+            if(!(5<password.length && password.length<20)){
+                error_msgs+="<br>Password must be more than 5 less than 20 characters";
             }
             if(password!=confirmPassword){
                 error_msgs+="<br>Passwords do not match";
