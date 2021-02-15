@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Errors = require('../helpers/error');
 const Staff = require('../models/Staff');
-const Flight = require('../models/Flight');
+const Flight = require('../models/Staff_Flight');
 const Airport = require('../models/Airport');
 const { ymd, hms } = require('../helpers/dateFormat');
 
