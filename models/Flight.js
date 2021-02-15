@@ -44,6 +44,7 @@ class Flight {
                         WHERE flight_state='Scheduled' AND departure_date<=NOW()::DATE AND origin=$1
                         AND (SELECT aircraft_state FROM aircraft_instance WHERE aircraft_id=flight_schedule.aircraft_id)='On-Ground'
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC;`;
+
         const result = await pool.query(query, [staff_member_airport]);
         return result.rows;
     }
