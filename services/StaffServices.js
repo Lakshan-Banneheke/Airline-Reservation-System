@@ -153,15 +153,37 @@ class StaffService {
         return toBeDepartedFlights;
     }
 
-    static async getUpcomingFlights(staff_member_airport) {
-        const upcomingFlights = await Flight.getUpcomingFlightDetails(staff_member_airport);
-        if (upcomingFlights && upcomingFlights.length > 0) {
-            upcomingFlights.forEach((flight) => {
+    // static async getUpcomingFlights(staff_member_airport) {
+    //     const upcomingFlights = await Flight.getUpcomingFlightDetails(staff_member_airport);
+    //     if (upcomingFlights && upcomingFlights.length > 0) {
+    //         upcomingFlights.forEach((flight) => {
+    //             flight.departure_date = ymd(new Date(flight.departure_date));
+    //             flight.arrival_date = ymd(new Date(flight.arrival_date));
+    //         });
+    //     }
+    //     return upcomingFlights;
+    // }
+
+    static async getUpcomingIncomingFlights(staff_member_airport) {
+        const upcomingIncomingFlights = await Flight.getUpcomingIncomingFlights(staff_member_airport);
+        if (upcomingIncomingFlights && upcomingIncomingFlights.length > 0) {
+            upcomingIncomingFlights.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));
                 flight.arrival_date = ymd(new Date(flight.arrival_date));
             });
         }
-        return upcomingFlights;
+        return upcomingIncomingFlights;
+    }
+
+    static async getUpcomingOutgoingFlights(staff_member_airport) {
+        const upcomingOutgoingFlights = await Flight.getUpcomingOutgoingFlights(staff_member_airport);
+        if (upcomingOutgoingFlights && upcomingOutgoingFlights.length > 0) {
+            upcomingOutgoingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        return upcomingOutgoingFlights;
     }
 
     static async getUpcomingFlightGeneralInfo(aircraft_id) {

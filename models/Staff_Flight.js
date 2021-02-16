@@ -58,10 +58,30 @@ class Flight {
         return result.rows;
     }
 
-    static async getUpcomingFlightDetails(staff_member_airport) {
+    // static async getUpcomingFlightDetails(staff_member_airport) {
+    //     const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+    //                     FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+    //                     WHERE flight_state='Scheduled' AND (origin=$1 or destination=$1) AND departure_date>NOW()::DATE
+    //                     ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+    //     const result = await pool.query(query, [staff_member_airport]);
+
+    //     return result.rows;
+    // }
+
+    static async getUpcomingIncomingFlights(staff_member_airport) {
         const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-                        WHERE flight_state='Scheduled' AND (origin=$1 or destination=$1) AND departure_date>NOW()::DATE
+                        WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+        const result = await pool.query(query, [staff_member_airport]);
+
+        return result.rows;
+    }
+
+    static async getUpcomingOutgoingFlights(staff_member_airport) {
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
         const result = await pool.query(query, [staff_member_airport]);
 

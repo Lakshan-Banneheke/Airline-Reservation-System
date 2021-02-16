@@ -35,15 +35,33 @@ class GeneralStaffController {
         }
     }
 
+    // static async upcomingFlightsMain(req, res) {
+    //     try {
+    //         const assignedAirport = req.session.user.staffData.assigned_airport;
+    //         const upcomingFlights = await StaffService.getUpcomingFlights(assignedAirport);
+    //         res.render('staff_general_upcoming_flights_main', {
+    //             user: req.session.user,
+    //             error: req.query.error,
+    //             success: req.query.success,
+    //             upcomingFlights,
+    //         });
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.render('500');
+    //     }
+    // }
+
     static async upcomingFlightsMain(req, res) {
         try {
             const assignedAirport = req.session.user.staffData.assigned_airport;
-            const upcomingFlights = await StaffService.getUpcomingFlights(assignedAirport);
+            const upcomingIncomingFlights = await StaffService.getUpcomingIncomingFlights(assignedAirport);
+            const upcomingOutgoingFlights = await StaffService.getUpcomingOutgoingFlights(assignedAirport);
             res.render('staff_general_upcoming_flights_main', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
-                upcomingFlights,
+                upcomingIncomingFlights,
+                upcomingOutgoingFlights
             });
         } catch (e) {
             console.log(e);
