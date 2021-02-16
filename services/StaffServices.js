@@ -116,6 +116,17 @@ class StaffService {
         // console.log(upcomingFlights);
         return upcomingFlights;
     }
+    static async getArrivedFlights(staff_member_airport){
+        const arrivedFlights = await Flight.getArrivedFlights(staff_member_airport);
+        if (arrivedFlights && arrivedFlights.length > 0) {
+            arrivedFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        //console.log(arrivedFlights);
+        return arrivedFlights;
+    }
 
     static async getincomingPendingFlights(staff_member_airport) {
         const incomingPending = await Flight.incomingPendingFlightDetails(staff_member_airport);

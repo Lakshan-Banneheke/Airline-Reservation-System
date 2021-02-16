@@ -49,6 +49,15 @@ class Flight {
         return result.rows;
     }
 
+    static async getArrivedFlights(staff_member_airport){
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination,actual_arrival
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Landed' AND destination=$1
+                        ORDER BY get_timestamp(arrival_date,arrival_time_utc) DESC;`
+        const result = await pool.query(query, [staff_member_airport]);
+        return result.rows;
+    }
+
     static async getUpcomingFlightDetails(staff_member_airport) {
         const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)

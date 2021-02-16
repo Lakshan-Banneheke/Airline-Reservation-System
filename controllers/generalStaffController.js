@@ -19,6 +19,22 @@ class GeneralStaffController {
         }
     }
 
+    static async arrivedFlightsPage(req, res){
+        try {
+            const assignedAirport = req.session.user.staffData.assigned_airport;
+            const arrivedFlights = await StaffService.getArrivedFlights(assignedAirport);
+            res.render('staff_general_arrived_flights', {
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                arrivedFlights,
+            });
+        } catch (e) {
+            console.log(e);
+            res.render('500');
+        }
+    }
+
     static async upcomingFlightsMain(req, res) {
         try {
             const assignedAirport = req.session.user.staffData.assigned_airport;
