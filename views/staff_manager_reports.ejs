@@ -1,0 +1,110 @@
+<%- include('_staff_header',{user}) %>
+<div class="container py-4">
+    <div class="text-center">
+        <h3>Managerial Reports</h3>
+    </div>
+    <br>
+    <% if (error) {%>
+        <div class="alert alert-danger text-center" role="alert">
+            <%=error%>
+        </div>
+    <% } %>
+    <% if (success) {%>
+        <div class="alert alert-success text-center" role="alert">
+            <%=success%>
+        </div>
+    <% } %>
+    <div class="card-deck">
+        <div class="card p-3">
+            <div class="text-center">
+                <h4>Total Revenue By Each Model</h4>
+            </div>
+            <hr>
+            <div class="p-3">
+                <% if(models && models.length!=0) {%>
+                        <div style="overflow-x:auto;">
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Model Name</th>
+                                        <th scope="col">Variant</th>
+                                        <th scope="col">Total Revnue ($)</th>
+                                </thead>
+                                <tbody>
+        
+                                    <% models.forEach(function(model){%>
+                                        <tr>
+                                            <td><%=model.model_name%></td>
+                                            <td><%=model.variant%></td>
+                                            <td><%=model.total_revenue%></td>
+                                        </tr>
+                                    <%});%>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% }else{ %>
+                        <div class="alert alert-warning text-center">
+                            <strong>No aircraft Models</strong>
+                        </div>
+                    <%}%>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+    const createChart = (idx, title,labels, data) => {
+        const canvas = document.getElementById(idx);
+        return new Chart(canvas, {
+            type: 'bar',
+            options: {
+                
+                aspectRatio:1,
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            offsetGridLines: true
+                        }
+                    }]
+                },
+                legend: {
+                    display:false,
+                },
+                title: {
+                    fontSize: 22,
+                    display: true,
+                    position: 'top',
+                    padding: 12,
+                    text: title,
+                },
+               
+            },
+            data: {
+                labels:labels,
+                xAxisID: "Model Names",
+                yAxisID: "Total revenue in Dollars",
+                datasets: [{
+                    
+                    data: data,
+                    barPercentage: 0.5,
+                    barThickness: 6,
+                    maxBarThickness: 8,
+                    minBarLength: 2,
+                    borderWidth:2,
+                    label: "Total Revenue (Dollars)",
+                    backgroundColor: ['#FFE0E6', '#DBF2F2', '#D7ECFB'],
+                    borderColor:['#FFAABC','#9DDDDD','#8AC9F3'],
+                    hoverBackgroundColor:['#FFAABC','#9DDDDD','#8AC9F3']
+                }],
+            },
+        });
+    }
+    const postCountChart = createChart(
+        'totalRevChart',
+        'Posts',
+        ['A','B','C'],
+        [1,2,3]);
+
+</script> -->
+<%- include('_staff_footer') %>

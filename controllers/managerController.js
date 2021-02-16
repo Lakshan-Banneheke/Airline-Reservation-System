@@ -1,4 +1,5 @@
 const StaffService = require('../services/StaffServices');
+const ReportService = require('../services/ReportService');
 const Errors = require('../helpers/error');
 
 class ManagerController {
@@ -34,6 +35,21 @@ class ManagerController {
         } catch (e) {
             console.log(e);
             res.render('500');
+        }
+    }
+
+    static async reportPage(req,res){
+        try{
+            const models = await ReportService.getRevenueForEachModel();
+            res.render('staff_manager_reports',{
+                user: req.session.user,
+                error: req.query.error,
+                success: req.query.success,
+                models,
+            })
+        }catch(e){
+            console.log(e)
+            res.send(500).render('500');
         }
     }
 
