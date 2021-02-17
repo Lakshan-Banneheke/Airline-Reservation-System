@@ -61,12 +61,15 @@ class BookingController {
         const prices = await BookingService.getPrice(req.session.booking_id);
         const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
 
+        const discount_percentage = Math.floor(100 - 100 * prices.final_price / prices.price_before_discount);
+
         res.render('payment', {
             user: req.session.user,
             booking_id: req.session.booking_id,
             seat_prices: seat_prices,
             price: prices.final_price,
             priceBeforeDiscount: prices.price_before_discount,
+            discount_percentage: discount_percentage,
             registrationError: req.query.registrationError,
             dbError: req.query.dbError,
             loginError: req.query.loginError,
