@@ -11,15 +11,15 @@
                     <% if((incoming==true && outgoing==false)||(incoming==false && outgoing==false)){%>
                         <!-- <% console.log("incoming filtered or nothing") %> -->
                         <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#incomingflights" role="tab"
-                            aria-controls="ongoingflights" aria-selected="true">Incoming Flights</a></li>
+                            aria-controls="incomingflights" aria-selected="false">Incoming Flights</a></li>
                         <li class="nav-item"><a class="nav-link " data-toggle="tab" href="#outgoingflights" role="tab"
-                            aria-controls="departingflights" aria-selected="false">Departing Flights</a></li>
+                            aria-controls="outgoingflights" aria-selected="false">Departing Flights</a></li>
                     <% } else{ %>
                     <!-- <% console.log("else-outgoing") %> -->
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#incomingflights" role="tab"
-                        aria-controls="ongoingflights" aria-selected="true">Incoming Flights</a></li>
+                        aria-controls="incomingflights" aria-selected="false">Incoming Flights</a></li>
                     <li class="nav-item"><a class="nav-link active " data-toggle="tab" href="#outgoingflights" role="tab"
-                        aria-controls="departingflights" aria-selected="false">Departing Flights</a></li>
+                        aria-controls="outgoingflights" aria-selected="false">Departing Flights</a></li>
                     <% } %>
                 </ul>
             </div>
