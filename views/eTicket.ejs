@@ -16,7 +16,7 @@
         </style>        
     </head>
     <body onload="window.print()">
-      <p class="doNotPrint">Go Back to Payment Page to do more bookings</p>
+      <p class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a></p>
         <div id="content">
           <% if(bookingDetails && bookingDetails.length!=0) {%>
             <% bookingDetails.forEach(function(booking){%>
@@ -25,18 +25,18 @@
                 <div class="col-xs">
                     <img src="/assets/images/brand-2.png"/>
                 </div>
-                <div class="col-xs">
+                <div class="col-xs-6">
                 <h1> e- Ticket Receipt & itinerary</h1>
                 </div>
                 <div class="col-xs">
-                    <P><%= customerDetails.customer_id%></P>
-                    <p><%= customerDetails.type%> <%= customerDetails.category %> customer for <%= orgDetails.airline_name%> </p>
+                    
+                    <p><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
                     <p><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></p>
                 </div>
 
         </div>
         <hr>
-        <p>Your electronic ticket is stored in our computer reservation system. This e-Ticket receipt / itinerary is your record of your electronic ticket.  You may need to show this receipt to enter the airport and/or to prove return or onward travel to customs and immigration officials</p>
+        <p>Your ticket details are stored in our computer reservation system. This e-Ticket receipt / itinerary is your record of your electronic ticket.  You may need to show this receipt to enter the airport and/or to prove return or onward travel to customs and immigration officials</p>
         <p>
         <b> Don't miss your flight!</b><br>
         <b>90</b>- Get to airport no later than 90 minuites before departure<br>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td>BOOKING REFERENCE</td>
-                <td><%=bookingDetails[0].booking_id%></td>
+                <td>BA00<%=bookingDetails[0].booking_id%></td>
             </tr>
         </table>
         <h4 style="color: white; background-color: orangered; width: 100%;">DETAILED ITINERARY</h4>
@@ -65,7 +65,7 @@
             <th scope="col-xs">Duration</th>
             <th scope="col-xs">Aircraft Model</th>
             <tr>
-                <th scope="row">FLIGHT</th>
+                <th scope="row"><%=flightInfo[0].route_id%>-<%=bookingDetails[0].schedule_id%></th>
                 <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%></td>
                 <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%></td>
                 <td style="white-space:nowrap;"><%=booking.class_name%></td>
@@ -79,7 +79,7 @@
         <b>Fare</b>
         <div class="row">
           <div class="col-xs">
-        <p>1 Adult @ </p>
+        <p>1 Passenger @ </p>
       </div>
       <div class="col-xs">
         <p><% if(flightInfo[1] && flightInfo[1].length!=0) {%>
