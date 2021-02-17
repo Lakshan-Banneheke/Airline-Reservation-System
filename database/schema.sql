@@ -322,6 +322,30 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION change_customer_category() RETURNS TRIGGER AS $$
+DECLARE
+   frequent_min SMALLINT;
+   gold_min SMALLINT;
+BEGIN
+
+    SELECT min_bookings INTO frequent_min FROM customer_category WHERE cat_name='Frequent';
+    SELECT min_bookings INTO gold_min FROM customer_category WHERE cat_name='Gold';
+
+    IF (NEW.no_of_bookings >= gold_min) THEN
+        UPDATE registered_customer SET category = 'Gold' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    ELSIF (NEW.no_of_bookings >= frequent_min) THEN
+        UPDATE registered_customer SET category = 'Frequent' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
@@ -555,6 +579,9 @@ CREATE TRIGGER update_customer_bookings
 AFTER UPDATE OF state ON seat_booking
     FOR EACH ROW EXECUTE PROCEDURE increment_customer_bookings();
 
+CREATE TRIGGER update_customer_category
+AFTER UPDATE OF no_of_bookings ON registered_customer
+    FOR EACH ROW EXECUTE PROCEDURE change_customer_category();
 
 
 --------------------------------------- PROCEDURES SCHEMA---------------------------------------------------------------------------------------
