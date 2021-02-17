@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const BookingController = require('../controllers/bookingController');
+const TicketController = require('../controllers/TicketController');
 
 router.post('/createBooking', BookingController.createBooking);
 router.post('/payment/cancel', BookingController.cancelPayment);
@@ -8,6 +9,7 @@ router.get('/payment', BookingController.getPayment);
 router.post('/', BookingController.getBooking);
 router.get('/', checkForScheduleID, BookingController.getBooking);
 router.delete('/deleteBooking', BookingController.deleteBooking);
+router.post('/payment/success/eTicket', TicketController.printTicket);
 
 function checkForScheduleID(req, res, next) {
     if (typeof req.body.schedule_id !== 'undefined') {
