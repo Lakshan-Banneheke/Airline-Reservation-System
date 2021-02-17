@@ -67,9 +67,10 @@ $("#passengers").change(function() {
     if (!(1 <= limit && limit <= 5)){
         $("input:checkbox").prop("checked",false);
         $("input:checkbox").attr("disabled",true);
+    }else if (limit === $("input:checkbox:checked").length.toString()){
+        $("input:checkbox").not(":checked").attr("disabled",true);
     }else {
-        let bol = $("input:checkbox:checked").length >= limit;
-        console.log(bol);
+        let bol = $("input:checkbox:checked").length > limit;
 
         if (bol){
             $("input:checkbox").prop("checked",!bol);
