@@ -36,7 +36,7 @@
                                         <tr>
                                             <td><%=model.model_name%></td>
                                             <td><%=model.variant%></td>
-                                            <td><%=model.total_revenue%></td>
+                                            <td><%=model.total_revenue?model.total_revenue:'0.00'%></td>
                                         </tr>
                                     <%});%>
                                 </tbody>

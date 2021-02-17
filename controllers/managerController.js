@@ -49,7 +49,7 @@ class ManagerController {
             })
         }catch(e){
             console.log(e)
-            res.send(500).render('500');
+            res.render('500');
         }
     }
 
