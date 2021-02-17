@@ -866,7 +866,7 @@ $$;
 
 
 ---------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
-CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
+CREATE OR REPLACE PROCEDURE insert_route_price(varchar,numeric,numeric,numeric)
 LANGUAGE plpgsql
 AS $$
 
@@ -917,7 +917,7 @@ GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 
-GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+--GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
 
