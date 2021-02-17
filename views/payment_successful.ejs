@@ -55,6 +55,12 @@
 
 
 <!-- booking-registration-section start -->
+<form action="/booking/payment/success/eTicket" method="post">
+        <div class="text-center" >
+  <input type="hidden" value="<%= bookingDetails[0].booking_id%>"/>
+  <button type="submit">Click here to print e- Ticket Receipt & Itinerary</button>
+  </div>
+</form>
 <section class="booking-registration-section pt-120 pb-120">
     <div class="container">
         <div class="row justify-content-center">
@@ -67,8 +73,9 @@
                                 <h1 style="color:green;"><i class="fas fa-check-circle" style="size: 30%;"></i>Payment Successful!</h1>
                                 <br>
                                 <h3>Thank You for your payment of $<%=bookingDetails[0].total_price%> for B Airways</h3>
-                                <p>Reference Customer ID: <%=bookingDetails[0].customer_id%></p>
+                                
                             </div>
+                            
                             <% if(bookingDetails && bookingDetails.length!=0) {%>
                               <% bookingDetails.forEach(function(booking){%>
                             <div class="flex font-sans justify-center items-center h-screen">
