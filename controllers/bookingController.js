@@ -59,12 +59,7 @@ class BookingController {
 
     static async getPayment(req, res) {
         const prices = await BookingService.getPrice(req.session.booking_id);
-        //prices.price_before_discount
-        //prices.final_price
-
         const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
-        console.log(seat_prices);
-
 
         res.render('payment', {
             user: req.session.user,
