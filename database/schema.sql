@@ -1,5 +1,4 @@
-DROP TRIGGER IF EXISTS afterbookingInsertTrigger ON Seat_Booking;
-DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
+DROP TRIGGER IF EXISTS update_customer_bookings ON Seat_Booking;
 
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
@@ -42,6 +41,7 @@ DROP TYPE IF EXISTS  aircraft_state_enum;
 DROP TYPE IF EXISTS  gender_enum;
 DROP TYPE IF EXISTS  customer_state_enum;
 DROP TYPE IF EXISTS  staff_category;
+DROP TYPE IF EXISTS  customer_category;
 DROP TYPE IF EXISTS  staff_account_state;
 
 SET TIME ZONE 'Etc/UTC';
@@ -71,6 +71,12 @@ CREATE TYPE gender_enum AS ENUM(
 CREATE TYPE customer_state_enum AS ENUM(
 'guest',
 'registered'
+);
+
+CREATE TYPE registered_customer_category AS ENUM(
+'General',
+'Frequent',
+'Gold'
 );
 
 CREATE TYPE staff_category AS ENUM(
@@ -256,6 +262,8 @@ DECLARE
     temp_price numeric(10,2);
     val_booking_id int;
     val_model_id int;
+    discounted_price numeric(10,2);
+    val_discount_percentage numeric(10,2);
 
 BEGIN
 
@@ -277,7 +285,15 @@ BEGIN
             i = i + 1;
     END LOOP;
 
-    INSERT INTO seat_booking(customer_id, schedule_id, total_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
+    discounted_price = tot_price;
+
+    IF (val_type = 'registered') THEN
+        SELECT discount_percentage INTO val_discount_percentage FROM Registered_Customer JOIN Customer_Category ON category = cat_name WHERE customer_id = val_customer_id;
+        discounted_price = tot_price * (1 - val_discount_percentage/100);
+    END IF;
+
+
+    INSERT INTO seat_booking(customer_id, schedule_id, price_before_discount, final_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, discounted_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
 
     SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
 
@@ -288,6 +304,45 @@ BEGIN
     RETURN val_booking_id;
 END;
 $$;
+
+
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION increment_customer_bookings() RETURNS TRIGGER AS $$
+DECLARE
+   cust_type customer_state_enum;
+BEGIN
+    IF (NEW.state = 'Paid') THEN
+        SELECT type INTO cust_type FROM customer WHERE customer_id = NEW.customer_id;
+           IF (cust_type = 'registered') THEN
+               UPDATE registered_customer SET no_of_bookings = no_of_bookings + 1 WHERE customer_id = NEW.customer_id;
+           END IF;
+    END IF;
+    RETURN NULL; -- result is ignored since this is an AFTER trigger
+END;
+$$ LANGUAGE plpgsql;
+
+
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION change_customer_category() RETURNS TRIGGER AS $$
+DECLARE
+   frequent_min SMALLINT;
+   gold_min SMALLINT;
+BEGIN
+
+    SELECT min_bookings INTO frequent_min FROM customer_category WHERE cat_name='Frequent';
+    SELECT min_bookings INTO gold_min FROM customer_category WHERE cat_name='Gold';
+
+    IF (NEW.no_of_bookings >= gold_min) THEN
+        UPDATE registered_customer SET category = 'Gold' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    ELSIF (NEW.no_of_bookings >= frequent_min) THEN
+        UPDATE registered_customer SET category = 'Frequent' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 
@@ -304,7 +359,7 @@ CREATE TABLE Organizational_Info (
 
 
 CREATE TABLE Customer_Category (
-  cat_name VARCHAR(30),
+  cat_name registered_customer_category,
   discount_percentage NUMERIC(4,2) NOT NULL,
   min_bookings SMALLINT NOT NULL,
   PRIMARY KEY (cat_name)
@@ -322,13 +377,13 @@ CREATE TABLE Registered_Customer (
   password varchar(255) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  category varchar(30), --Default no category
+  category  registered_customer_category NOT NULL DEFAULT 'General', --Default no category
   dob DATE NOT NULL,
   gender gender_enum,
   contact_no VARCHAR(15) NOT NULL,
   passport_no VARCHAR(20) NOT NULL,
-  address_line1 varchar(30) NOT NULL,
-  address_line2 varchar(30) NOT NULL,
+  address_line1 varchar(80) NOT NULL,
+  address_line2 varchar(80) NOT NULL,
   country VARCHAR(30) NOT NULL,
   city varchar(30) NOT NULL,
   display_image bytea,
@@ -438,7 +493,8 @@ CREATE TABLE Seat_Booking (
   booking_id SERIAL,
   customer_id varchar(36) NOT NULL,
   schedule_id int NOT NULL,
-  total_price numeric(10,2) NOT NULL,
+  price_before_discount numeric(10,2) NOT NULL,
+  final_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
   date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
@@ -519,7 +575,13 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
+CREATE TRIGGER update_customer_bookings
+AFTER UPDATE OF state ON seat_booking
+    FOR EACH ROW EXECUTE PROCEDURE increment_customer_bookings();
 
+CREATE TRIGGER update_customer_category
+AFTER UPDATE OF no_of_bookings ON registered_customer
+    FOR EACH ROW EXECUTE PROCEDURE change_customer_category();
 
 
 --------------------------------------- PROCEDURES SCHEMA---------------------------------------------------------------------------------------
@@ -878,6 +940,7 @@ BEGIN
 
 END;
 $$;
+
 
 
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------

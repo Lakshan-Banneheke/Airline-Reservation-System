@@ -63,7 +63,7 @@ class BookingController {
         res.render('payment', {
             user: req.session.user,
             booking_id: req.session.booking_id,
-            price: price.total_price,
+            price: price.final_price,
             registrationError: req.query.registrationError,
             dbError: req.query.dbError,
             loginError: req.query.loginError,
