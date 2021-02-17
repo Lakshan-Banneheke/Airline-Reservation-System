@@ -8,14 +8,27 @@
         <div>
             <div class="nav-tabs-boxed">
                 <ul class="nav nav-tabs" role="tablist">
+                    <% if((incoming==true && outgoing==false)||(incoming==false && outgoing==false)){%>
+                        <!-- <% console.log("incoming filtered or nothing") %> -->
                         <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#incomingflights" role="tab"
                             aria-controls="ongoingflights" aria-selected="true">Incoming Flights</a></li>
-                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#outgoingflights" role="tab"
+                        <li class="nav-item"><a class="nav-link " data-toggle="tab" href="#outgoingflights" role="tab"
                             aria-controls="departingflights" aria-selected="false">Departing Flights</a></li>
+                    <% } else{ %>
+                    <!-- <% console.log("else-outgoing") %> -->
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#incomingflights" role="tab"
+                        aria-controls="ongoingflights" aria-selected="true">Incoming Flights</a></li>
+                    <li class="nav-item"><a class="nav-link active " data-toggle="tab" href="#outgoingflights" role="tab"
+                        aria-controls="departingflights" aria-selected="false">Departing Flights</a></li>
+                    <% } %>
                 </ul>
             </div>
             <div class="tab-content">
-                <div class="tab-pane active" role="tabpanel" id="incomingflights">
+                <% if((incoming==true && outgoing==false)||(incoming==false && outgoing==false)){%>
+                    <div class="tab-pane active" role="tabpanel" id="incomingflights">
+                <% } else{ %>
+                    <div class="tab-pane" role="tabpanel" id="incomingflights">
+                <% } %>
                     <div class="card mt-3" style="background-color: #c6eaec;"><!--card1 start-->
                         <div class="card-header">
                         <h3 class="card-title"></h3>
@@ -75,47 +88,15 @@
 
                         <% } %>
 
-                        <!--test modal
-                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Flight 2 Details</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                            <th scope="col">Booking ID</th>
-                                            <th scope="col">Customer ID</th>
-                                            <th scope="col">Customer Name</th>
-                                            <th scope="col">No.of seats</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% for (var i = 0; i <25; i++) { %>
-                                            
-                                            <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                            </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        test modal end-->
+
                         </div>
                     </div><!--card1 end-->
                 </div>
-                <div class="tab-pane" role="tabpanel" id="outgoingflights">
+                <% if((incoming==true && outgoing==false)||(incoming==false && outgoing==false)){%>
+                    <div class="tab-pane" role="tabpanel" id="outgoingflights">
+                <% } else{ %>
+                    <div class="tab-pane active" role="tabpanel" id="outgoingflights"></div>
+                <% } %>
                     <!--card2 start-->
                         <div class="card mt-3" style="background-color: #b1dfc0;">
                             <div class="card-header">
@@ -176,43 +157,7 @@
 
                         <% } %>
 
-                        <!--test modal
-                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Flight 2 Details</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                            <th scope="col">Booking ID</th>
-                                            <th scope="col">Customer ID</th>
-                                            <th scope="col">Customer Name</th>
-                                            <th scope="col">No.of seats</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% for (var i = 0; i <25; i++) { %>
-                                            
-                                            <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                            </tr>
-                                            <% } %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        test modal end-->
+                        
                             </div>
                         </div><!--card2 end-->
                 </div>
