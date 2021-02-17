@@ -256,6 +256,7 @@ DECLARE
     temp_price numeric(10,2);
     val_booking_id int;
     val_model_id int;
+    discounted_price numeric(10,2);
 
 BEGIN
 
@@ -277,7 +278,14 @@ BEGIN
             i = i + 1;
     END LOOP;
 
-    INSERT INTO seat_booking(customer_id, schedule_id, total_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
+    discounted_price = tot_price;
+
+    IF (val_type = 'registered') THEN
+
+
+
+
+    INSERT INTO seat_booking(customer_id, schedule_id, price_before_discount, final_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
 
     SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
 
@@ -438,7 +446,8 @@ CREATE TABLE Seat_Booking (
   booking_id SERIAL,
   customer_id varchar(36) NOT NULL,
   schedule_id int NOT NULL,
-  total_price numeric(10,2) NOT NULL,
+  price_before_discount numeric(10,2) NOT NULL,
+  final_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
   date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
