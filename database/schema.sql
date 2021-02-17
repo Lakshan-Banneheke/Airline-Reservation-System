@@ -440,6 +440,7 @@ CREATE TABLE Seat_Booking (
   schedule_id int NOT NULL,
   total_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
+  date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
