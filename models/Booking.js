@@ -35,9 +35,15 @@ class Booking {
     }
 
     static async getPrice(booking_id){
-        const query = 'SELECT final_price FROM seat_booking WHERE booking_id = $1';
+        const query = 'SELECT price_before_discount, final_price FROM seat_booking WHERE booking_id = $1';
         let price = await pool.query(query,[booking_id]);
         return price.rows[0];
+    }
+
+    static async getSeatPrices(booking_id){
+        const query = 'SELECT seat_id, price FROM passenger_seat WHERE booking_id = $1';
+        let seat_prices = await pool.query(query,[booking_id]);
+        return seat_prices.rows;
     }
 
     static async successBooking(booking_id){
