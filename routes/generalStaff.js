@@ -9,5 +9,7 @@ router.get('/arrivedFlights', ifGeneralStaff, GeneralStaffController.arrivedFlig
 router.post('/moreInfoUpcomingFlight', ifGeneralStaff, GeneralStaffController.upcomingFlightsMore);
 router.post('/markArrivalFlight', ifGeneralStaff, GeneralStaffController.markFlightArrival);
 router.post('/markDepartureFlight', ifGeneralStaff, GeneralStaffController.markFlightDeparture);
+router.get('/displayFilteredIncoming', ifGeneralStaff, GeneralStaffController.displayFilteredIncoming);
+router.get('/displayFilteredOutgoing', ifGeneralStaff, GeneralStaffController.displayFilteredOutgoing);
 
 module.exports = router;

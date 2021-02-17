@@ -175,6 +175,17 @@ class StaffService {
         return upcomingIncomingFlights;
     }
 
+    static async getUpcomingIncomingFlightsFiltered(staff_member_airport,filtered_airports,type) {
+        const upcomingIncomingFlights = await Flight.getUpcomingIncomingFlightsFiltered(staff_member_airport,filtered_airports,type);
+        if (upcomingIncomingFlights && upcomingIncomingFlights.length > 0) {
+            upcomingIncomingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        return upcomingIncomingFlights;
+    }
+
     static async getUpcomingOutgoingFlights(staff_member_airport) {
         const upcomingOutgoingFlights = await Flight.getUpcomingOutgoingFlights(staff_member_airport);
         if (upcomingOutgoingFlights && upcomingOutgoingFlights.length > 0) {

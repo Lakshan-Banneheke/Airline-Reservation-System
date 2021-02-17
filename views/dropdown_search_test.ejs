@@ -1,4 +1,40 @@
-<form action="enhanced-results.html">
+           
+            <form action="/staff/general/displayFilteredIncoming" method="GET">
+                <div class="row">
+                    <div class="col-md-10 ">
+                        <div class="row">
+                            <div class="col-10">
+                                <div class="form-group col-10">
+                                    <label for="origin">Select Origin:</label>
+                                    <select class="select2" multiple="multiple"  style="width: 100%;" name="origin">
+                                        <!-- <option value='' >--Select FROM Airport--</option> -->
+                                        
+                                        <% if(airports && airports.length!=0) {%>
+                                            <% airports.forEach(function(airport){%>
+                                                <option value=<%=airport.airport_code %> ><%= airport.name %>
+                                                </option>
+                                                <%});%>
+                                                    <%}%>
+                                    </select>      
+                                </div>
+                                <div class="col-2">
+                                    <!-- <button type="submit" value="Submit " name="origin_airports" class="btn btn-info btn-sm">Search</button> -->
+                                    <input type="submit">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+                        
+
+
+
+
+
+
+
+<!-- <form action="enhanced-results.html">
     <div class="row">
         <div class="col-md-10 offset-md-10">
             <div class="row">
@@ -7,7 +43,7 @@
                     Dropdown button
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#"></a>
                     <a class="dropdown-item" href="#">Another action</a>
                     <a class="dropdown-item" href="#">Something else here</a>
                     </div>
@@ -15,26 +51,41 @@
             </div>
         </div>
     </div>
-</form>
-            
-            <!--new test start
-            <form action="enhanced-results.html">
-                <div class="row">
-                    <div class="col-md-10 offset-md-1">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="form-group">
-                                    <label for="destination">Select Destination:</label>
-                                    <select class="select2" multiple="multiple" data-placeholder="Any" style="width: 100%;" name="destination">
-                                        <option>Text only</option>
-                                        <option>Images</option>
-                                        <option>Video</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+</form> -->
+
+
+<!-- <div class="dropdown">
+    
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1-1"
+      data-toggle="dropdown">Bootstrap
+      search</button>
+  
+    
+    <div class="dropdown-menu dropdown-primary" id="your-custom-id">
+    
+      <input class="form-control" class="select2" type="text" placeholder="Search" aria-label="Search">
+      <a class="dropdown-item mdb-dropdownLink-1" href="#">MDB</a>
+      <a class="dropdown-item mdb-dropdownLink-1" href="https://mdbootstrap.com/docs/react/">MDB react</a>
+      <a class="dropdown-item mdb-dropdownLink-1" href="https://mdbootstrap.com/docs/angular/">MDB angular</a>
+      <a class="dropdown-item mdb-dropdownLink-1" href="https://mdbootstrap.com/docs/vue/">MDB vue</a>
+      <a class="dropdown-item mdb-dropdownLink-1" href="https://brandflow.net/">BrandFlow</a>
+      <a class="dropdown-item mdb-dropdownLink-1" href="https://mdbootstrap.com/education/bootstrap/">MDB
+        Rocks</a>
+
+    </div>
+  </div> -->
+
+
+
+    <!-- <div class="rt-input-group rt-input-group--style">
+        <div class="single-input  col-rt-in-3">
+            <select name="from" id="dropdown" class="select-bar">
+                <option value='' selected>--Select FROM Airport--</option>
+                
+                        <option value=''> >dhhgfh
+                        </option>
                         
-            new test end-->
+            </select>
+        </div>
+    </div> -->
+         
