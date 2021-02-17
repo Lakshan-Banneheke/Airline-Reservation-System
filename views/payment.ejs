@@ -63,22 +63,37 @@
                 </div>
                 <% } %>
                 <form class="general-information" id="bookingForm" action="create-booking">
-
                     <div class="booking-registration-form">
                         <div class="booking-form-area">
+                            <div class="row justify-content-center">
                             <h3 class="title">Payment information</h3>
+                            </div>
+                            <table class="table">
+                                <tbody>
                             <%seat_prices.forEach(function(seat_price) { %>
-                                <p>Seat No: <%=seat_price.seat_id%>  $<%=seat_price.price%></p>
+                                <tr><td>Seat No: <b><%=seat_price.seat_id%></b> <td> $<%=seat_price.price%></td></tr>
                             <%})%>
-                            <p>Price before discount $<%= priceBeforeDiscount%></p>
-                            <p>Discount percentage <%=discount_percentage%>%</p>
+                            <tr>
+                            <td>Price before discount</td><td> $<%= priceBeforeDiscount%></td>
+                        </tr>
+                        <tr>
+                            <td>Discount percentage </td><td><%=discount_percentage%>%</td>
+                        </tr>
+                        <tr>
+                            <td>
                             <div class="form-group row">
                                 <label class="col-lg-4 col-form-label">Price</label>
+                            </td>
+                            <td>    
                                 <div class="col-lg-8">
                                     <input type="text" class="form-control" value="$<%= price%>" disabled>
                                 </div>
-                            </div>
-
+                            </td>    
+                            
+                        </tr>    
+                        </tbody>
+                    </table>
+                </div>
                         </div>
                     </div>
 
