@@ -136,7 +136,7 @@ LANGUAGE plpgsql IMMUTABLE;
 
 ----Function to calculate arrival time for a flight
 
-CREATE OR REPLACE FUNCTION get_arrival(val_route_id int, val_departure_datetime timestamp)
+CREATE OR REPLACE FUNCTION get_arrival(val_route_id VARCHAR(10), val_departure_datetime timestamp)
 RETURNS timestamp
 AS $CODE$
 DECLARE
@@ -186,7 +186,7 @@ CREATE OR REPLACE FUNCTION get_seat_price(val_schedule_id int, val_seat_id text)
 RETURNS numeric
 AS $CODE$
 DECLARE
-    val_route_id int;
+    val_route_id VARCHAR(10);
     val_model_id int;
     val_aircraft_id int;
     val_traveler_class_id int;
@@ -400,7 +400,7 @@ CREATE TABLE Aircraft_Instance (
 );
 
 CREATE TABLE Route (
-  route_id SERIAL,
+  route_id VARCHAR(10),
   origin varchar(10) NOT NULL,
   destination varchar(10) NOT NULL,
   duration interval NOT NULL,
@@ -411,7 +411,7 @@ CREATE TABLE Route (
 
 CREATE TABLE Flight_Schedule (
   schedule_id SERIAL,
-  route_id int NOT NULL ,
+  route_id VARCHAR(10) NOT NULL ,
   aircraft_id int NOT NULL,
   departure_date date NOT NULL,
   departure_time_utc time NOT NULL,
@@ -426,7 +426,7 @@ CREATE TABLE Flight_Schedule (
 );
 
 CREATE TABLE Seat_Price (
-  route_id int NOT NULL,
+  route_id VARCHAR(10) NOT NULL,
   traveler_class_id int NOT NULL,
   price numeric(10,2) NOT NULL,
   PRIMARY KEY(route_id,traveler_class_id),
@@ -440,6 +440,7 @@ CREATE TABLE Seat_Booking (
   schedule_id int NOT NULL,
   total_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
+  date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -594,7 +595,7 @@ END;
 $$;
 
 ----------Procedure to insert scheduled flights---------------
-CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id VARCHAR(10), val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
 LANGUAGE plpgsql    
 AS $$ 
 DECLARE
@@ -866,7 +867,7 @@ $$;
 
 
 ---------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
-CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
+CREATE OR REPLACE PROCEDURE insert_route_price(varchar,numeric,numeric,numeric)
 LANGUAGE plpgsql
 AS $$
 
@@ -888,7 +889,7 @@ GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id integer, val_departure_datetime timestamp without time zone) TO database_app;
+GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id VARCHAR(10), val_departure_datetime timestamp without time zone) TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_timestamp(val_date date, val_time time without time zone) TO database_app;
 
@@ -902,7 +903,7 @@ GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, 
 
 GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying, val_airport character varying) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
+GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id VARCHAR(10), val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 
 
 --GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
@@ -917,7 +918,7 @@ GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 
-GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+--GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
 
