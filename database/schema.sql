@@ -1,5 +1,4 @@
-DROP TRIGGER IF EXISTS afterbookingInsertTrigger ON Seat_Booking;
-DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
+DROP TRIGGER IF EXISTS update_customer_bookings ON Seat_Booking;
 
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
@@ -307,6 +306,21 @@ END;
 $$;
 
 
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION increment_customer_bookings() RETURNS TRIGGER AS $$
+DECLARE
+   cust_type customer_state_enum;
+BEGIN
+    IF (NEW.state = 'Paid') THEN
+        SELECT type INTO cust_type FROM customer WHERE customer_id = NEW.customer_id;
+           IF (cust_type = 'registered') THEN
+               UPDATE registered_customer SET no_of_bookings = no_of_bookings + 1 WHERE customer_id = NEW.customer_id;
+           END IF;
+    END IF;
+    RETURN NULL; -- result is ignored since this is an AFTER trigger
+END;
+$$ LANGUAGE plpgsql;
+
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
@@ -537,6 +551,9 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
+CREATE TRIGGER update_customer_bookings
+AFTER UPDATE OF state ON seat_booking
+    FOR EACH ROW EXECUTE PROCEDURE increment_customer_bookings();
 
 
 
@@ -896,6 +913,7 @@ BEGIN
 
 END;
 $$;
+
 
 
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
