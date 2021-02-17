@@ -58,15 +58,7 @@ class Flight {
         return result.rows;
     }
 
-    // static async getUpcomingFlightDetails(staff_member_airport) {
-    //     const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
-    //                     FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-    //                     WHERE flight_state='Scheduled' AND (origin=$1 or destination=$1) AND departure_date>NOW()::DATE
-    //                     ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
-    //     const result = await pool.query(query, [staff_member_airport]);
 
-    //     return result.rows;
-    // }
 
     static async getUpcomingIncomingFlights(staff_member_airport) {
         const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
@@ -79,16 +71,13 @@ class Flight {
     }
 
     static async getUpcomingIncomingFlightsFiltered(staff_member_airport,filtered_airports,type) {
-        console.log(type=='object');
-        const query='';
+        
         if(type=='object'){
             const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
                         WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE AND origin=ANY($2)
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
             const result = await pool.query(query, [staff_member_airport,filtered_airports]);
-                        //console.log(query);
-            console.log(result.rows);
             return result.rows;
         }
         else if(type=='string'){
@@ -97,14 +86,8 @@ class Flight {
                         WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE AND origin=$2
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
             const result = await pool.query(query, [staff_member_airport,filtered_airports]);
-            //console.log(query);
-            //console.log(result.rows);
             return result.rows;
         }
-        // const result = await pool.query(query, [staff_member_airport,filtered_airports]);
-        // //console.log(query);
-        // console.log(result.rows);
-        // return result.rows;
     }
 
     static async getUpcomingOutgoingFlights(staff_member_airport) {
@@ -115,6 +98,26 @@ class Flight {
         const result = await pool.query(query, [staff_member_airport]);
 
         return result.rows;
+    }
+
+    static async getUpcomingOutgoingFlightsFiltered(staff_member_airport,filtered_airports,type) {
+        
+        if(type=='object'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE AND destination=ANY($2)
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
+        else if(type=='string'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE AND destination=$2
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
     }
 
     static async markArrival(schedule_id) {

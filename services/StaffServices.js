@@ -196,6 +196,17 @@ class StaffService {
         }
         return upcomingOutgoingFlights;
     }
+    
+    static async getUpcomingOutgoingFlightsFiltered(staff_member_airport,filtered_airports,type) {
+        const upcomingOutgoingFlights = await Flight.getUpcomingOutgoingFlightsFiltered(staff_member_airport,filtered_airports,type);
+        if (upcomingOutgoingFlights && upcomingOutgoingFlights.length > 0) {
+            upcomingOutgoingFlights.forEach((flight) => {
+                flight.departure_date = ymd(new Date(flight.departure_date));
+                flight.arrival_date = ymd(new Date(flight.arrival_date));
+            });
+        }
+        return upcomingOutgoingFlights;
+    }
 
     static async getUpcomingFlightGeneralInfo(aircraft_id) {
         const upcomingFlightMoreInfo = await Flight.getUpcomingFlightGeneralInfo(aircraft_id);
