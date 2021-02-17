@@ -264,6 +264,7 @@ DECLARE
     val_booking_id int;
     val_model_id int;
     discounted_price numeric(10,2);
+    val_discount_percentage numeric(10,2);
 
 BEGIN
 
@@ -288,11 +289,12 @@ BEGIN
     discounted_price = tot_price;
 
     IF (val_type = 'registered') THEN
+        SELECT discount_percentage INTO val_discount_percentage FROM Registered_Customer JOIN Customer_Category ON category = cat_name WHERE customer_id = val_customer_id;
+        discounted_price = tot_price * (1 - val_discount_percentage/100);
+    END IF;
 
 
-
-
-    INSERT INTO seat_booking(customer_id, schedule_id, price_before_discount, final_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
+    INSERT INTO seat_booking(customer_id, schedule_id, price_before_discount, final_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, discounted_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
 
     SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
 
