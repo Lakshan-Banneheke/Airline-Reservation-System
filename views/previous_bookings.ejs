@@ -64,8 +64,8 @@
                         <% if(bookingsDetails && bookingsDetails.length!=0) {%>
                             <thead>
                             <tr>
-                                <th scope="col">FLIGHT</th>
                                 <th scope="col">BOOKING ID</th>
+                                <th scope="col">FLIGHT</th>
                                 <th scope="col">FROM</th>
                                 <th scope="col">TAKEOFF</th>
                                 <th scope="col">TO</th>
@@ -82,10 +82,10 @@
 
                             <tr>
                                 <td>
-                                    <%=booking.schedule_id%>
+                                    <%=booking.booking_id%>
                                 </td>
                                 <td>
-                                    <%=booking.booking_id%>
+                                    <%=booking.schedule_id%>
                                 </td>
                                 <td>
                                     <%=booking.origin%>

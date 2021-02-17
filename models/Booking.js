@@ -59,7 +59,7 @@ class Booking {
     }
 
     static async getPreviousBookings(customerID){
-        const query = 'SELECT * FROM seat_booking NATURAL JOIN flight_schedule NATURAL JOIN route WHERE customer_id = $1';
+        const query = 'SELECT * FROM seat_booking NATURAL JOIN flight_schedule NATURAL JOIN route WHERE customer_id = $1 ORDER BY booking_id, schedule_id';
         let bookingsDetails = await pool.query(query,[customerID]);
 
         return bookingsDetails.rows;
