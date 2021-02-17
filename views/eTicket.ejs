@@ -7,16 +7,23 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
         <link rel="stylesheet" href="/assets/css/eticket">
         <style>
           @media print{
             .doNotPrint{ display:none; }
+            div {
+              page-break-inside: avoid;
+            }
+            h4{
+              color: black;
+            }
           }
             
         </style>        
     </head>
     <body onload="window.print()">
-      <p class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a></p>
+      <p class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a><br><a href="javascript:demoFromHTML()" class="button">Save as PDF</a></p>
         <div id="content">
           <% if(bookingDetails && bookingDetails.length!=0) {%>
             <% bookingDetails.forEach(function(booking){%>
@@ -29,7 +36,6 @@
                 <h1> e- Ticket Receipt & itinerary</h1>
                 </div>
                 <div class="col-xs">
-                    
                     <p><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
                     <p><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></p>
                 </div>
@@ -44,17 +50,25 @@
         <b>45</b>- Boarding starts 45 minuites before your flight and gates close 20 minuites before departure</p><br>
 
         <p><b>Please ensure you comply with airport restrictions on the carriage of liquids, aerosols and gels in hand baggage</b> Details of your Electronic ticket are shown below. All times shown are in <b>UTC</b> time format</p>
+        <div>
+          <br>
+          <div>
+          <h4 style="color: white;">*****</h4>
+        </div>
         <h4 style="color: white; background-color: orangered; width: 100%;">PASSENGER AND TICKET INFORMATION</h4>
-        <table class="table borderless">
+        <table class="table borderless" id="passenger">
             <tr>
                 <td>PASSENGER NAME</td>
                 <td><b><%=booking.name %></b></td>
             </tr>
-            <tr>
+            <tr ng-repeat-end="">
                 <td>BOOKING REFERENCE</td>
                 <td>BA00<%=bookingDetails[0].booking_id%></td>
             </tr>
         </table>
+      </div>
+      <div>
+        <br>
         <h4 style="color: white; background-color: orangered; width: 100%;">DETAILED ITINERARY</h4>
         <table class="table">
             <th scope="col-xs">Flight</th>
@@ -64,7 +78,7 @@
             <th scope="col-xs">Seat</th>
             <th scope="col-xs">Duration</th>
             <th scope="col-xs">Aircraft Model</th>
-            <tr>
+            <tr ng-repeat-end="">
                 <th scope="row"><%=flightInfo[0].route_id%>-<%=bookingDetails[0].schedule_id%></th>
                 <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%></td>
                 <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%></td>
@@ -74,6 +88,9 @@
                 <td style="white-space:nowrap;"><%=modelDetails.model_name%><br><%=modelDetails.variant%></td>
               </tr>
         </table>
+      </div>
+      <div>
+        <br>
         <h4 style="color: white; background-color: orangered; width: 100%;"> FARE DETAILS</h4>
         
         <b>Fare</b>
@@ -95,6 +112,7 @@
         <b>Discount</b>
         <p>47873837</p>
         <b>TOTAL TRIP COST</b>
+          </div>
         <% if(orgDetails && orgDetails.length!=0) {%>
           <%= orgDetails.airline_name%>
           <%= orgDetails.airline_hotline%>
@@ -115,30 +133,55 @@
 
 
 
+  <a href="javascript:demoFromHTML()" class="button">Save as PDF</a>
 
-
-<div id="editor" class="doNotPrint"></div>
-<button id="cmd" class="doNotPrint">generate PDF</button>
 </body>
 
 
 <script>
-     
-    var doc = new jsPDF();
-    var specialElementHandlers = {
-    '#editor': function (element, renderer) {
-        return true;
-    }
-    };
+  
+  function demoFromHTML() {
+      var pdf = new jsPDF('l', 'pt', 'a4');
+      // source can be HTML-formatted string, or a reference
+      // to an actual DOM element from which the text will be scraped.
+      source = $('#content')[0];
+      pdf.setFontSize(8);
+      pdf.setFont('Lato-Regular', 'normal');
+      // we support special element handlers. Register them with jQuery-style 
+      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+      // There is no support for any other type of selectors 
+      // (class, of compound) at this time.
+      specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          '#bypassme': function (element, renderer) {
+              // true = "handled elsewhere, bypass text extraction"
+              return true
+          }
+          
+      };
+      margins = {
+          top: 80,
+          bottom: 60,
+          left: 40,
+          width: 522
+      };
+      // all coords and widths are in jsPDF instance's declared units
+      // 'inches' in this case
+      pdf.fromHTML(
+          source, // HTML string or DOM elem ref.
+          margins.left, // x coord
+          margins.top, { // y coord
+              'width': margins.width, // max width of content on PDF
+              'elementHandlers': specialElementHandlers
+          },
 
-    $('#cmd').click(function () {
-        doc.fromHTML($('#content').html(), 15, 15, {
-            'width': 170,
-                'elementHandlers': specialElementHandlers
-        });
-        doc.save('sample-file.pdf');
-    });
-
+          function (dispose) {
+              // dispose: object with X, Y of the last line add to the PDF 
+              //          this allow the insertion of new lines after html
+              pdf.save('eTicket_BAirways.pdf');
+          }, margins
+      );
+  }
 </script>
 
 </html>
