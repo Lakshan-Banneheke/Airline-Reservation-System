@@ -9,13 +9,13 @@
             <div class="nav-tabs-boxed">
                 <ul class="nav nav-tabs" role="tablist">
                     <% if((incoming==true && outgoing==false)||(incoming==false && outgoing==false)){%>
-                        <!-- <% console.log("incoming filtered or nothing") %> -->
+                        
                         <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#incomingflights" role="tab"
                             aria-controls="incomingflights" aria-selected="false">Incoming Flights</a></li>
                         <li class="nav-item"><a class="nav-link " data-toggle="tab" href="#outgoingflights" role="tab"
                             aria-controls="outgoingflights" aria-selected="false">Departing Flights</a></li>
                     <% } else{ %>
-                    <!-- <% console.log("else-outgoing") %> -->
+                    
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#incomingflights" role="tab"
                         aria-controls="incomingflights" aria-selected="false">Incoming Flights</a></li>
                     <li class="nav-item"><a class="nav-link active " data-toggle="tab" href="#outgoingflights" role="tab"
@@ -79,7 +79,11 @@
                                             <h6> Arrival date: <%= upcomingIncomingFlights[i].arrival_date %></h6>
                                             <h6>Aircraft ID: <%= upcomingIncomingFlights[i].aircraft_id %> </h6>
                                             <!-- <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a> -->
-                                            <form action='/staff/general/moreInfoUpcomingFlight' method=post><button type='submit' class='btn btn-outline-info float-right' >More info</button><input type='hidden' name='aircraft_id' value=' <%= upcomingIncomingFlights[i].aircraft_id %>'></form>
+                                            <form action='/staff/general/moreInfoUpcomingFlight' method=post>
+                                                <button type='submit' class='btn btn-outline-info float-right' >More info</button>
+                                                <input type='hidden' name='aircraft_id' value=' <%= upcomingIncomingFlights[i].aircraft_id %>'>
+                                                <input type='hidden' name='schedule_id' value=' <%= upcomingIncomingFlights[i].schedule_id %>'>
+                                            </form>
                                         </div><!--new 2nd div-->
                                 </div><!--raw end-->
                                 </div>
@@ -148,7 +152,11 @@
                                             <h6>To:  <%= upcomingOutgoingFlights[i].destination %> </br> Arrival date: <%= upcomingOutgoingFlights[i].arrival_date %></h6>
                                             <h6>Aircraft ID: <%= upcomingOutgoingFlights[i].aircraft_id %> </h6>
                                             <!-- <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a> -->
-                                            <form action='/staff/general/moreInfoUpcomingFlight' method=post><button type='submit' class='btn btn-outline-info float-right' >More info</button><input type='hidden' name='aircraft_id' value=' <%= upcomingOutgoingFlights[i].aircraft_id %>'></form>
+                                            <form action='/staff/general/moreInfoUpcomingFlight' method=post>
+                                                <button type='submit' class='btn btn-outline-info float-right' >More info</button>
+                                                <input type='hidden' name='aircraft_id' value=' <%= upcomingOutgoingFlights[i].aircraft_id %>'>
+                                                <input type='hidden' name='schedule_id' value=' <%= upcomingOutgoingFlights[i].schedule_id %>'>
+                                            </form>
                                         </div><!--new 2nd div-->
                                 </div><!--raw end-->
                                 </div>

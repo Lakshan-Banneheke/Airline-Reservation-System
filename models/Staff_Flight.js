@@ -137,6 +137,16 @@ class Flight {
         const result = await pool.query(query, [aircraft_id]);
         return result.rows[0];
     }
+
+    static async getPassengerDetails(schedule_id){
+        const query = `SELECT * FROM details_except_booked_person 
+                        LEFT OUTER JOIN booked_user_details 
+                        USING(customer_id)
+                        WHERE schedule_id=$1;`
+        const result = await pool.query(query, [schedule_id]);
+        //console.log(result.rows);
+        return result.rows;      
+    }
 }
 
 module.exports = Flight;

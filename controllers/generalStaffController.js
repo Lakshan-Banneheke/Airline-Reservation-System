@@ -125,11 +125,13 @@ class GeneralStaffController {
         try {
             const moreInfoGeneral = await
             StaffService.getUpcomingFlightGeneralInfo(req.body.aircraft_id);
+            const moreInfoPassenger=await StaffService.getPassengerDetails(req.body.schedule_id)
             res.render('staff_general_upcoming_flights_more', {
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
                 moreInfoGeneral,
+                moreInfoPassenger
             });
         } catch (e) {
             console.log(e);

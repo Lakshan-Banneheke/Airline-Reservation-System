@@ -213,6 +213,11 @@ class StaffService {
         return upcomingFlightMoreInfo;
     }
 
+    static async getPassengerDetails(schedule_id){
+        const passengerDetails = await Flight.getPassengerDetails(schedule_id);
+        return passengerDetails;
+    }
+
     static async markFlightArrival(schedule_id) {
         return Flight.markArrival(schedule_id);
     }
