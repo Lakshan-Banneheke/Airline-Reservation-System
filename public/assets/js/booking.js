@@ -63,7 +63,6 @@ window.onload = checkPassengerCount;
 
 function checkPassengerCount() {
     let passCount = $("#passengers").val();
-    console.log(passCount);
     if (passCount !== undefined){
         bookingForm.children('.passengerCount').remove();
         let passengerList = '';
