@@ -15,5 +15,8 @@ class TicketService {
     static async getTicketDetails(booking_id){
         return Ticket.getTicketDetails(booking_id);
     }
+    static async getDiscount(booking_id){
+        return Ticket.getDiscount(booking_id);
+    }
 }
 module.exports = TicketService;

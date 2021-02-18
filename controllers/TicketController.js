@@ -5,6 +5,7 @@ class TicketController {
         
         const ticketDetails =await TicketService.getTicketDetails(req.session.booking_id);
         const bookingDetails = await TicketService.getBookingDetails(req.session.booking_id);
+        const discount=await TicketService.getDiscount(req.session.booking_id);
         const schedule_id=bookingDetails[0].schedule_id;
         const flightInfo = await TicketService.getFlightInfo(schedule_id);
         res.render('eTicket',{
@@ -14,6 +15,7 @@ class TicketController {
                 orgDetails:ticketDetails[2],
                 bookingDetails: bookingDetails[1],
                 flightInfo,
+                discount,
                 registrationError: req.query.registrationError,
                 loginError: req.query.loginError,
                 regemail: req.query.email,
