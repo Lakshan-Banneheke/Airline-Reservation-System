@@ -61,34 +61,34 @@ class BookingController {
         const prices = await BookingService.getPrice(req.session.booking_id);
         if (typeof prices === 'undefined') {
             res.status(405).render('405');
+        } else {
+            const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
+
+            const discount_percentage = Math.floor(100 - 100 * prices.final_price / prices.price_before_discount);
+
+            res.render('payment', {
+                user: req.session.user,
+                booking_id: req.session.booking_id,
+                seat_prices: seat_prices,
+                price: prices.final_price,
+                priceBeforeDiscount: prices.price_before_discount,
+                discount_percentage: discount_percentage,
+                registrationError: req.query.registrationError,
+                dbError: req.query.dbError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
         }
-
-        const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
-
-        const discount_percentage = Math.floor(100 - 100 * prices.final_price / prices.price_before_discount);
-
-        res.render('payment', {
-            user: req.session.user,
-            booking_id: req.session.booking_id,
-            seat_prices: seat_prices,
-            price: prices.final_price,
-            priceBeforeDiscount: prices.price_before_discount,
-            discount_percentage: discount_percentage,
-            registrationError: req.query.registrationError,
-            dbError: req.query.dbError,
-            loginError: req.query.loginError,
-            regemail: req.query.email,
-            regfirstName: req.query.firstName,
-            reglastName: req.query.lastName,
-            regdob: req.query.dob,
-            reggender: req.query.gender,
-            regcontactNo: req.query.contactNo,
-            regpassportNo: req.query.passportNo,
-            regaddressLine1: req.query.addressLine1,
-            regaddressLine2: req.query.addressLine2,
-            regcity: req.query.city,
-            regcountry: req.query.country,
-        });
     }
 
     static async cancelPayment(req, res) {
