@@ -48,6 +48,11 @@ INSERT INTO airport(airport_code,location_id) VALUES('DMK',15);
 
 INSERT INTO airport(airport_code,location_id) VALUES('SIN',17);
 
+---------------------INSERTING TRAVELLER CLASS---------------------------
+INSERT INTO traveller_class(class_name) VALUES ('Platinum');
+INSERT INTO traveller_class(class_name) VALUES ('Business');
+INSERT INTO traveller_class(class_name) VALUES ('Economy');
+
 ---------------------INSERTING AIRCRAFT MODELS---------------------------
 
 --max_load in kg -- speed in kmph -- fuel_capacity in litres--
@@ -139,20 +144,9 @@ INSERT INTO Route(route_id,origin, destination, duration) VALUES ('B062','DMK', 
 INSERT INTO Route(route_id,origin, destination, duration) VALUES ('B063','DMK', 'MAA', '03:25');
 INSERT INTO Route(route_id,origin, destination, duration) VALUES ('B064','DMK', 'SIN', '02:20');
 
----------------------INSERTING TRAVELLER CLASS---------------------------
-INSERT INTO traveller_class(class_name) VALUES ('Platinum');
-INSERT INTO traveller_class(class_name) VALUES ('Business');
-INSERT INTO traveller_class(class_name) VALUES ('Economy');
+
 
 ---------------------INSERTING ROUTES-----------------------------
-
-
-
-
-CALL insert_seats();
-
-
-
 
 CALL insert_route_price('B001',800,500,145);
 CALL insert_route_price('B002',700,600,161);

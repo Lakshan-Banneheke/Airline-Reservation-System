@@ -305,6 +305,63 @@ BEGIN
 END;
 $$;
 
+-----------Function to insert seats for a new model ----------
+CREATE OR REPLACE FUNCTION insert_seats_func() RETURNS TRIGGER AS $$
+DECLARE
+    temp_model_id int;
+    current_seat int;
+    row_num int;
+    col char;
+    platinum int;
+    business int;
+    economy int;
+    economy_row int;
+    business_row int;
+    platinum_row int;
+    cols char[] DEFAULT array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    columns_economy char[];
+    columns_business char[];
+    columns_platinum char[];
+BEGIN
+    temp_model_id = new.model_id;
+    SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity, economy_seats_per_row, business_seats_per_row, platinum_seats_per_row INTO economy, business, platinum, economy_row, business_row, platinum_row
+    FROM aircraft_model WHERE model_id=temp_model_id;
+
+    columns_platinum = cols[: platinum_row];
+
+    current_seat = 1;
+    row_num = 1;
+    while current_seat <= platinum loop
+            foreach col in array columns_platinum loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 1);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+
+    columns_business = cols[: business_row];
+    current_seat = 1;
+
+    while current_seat <= business loop
+            foreach col in array columns_business loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 2);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+    columns_economy = cols[: economy_row];
+    current_seat = 1;
+
+    while current_seat <= economy loop
+            foreach col in array columns_economy loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 3);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 --------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
 CREATE OR REPLACE FUNCTION increment_customer_bookings() RETURNS TRIGGER AS $$
@@ -342,8 +399,6 @@ BEGIN
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
-
-
 
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
@@ -579,9 +634,14 @@ CREATE TRIGGER update_customer_bookings
 AFTER UPDATE OF state ON seat_booking
     FOR EACH ROW EXECUTE PROCEDURE increment_customer_bookings();
 
+
+CREATE TRIGGER insert_seats_for_new_model AFTER INSERT ON aircraft_model
+    FOR EACH ROW EXECUTE PROCEDURE insert_seats_func();
+
 CREATE TRIGGER update_customer_category
 AFTER UPDATE OF no_of_bookings ON registered_customer
     FOR EACH ROW EXECUTE PROCEDURE change_customer_category();
+
 
 
 --------------------------------------- PROCEDURES SCHEMA---------------------------------------------------------------------------------------
@@ -857,72 +917,6 @@ BEGIN
 
 		
 		return;
-
-END;
-$$;
-
----------------------PROCEDURE FOR ADDING SEATS---------------------------
-CREATE OR REPLACE PROCEDURE insert_seats()
-LANGUAGE plpgsql
-AS $$
-DECLARE
-	   temp_model_id int;
-	   model_count int;
-       current_seat int;
-       row_num int;
-       col char;
-	   platinum int;
-	   business int;
-	   economy int;
-       economy_row int;
-       business_row int;
-       platinum_row int;
-       cols char[] DEFAULT array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-       columns_economy char[];
-       columns_business char[];
-       columns_platinum char[];
-BEGIN
-	SELECT COUNT(model_id) INTO model_count FROM aircraft_model;
-	temp_model_id = 1;
-
-	while temp_model_id <= model_count loop
-		SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity, economy_seats_per_row, business_seats_per_row, platinum_seats_per_row INTO economy, business, platinum, economy_row, business_row, platinum_row
-			FROM aircraft_model WHERE model_id=temp_model_id;
-
-        columns_platinum = cols[: platinum_row];
-
-		current_seat = 1;
-		row_num = 1;
-		while current_seat <= platinum loop
-            foreach col in array columns_platinum loop
-                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 1);
-                    current_seat = current_seat + 1;
-            end loop;
-			row_num = row_num + 1;
-		end loop;
-
-        columns_business = cols[: business_row];
-		current_seat = 1;
-
-        while current_seat <= business loop
-                foreach col in array columns_business loop
-                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 2);
-                        current_seat = current_seat + 1;
-                end loop;
-                row_num = row_num + 1;
-        end loop;
-        columns_economy = cols[: economy_row];
-        current_seat = 1;
-
-        while current_seat <= economy loop
-                foreach col in array columns_economy loop
-                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 3);
-                        current_seat = current_seat + 1;
-                end loop;
-                row_num = row_num + 1;
-        end loop;
-        temp_model_id = temp_model_id + 1;
-	end loop;
 
 END;
 $$;

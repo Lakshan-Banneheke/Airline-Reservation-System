@@ -41,6 +41,10 @@ class BookingService {
     static async getBookingDetails(booking_id) {
         return Booking.getBookingDetails(booking_id);
     }
+
+    static async getPreviousBookings(customerID) {
+        return Booking.getPreviousBookings(customerID);
+    }
 }
 
 module.exports = BookingService;
