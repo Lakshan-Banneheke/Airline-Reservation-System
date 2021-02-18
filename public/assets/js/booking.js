@@ -59,9 +59,44 @@ $(".seat-check").click(function () {
 
 
 
+window.onload = checkPassengerCount;
+
+function checkPassengerCount() {
+    let passCount = $("#passengers").val();
+    if (passCount !== undefined){
+        bookingForm.children('.passengerCount').remove();
+        let passengerList = '';
+        for(let i=0; i<passCount; i++){
+            passengerList += passengerinfo
+        }
+        $('.educational-registration-form').before(start + passengerList + end)
+        $('.seatNumber').each(function () {
+            $(this).html(dropdown);
+        });
+    }
+
+}
+
 
 $("#passengers").change(function() {
     bookingForm.children('.passengerCount').remove();
+    let limit = this.value;
+
+    if (!(1 <= limit && limit <= 5)){
+        $("input:checkbox").prop("checked",false);
+        $("input:checkbox").attr("disabled",true);
+    }else if (limit === $("input:checkbox:checked").length.toString()){
+        $("input:checkbox").not(":checked").attr("disabled",true);
+    }else {
+        let bol = $("input:checkbox:checked").length > limit;
+
+        if (bol){
+            $("input:checkbox").prop("checked",!bol);
+            $("input:checkbox").attr("disabled",!bol);
+        }else{
+            $("input:checkbox").attr("disabled",bol);
+        }
+    }
     let passengerList = '';
     for(let i=0; i<this.value; i++){
         passengerList += passengerinfo
@@ -69,5 +104,8 @@ $("#passengers").change(function() {
     $('.educational-registration-form').before(start + passengerList + end)
     $('.seatNumber').each(function () {
         $(this).html(dropdown);
-    })
+    });
+
+
+
 });
