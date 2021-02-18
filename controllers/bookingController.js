@@ -59,6 +59,10 @@ class BookingController {
 
     static async getPayment(req, res) {
         const prices = await BookingService.getPrice(req.session.booking_id);
+        if (typeof prices === 'undefined') {
+            res.status(405).render('405');
+        }
+
         const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
 
         const discount_percentage = Math.floor(100 - 100 * prices.final_price / prices.price_before_discount);

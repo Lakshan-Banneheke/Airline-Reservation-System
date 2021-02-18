@@ -59,6 +59,21 @@ $(".seat-check").click(function () {
 
 
 
+window.onload = checkPassengerCount;
+
+function checkPassengerCount() {
+    let passCount = $("#passengers").val();
+    bookingForm.children('.passengerCount').remove();
+    let passengerList = '';
+    for(let i=0; i<passCount; i++){
+        passengerList += passengerinfo
+    }
+    $('.educational-registration-form').before(start + passengerList + end)
+    $('.seatNumber').each(function () {
+        $(this).html(dropdown);
+    })
+}
+
 
 $("#passengers").change(function() {
     bookingForm.children('.passengerCount').remove();
