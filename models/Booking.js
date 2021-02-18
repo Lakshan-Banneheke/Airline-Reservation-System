@@ -35,9 +35,15 @@ class Booking {
     }
 
     static async getPrice(booking_id){
-        const query = 'SELECT total_price FROM seat_booking WHERE booking_id = $1';
+        const query = 'SELECT price_before_discount, final_price FROM seat_booking WHERE booking_id = $1';
         let price = await pool.query(query,[booking_id]);
         return price.rows[0];
+    }
+
+    static async getSeatPrices(booking_id){
+        const query = 'SELECT seat_id, price FROM passenger_seat WHERE booking_id = $1';
+        let seat_prices = await pool.query(query,[booking_id]);
+        return seat_prices.rows;
     }
 
     static async successBooking(booking_id){
@@ -51,7 +57,7 @@ class Booking {
     }
 
     static async getBookingDetails(booking_id){
-        const query1 = 'SELECT  booking_id,passenger_seat.seat_id as seat_id,passenger_seat.model_id as model_id,price,name,customer_id,schedule_id,total_price,class_name FROM passenger_seat NATURAL JOIN seat_booking,aircraft_seat,traveller_class WHERE booking_id = $1 AND passenger_seat.model_id=aircraft_seat.model_id AND passenger_seat.seat_id=aircraft_seat.seat_id AND aircraft_seat.traveller_class_id=traveller_class.class_id';
+        const query1 = 'SELECT  booking_id,passenger_seat.seat_id as seat_id,passenger_seat.model_id as model_id,price,name,customer_id,schedule_id,final_price,class_name FROM passenger_seat NATURAL JOIN seat_booking,aircraft_seat,traveller_class WHERE booking_id = $1 AND passenger_seat.model_id=aircraft_seat.model_id AND passenger_seat.seat_id=aircraft_seat.seat_id AND aircraft_seat.traveller_class_id=traveller_class.class_id';
         const query2 = 'SELECT schedule_id FROM seat_booking WHERE booking_id = $1';
         let result1 = await pool.query(query1,[booking_id]);
         let result2=await pool.query(query2,[booking_id]);

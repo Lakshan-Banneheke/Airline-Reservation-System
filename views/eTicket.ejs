@@ -1,0 +1,190 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+        <link rel="stylesheet" href="/assets/css/eticket">
+        <style>
+          @media print{
+            .doNotPrint{ display:none; }
+            div {
+              page-break-inside: avoid;
+            }
+            h4{
+              color: black;
+            }
+          }
+            
+        </style>        
+    </head>
+    <body onload="window.print()">
+      <p class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a><br><a href="javascript:demoFromHTML()" class="button">Save as PDF</a></p>
+        <div id="content">
+          <% if(bookingDetails && bookingDetails.length!=0) {%>
+            <% bookingDetails.forEach(function(booking){%>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs">
+                    <img src="/assets/images/brand-2.png"/>
+                </div>
+                <div class="col-xs-6">
+                <h1> e- Ticket Receipt & itinerary</h1>
+                </div>
+                <div class="col-xs">
+                    <p><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
+                    <p><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></p>
+                </div>
+
+        </div>
+        <hr>
+        <p>Your ticket details are stored in our computer reservation system. This e-Ticket receipt / itinerary is your record of your electronic ticket.  You may need to show this receipt to enter the airport and/or to prove return or onward travel to customs and immigration officials</p>
+        <p>
+        <b> Don't miss your flight!</b><br>
+        <b>90</b>- Get to airport no later than 90 minuites before departure<br>
+        <b>60</b>- Go through security no later than 60 minuites before<br>
+        <b>45</b>- Boarding starts 45 minuites before your flight and gates close 20 minuites before departure</p><br>
+
+        <p><b>Please ensure you comply with airport restrictions on the carriage of liquids, aerosols and gels in hand baggage</b> Details of your Electronic ticket are shown below. All times shown are in <b>UTC</b> time format</p>
+        <div>
+          <br>
+          <div>
+          <h4 style="color: white;">*****</h4>
+        </div>
+        <h4 style="color: white; background-color: orangered; width: 100%;">PASSENGER AND TICKET INFORMATION</h4>
+        <table class="table borderless" id="passenger">
+            <tr>
+                <td>PASSENGER NAME</td>
+                <td><b><%=booking.name %></b></td>
+            </tr>
+            <tr ng-repeat-end="">
+                <td>BOOKING REFERENCE</td>
+                <td>BA00<%=bookingDetails[0].booking_id%></td>
+            </tr>
+        </table>
+      </div>
+      <div>
+        <br>
+        <h4 style="color: white; background-color: orangered; width: 100%;">DETAILED ITINERARY</h4>
+        <table class="table">
+            <th scope="col-xs">Flight</th>
+            <th scope="col-xs">Depart</th>
+            <th scope="col-xs">Arrive</th>
+            <th scope="col-xs">Class</th>
+            <th scope="col-xs">Seat</th>
+            <th scope="col-xs">Duration</th>
+            <th scope="col-xs">Aircraft Model</th>
+            <tr ng-repeat-end="">
+                <th scope="row"><%=flightInfo[0].route_id%>-<%=bookingDetails[0].schedule_id%></th>
+                <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%></td>
+                <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%></td>
+                <td style="white-space:nowrap;"><%=booking.class_name%></td>
+                <td style="white-space:nowrap;"><%= booking.seat_id %></td>
+                <td style="white-space:nowrap;"><%=flightInfo[0].duration.hours%>h <%=flightInfo[0].duration.minuites%> mints</td>
+                <td style="white-space:nowrap;"><%=modelDetails.model_name%><br><%=modelDetails.variant%></td>
+              </tr>
+        </table>
+      </div>
+      <div>
+        <br>
+        <h4 style="color: white; background-color: orangered; width: 100%;"> FARE DETAILS</h4>
+        
+        <b>Fare</b>
+        <div class="row">
+          <div class="col-xs">
+        <p>1 Passenger @ </p>
+      </div>
+      <div class="col-xs">
+        <p><% if(flightInfo[1] && flightInfo[1].length!=0) {%>
+          <% flightInfo[1].forEach(function(price){%>
+            <% if(price.traveler_class_id==bookingDetails[0].class_id) {%>
+              <%= price.price %> 
+              
+              <%}%>
+              <%});%> 
+              <%}%>   </p></div>
+            </div>
+
+        <b>Discount</b>
+        <p>47873837</p>
+        <b>TOTAL TRIP COST</b>
+          </div>
+        <% if(orgDetails && orgDetails.length!=0) {%>
+          <%= orgDetails.airline_name%>
+          <%= orgDetails.airline_hotline%>
+          <%= orgDetails.airline_email%>
+          <%= orgDetails.airline_adddress%>
+      <%}%>
+    </div>
+    <p style="page-break-before: always"></p>
+    <hr style="height:2px;border-width:0;color:orangered;background-color:orangered">
+    <%});%>
+        </div>
+    <% }else{ %>
+      <div class=" alert alert-warning text-center">
+                                  <strong>No Booked tickets</strong>
+  </div>
+  <%}%>
+
+
+
+
+  <a href="javascript:demoFromHTML()" class="button">Save as PDF</a>
+
+</body>
+
+
+<script>
+  
+  function demoFromHTML() {
+      var pdf = new jsPDF('l', 'pt', 'a4');
+      // source can be HTML-formatted string, or a reference
+      // to an actual DOM element from which the text will be scraped.
+      source = $('#content')[0];
+      pdf.setFontSize(8);
+      pdf.setFont('Lato-Regular', 'normal');
+      // we support special element handlers. Register them with jQuery-style 
+      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+      // There is no support for any other type of selectors 
+      // (class, of compound) at this time.
+      specialElementHandlers = {
+          // element with id of "bypass" - jQuery style selector
+          '#bypassme': function (element, renderer) {
+              // true = "handled elsewhere, bypass text extraction"
+              return true
+          }
+          
+      };
+      margins = {
+          top: 80,
+          bottom: 60,
+          left: 40,
+          width: 522
+      };
+      // all coords and widths are in jsPDF instance's declared units
+      // 'inches' in this case
+      pdf.fromHTML(
+          source, // HTML string or DOM elem ref.
+          margins.left, // x coord
+          margins.top, { // y coord
+              'width': margins.width, // max width of content on PDF
+              'elementHandlers': specialElementHandlers
+          },
+
+          function (dispose) {
+              // dispose: object with X, Y of the last line add to the PDF 
+              //          this allow the insertion of new lines after html
+              pdf.save('eTicket_BAirways.pdf');
+          }, margins
+      );
+  }
+</script>
+
+</html>
+
+
+
