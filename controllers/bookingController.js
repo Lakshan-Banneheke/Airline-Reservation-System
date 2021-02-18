@@ -146,10 +146,10 @@ class BookingController {
     static async deleteBooking(req, res) {
         try {
             await BookingService.cancelBooking(req.body.booking_id);
-            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+            return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (error) {
             console.log(error);
-            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+            return res.status(200).send({ result: 'redirect', url: '/' });
         }
     }
 }

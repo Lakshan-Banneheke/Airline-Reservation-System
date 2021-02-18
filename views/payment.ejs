@@ -121,9 +121,9 @@
                             <div class="col-lg-12 text-center">
                                 <div class="row" style="align-items: center;">
                                     <div class="col-md-6">
-                                <form method="post" action="/booking/payment/success">
+                                <form method="post" action="/booking/payment/success" onsubmit="setSubmitted()">
                                     <input type="hidden" id="booking_id" value="<%= booking_id %>">
-                                    <button type="submit" class="cmn-btn" onclick="setFalse()">Pay</button>
+                                    <button type="submit" class="cmn-btn">Pay</button>
                                 </form>
                                 </div>
                                 <div class="col-md-6">
