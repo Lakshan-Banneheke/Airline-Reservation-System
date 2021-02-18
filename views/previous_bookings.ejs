@@ -66,18 +66,19 @@
                             <tr>
                                 <th scope="col">BOOKING ID</th>
                                 <th scope="col">FLIGHT</th>
+                                <th scope="col">DATE OF BOOKING</th>
                                 <th scope="col">FROM</th>
                                 <th scope="col">TAKEOFF</th>
                                 <th scope="col">TO</th>
                                 <th scope="col">LANDING</th>
-                                <th scope="col">TOTAL PRICE</th>
+                                <th scope="col">PRICE BEFORE DISCOUNT</th>
+                                <th scope="col">FINAL PRICE</th>
                                 <th scope="col">PAID STATE</th>
                                 <th scope="col">MORE INFO</th>
 
                             </tr>
                             </thead>
                             <tbody>
-
                             <% bookingsDetails.forEach(function(booking){%>
 
                             <tr>
@@ -86,6 +87,9 @@
                                 </td>
                                 <td>
                                     <%=booking.schedule_id%>
+                                </td>
+                                <td>
+                                    <%=(booking.date_of_booking).toString().substring(0,15)%>
                                 </td>
                                 <td>
                                     <%=booking.origin%>
@@ -100,7 +104,10 @@
                                     <%=(booking.arrival_date).toString().substring(0,15)+" "+booking.arrival_time_utc%>
                                 </td>
                                 <td>
-                                    $<%=booking.total_price%>
+                                    $<%=booking.price_before_discount%>
+                                </td>
+                                <td>
+                                    $<%=booking.final_price%>
                                 </td>
                                 <td>
                                     <%=booking.state%>

@@ -63,15 +63,19 @@ window.onload = checkPassengerCount;
 
 function checkPassengerCount() {
     let passCount = $("#passengers").val();
-    bookingForm.children('.passengerCount').remove();
-    let passengerList = '';
-    for(let i=0; i<passCount; i++){
-        passengerList += passengerinfo
+    console.log(passCount);
+    if (passCount !== undefined){
+        bookingForm.children('.passengerCount').remove();
+        let passengerList = '';
+        for(let i=0; i<passCount; i++){
+            passengerList += passengerinfo
+        }
+        $('.educational-registration-form').before(start + passengerList + end)
+        $('.seatNumber').each(function () {
+            $(this).html(dropdown);
+        });
     }
-    $('.educational-registration-form').before(start + passengerList + end)
-    $('.seatNumber').each(function () {
-        $(this).html(dropdown);
-    })
+
 }
 
 
