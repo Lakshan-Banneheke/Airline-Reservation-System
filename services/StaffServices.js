@@ -134,6 +134,7 @@ class StaffService {
             incomingPending.forEach((flight) => {
                 flight.departure_date = ymd(new Date(flight.departure_date));
                 flight.arrival_date = ymd(new Date(flight.arrival_date));
+                flight.actual_departed = `${ymd(new Date(flight.actual_departed))}  ${hms(new Date(flight.actual_departed))}`;
             });
         }
         return incomingPending;

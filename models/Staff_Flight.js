@@ -30,7 +30,7 @@ class Flight {
     }
 
     static async incomingPendingFlightDetails(staff_member_airport) {
-        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,flight_state
+        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,flight_state,actual_departed
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
                         WHERE (flight_state=$1 OR flight_state=$2) AND destination=$3
                         ORDER BY get_timestamp(arrival_date,arrival_time_utc) ASC`;
