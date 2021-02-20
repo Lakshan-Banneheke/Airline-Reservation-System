@@ -38,7 +38,7 @@ class Ticket {
             let result3=await pool.query(query3,[aircraft_id]);
 
             //get organizational info
-            const query4='SELECT airline_name,airline_hotline,airline_email,airline_address FROM organizational_info;'
+            const query4='SELECT airline_name,airline_hotline,airline_email,address_1,address_2,address_3 FROM organizational_info;'
             let result4=await pool.query(query4,[]);
 
             return [result1.rows[0],result3.rows[0],result4.rows[0]];
@@ -57,7 +57,7 @@ class Ticket {
             let result3=await pool.query(query3,[aircraft_id]);
 
             //get organizational info
-            const query4='SELECT airline_name,airline_hotline,airline_email,airline_address FROM organizational_info;'
+            const query4='SELECT airline_name,airline_hotline,airline_email,address_1,address_2,address_3 FROM organizational_info;'
             let result4=await pool.query(query4,[]);
 
             return [result1.rows[0],result3.rows[0],result4.rows[0]];
