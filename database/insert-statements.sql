@@ -1,4 +1,4 @@
-INSERT INTO organizational_info VALUES ('B Airways','+61396906345','info@bairways.com','314, 3rd Floor, Gotham Towers, Melbourne, Victoria, Australia','2229993949');
+INSERT INTO organizational_info VALUES ('B Airways','+61396906345','info@bairways.com','314, 3rd Floor, Gotham Towers', 'Melbourne, Victoria', 'Australia','2229993949');
 
 ---------------------INSERT CUSTOMER CATEGORY---------------------
 INSERT INTO customer_category(cat_name,discount_percentage,min_bookings) VALUES ('General',0,0);

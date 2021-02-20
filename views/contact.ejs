@@ -7,11 +7,6 @@
 <!-- login-section start -->
 <%- include('_login',{user}) %>
 <!-- login-section end -->
-<style>
-    li.lowercase {
-        text-transform: lowercase;
-    }
-</style>
 
     <form class="header-form">
         <div class="skip"><i class="fas fa-times"></i></div>
@@ -74,9 +69,9 @@
                         <i class="flaticon-pin"></i>
                         <h3 class="title">office address</h3>
                         <ul class="contact-info-content">
-                            <li>314, 3rd Floor, Gotham Towers</li>
-                            <li>Melbourne, Victoria</li>
-                            <li>Australia</li>
+                            <li><%= contactDetails.address_1%></li>
+                            <li><%= contactDetails.address_2%></li>
+                            <li><%= contactDetails.address_3%></li>
                         </ul>
                     </div>
                 </div>
@@ -102,7 +97,7 @@
         </div>
     </section>
     <!-- contact-info-section end -->
-
+<br><br><br>
 
 
 <%- include('_footer',{user}) %>
