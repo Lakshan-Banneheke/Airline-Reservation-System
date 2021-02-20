@@ -57,10 +57,10 @@ INSERT INTO traveller_class(class_name) VALUES ('Economy');
 
 --max_load in kg -- speed in kmph -- fuel_capacity in litres--
 INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 737','MAX 10','Boeing Commercial Airplanes',150,24,12,6,4,4,88300,25941,838);
+VALUES('Boeing 737','MAX 10','Boeing Commercial',150,24,12,6,4,4,88300,25941,838);
 
 INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 757','300','Boeing Commercial Airplanes',198,32,12,6,4,4,123830,43400,918);
+VALUES('Boeing 757','300','Boeing Commercial',198,32,12,6,4,4,123830,43400,918);
 
 INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
 VALUES('Airbus A380','800','Airbus',500,48,20,10,6,4,575000,323546,903);
