@@ -407,7 +407,9 @@ CREATE TABLE Organizational_Info (
   airline_name  varchar(30) NOT NULL,
   airline_hotline varchar(20) NOT NULL,
   airline_email varchar(50) NOT NULL,
-  airline_address varchar(100) NOT NULL,
+  address_1 varchar(100) NOT NULL,
+  address_2 varchar(100) NOT NULL,
+  address_3 varchar(100) NOT NULL,
   airline_account_no varchar(30) NOT NULL,
   PRIMARY KEY (airline_name)
 );
