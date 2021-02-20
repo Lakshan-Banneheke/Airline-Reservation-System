@@ -203,6 +203,9 @@ class StaffService {
     static async changeAssignedAirport(empId, newAirportCode) {
         return Staff.changeAssignedAirport(empId, newAirportCode);
     }
+    static async getAllRoutes(){
+        return Flight.getAllRoutes()
+    }
 }
 
 module.exports = StaffService;

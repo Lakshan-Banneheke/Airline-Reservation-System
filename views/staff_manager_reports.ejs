@@ -14,97 +14,167 @@
             <%=success%>
         </div>
     <% } %>
-    <div class="card-deck">
-        <div class="card p-3">
-            <div class="text-center">
-                <h4>Total Revenue By Each Model</h4>
-            </div>
-            <hr>
-            <div class="p-3">
-                <% if(models && models.length!=0) {%>
-                        <div style="overflow-x:auto;">
-                            <table class="table table-striped">
-                                <thead class="thead-dark">
+    <div class="card p-3 border border-dark">
+        <div class="text-center">
+            <h4>Total Revenue By Each Model</h4>
+        </div>
+        <hr>
+        <div class="p-3">
+            <% if(models && models.length!=0) {%>
+                    <div style="overflow-x:auto;">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Model Name</th>
+                                    <th scope="col">Variant</th>
+                                    <th scope="col">Total Revnue ($)</th>
+                            </thead>
+                            <tbody>
+    
+                                <% models.forEach(function(model){%>
                                     <tr>
-                                        <th scope="col">Model Name</th>
-                                        <th scope="col">Variant</th>
-                                        <th scope="col">Total Revnue ($)</th>
-                                </thead>
-                                <tbody>
+                                        <td><%=model.model_name%></td>
+                                        <td><%=model.variant%></td>
+                                        <td><%=model.total_revenue?model.total_revenue:'0.00'%></td>
+                                    </tr>
+                                <%});%>
+                            </tbody>
+                        </table>
+                    </div>
+                <% }else{ %>
+                    <div class="alert alert-warning text-center">
+                        <strong>No aircraft Models</strong>
+                    </div>
+                <%}%>
+        </div>
+    </div>
+    <div class="card p-3 mt-3 border border-dark">
+        <h4 class="text-center">Passenger Count</h4>
+        <hr>
+        <form class="mt-3" id="passenger_count_to_dest_form_submit">
+                <div>
+                    <div class="form-group row justify-content-start align-baseline">
+                        <label for="passenger_count_airport_code" class="col-md-4">Number of Passengers Travelling To</label>
+                        <select id="passenger_count_airport_code" class="form-control col-md-8" name="passenger_count_airport_code" style="width: 400px;">
+                        <option  selected value="">Choose...</option>
+                        <% if(airportCodes && airportCodes.length>0){ %>
+                            <% airportCodes.forEach(function(code){ %>
+                                <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                            <% }); %>
+                        <% } %> 
+                        </select>
+                    </div>
+                </div>
+                <div class="row justify-content-start">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="passenger_count_start_date">Between</label>
+                            <input type="date" id="passenger_count_start_date" name="passenger_count_start_date"  class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="passenger_count_end_date">And</label>
+                            <input type="date" id="passenger_count_end_date" name="passenger_count_end_date"  class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark" id="passenger_count_submit">Get Count</button>
+                </div>
+                
+        </form>
         
-                                    <% models.forEach(function(model){%>
-                                        <tr>
-                                            <td><%=model.model_name%></td>
-                                            <td><%=model.variant%></td>
-                                            <td><%=model.total_revenue?model.total_revenue:'0.00'%></td>
-                                        </tr>
-                                    <%});%>
-                                </tbody>
-                            </table>
+    </div>
+    <div class="card p-3 mt-3 border border-dark">
+        <h4 class="text-center">Booking Count</h4>
+        <hr>
+        <form class="mt-3" id="booking_count_form_submit">
+                Get Number of Bookings by each customer type 
+                <div class="row justify-content-start">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="booking_count_start_date">Between</label>
+                            <input type="date" id="booking_count_start_date" name="booking_count_start_date"  class="form-control" required>
                         </div>
-                    <% }else{ %>
-                        <div class="alert alert-warning text-center">
-                            <strong>No aircraft Models</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="booking_count_end_date">And</label>
+                            <input type="date" id="booking_count_end_date" name="booking_count_end_date"  class="form-control" required>
                         </div>
-                    <%}%>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark" id="booking_count_submit">Get Count</button>
+                </div>
+        </form>
+        
+    </div>
+    <div class="row mt-3 justify-content-between">
+        <div class="col-md-6">
+            <div class="card p-3 border border-dark">
+                <h4 class="text-center">Next Flight Passenger Details</h4>
+                <hr>
+                <form action="/staff/manager/next_flight_passenger_details" method="POST">
+                    <div class="form-group">
+                        <label for="route_code" class="col-md-4">Select Flight Route</label>
+                        <select id="route_code" class="form-control col-md-8" name="route_code" style="width: 400px;">
+                        <option  selected value="">Choose...</option>
+                        <% if(routes && routes.length>0){ %>
+                            <% routes.forEach(function(route){ %>
+                                <option value='<%=route.route_id%>' >Route ID:<%=route.route_id%><small class="text-secondary"> ( From: <%=route.origin%> To:<%=route.destination%> ) </small></option>
+                            <% }); %>
+                        <% } %> 
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-dark">Get Details</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3 border border-dark">
+                <h4 class="text-center">Old Flight Details - TODO</h4>
+                <hr>
+                <form action="" method="POST">
+                    <div class="form-group">
+                        <label for="old_origin" class="col-md-6">Select Flight Origin</label>
+                        <select id="old_origin" class="form-control col-md-10" name="old_origin" style="width: 400px;">
+                        <option  selected value="">Choose...</option>
+                        <option  selected value="">Choose...</option>
+                        <% if(airportCodes && airportCodes.length>0){ %>
+                            <% airportCodes.forEach(function(code){ %>
+                                <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                            <% }); %>
+                        <% } %> 
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="old_destination" class="col-md-6">Select Flight Destination</label>
+                        <select id="old_destination" class="form-control col-md-10" name="old_destination" style="width: 400px;">
+                        <option  selected value="">Choose...</option>
+                        <option  selected value="">Choose...</option>
+                        <% if(airportCodes && airportCodes.length>0){ %>
+                            <% airportCodes.forEach(function(code){ %>
+                                <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                            <% }); %>
+                        <% } %> 
+                        </select>
+                    </div>
+                    
+                        <button type="submit" class="btn btn-dark">Get Details</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    
 </div>
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-<script>
-    const createChart = (idx, title,labels, data) => {
-        const canvas = document.getElementById(idx);
-        return new Chart(canvas, {
-            type: 'bar',
-            options: {
-                
-                aspectRatio:1,
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            offsetGridLines: true
-                        }
-                    }]
-                },
-                legend: {
-                    display:false,
-                },
-                title: {
-                    fontSize: 22,
-                    display: true,
-                    position: 'top',
-                    padding: 12,
-                    text: title,
-                },
-               
-            },
-            data: {
-                labels:labels,
-                xAxisID: "Model Names",
-                yAxisID: "Total revenue in Dollars",
-                datasets: [{
-                    
-                    data: data,
-                    barPercentage: 0.5,
-                    barThickness: 6,
-                    maxBarThickness: 8,
-                    minBarLength: 2,
-                    borderWidth:2,
-                    label: "Total Revenue (Dollars)",
-                    backgroundColor: ['#FFE0E6', '#DBF2F2', '#D7ECFB'],
-                    borderColor:['#FFAABC','#9DDDDD','#8AC9F3'],
-                    hoverBackgroundColor:['#FFAABC','#9DDDDD','#8AC9F3']
-                }],
-            },
-        });
-    }
-    const postCountChart = createChart(
-        'totalRevChart',
-        'Posts',
-        ['A','B','C'],
-        [1,2,3]);
+<!-- jquery -->
+<script src="/assets/js/jquery-3.3.1.min.js"></script>
+<script src="/assets/js/manager-reports.js"></script>
 
-</script> -->
 <%- include('_staff_footer') %>

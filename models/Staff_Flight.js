@@ -76,6 +76,12 @@ class Flight {
         const result = await pool.query(query, [aircraft_id]);
         return result.rows[0];
     }
+
+    static async getAllRoutes(){
+        const query=`SELECT * FROm Route`
+        const result= await pool.query(query);
+        return result.rows;
+    }
 }
 
 module.exports = Flight;

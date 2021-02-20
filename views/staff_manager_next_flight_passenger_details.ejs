@@ -1,0 +1,87 @@
+<%- include('_staff_header',{user}) %>
+<div class="container py-4">
+    <div class="text-center">
+        <h3>Passenger Details</h3>
+    </div>
+    <hr>
+    <% if (error) {%>
+        <div class="alert alert-danger text-center" role="alert">
+            <%=error%>
+        </div>
+    <% } %>
+    <% if (success) {%>
+        <div class="alert alert-success text-center" role="alert">
+            <%=success%>
+        </div>
+    <% } %>
+    <div class="card p-3 border border-dark">
+        <div class="text-center">
+            <h4>Minor Passenger Details</h4>
+        </div>
+        <hr>
+        <div class="p-3">
+            <% if(minorPassengers && minorPassengers.length!=0) {%>
+                    <div style="overflow-x:auto;">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Passenger Name</th>
+                                    <th scope="col">Passport No</th>
+                                    <th scope="col">Age</th>
+                            </thead>
+                            <tbody>
+    
+                                <% minorPassengers.forEach(function(passenger){%>
+                                    <tr>
+                                        <td><%=passenger.name%></td>
+                                        <td><%=passenger.passport_no%></td>
+                                        <td><%=passenger.age%></td>
+                                    </tr>
+                                <%});%>
+                            </tbody>
+                        </table>
+                    </div>
+                <% }else{ %>
+                    <div class="alert alert-warning text-center">
+                        <strong>No Passengers of Age 18 or Below</strong>
+                    </div>
+                <%}%>
+        </div>
+    </div>
+    <div class="card p-3 border border-dark mt-3">
+        <div class="text-center">
+            <h4>Adult Passenger Details</h4>
+        </div>
+        <hr>
+        <div class="p-3">
+            <% if(adultPassengers && adultPassengers.length!=0) {%>
+                    <div style="overflow-x:auto;">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Passenger Name</th>
+                                    <th scope="col">Passport No</th>
+                                    <th scope="col">Age</th>
+                            </thead>
+                            <tbody>
+    
+                                <% adultPassengers.forEach(function(passenger){%>
+                                    <tr>
+                                        <td><%=passenger.name%></td>
+                                        <td><%=passenger.passport_no%></td>
+                                        <td><%=passenger.age%></td>
+                                    </tr>
+                                <%});%>
+                            </tbody>
+                        </table>
+                    </div>
+                <% }else{ %>
+                    <div class="alert alert-warning text-center">
+                        <strong>No Passengers Above Age 18</strong>
+                    </div>
+                <%}%>
+        </div>
+    </div>
+</div>
+
+<%- include('_staff_footer') %>

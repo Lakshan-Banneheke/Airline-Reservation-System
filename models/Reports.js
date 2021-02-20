@@ -36,7 +36,7 @@ class Report{
     /*Given a flight no, all passengers travelling in it (next immediate flight) below age 18, above age 18*/
     static async getPassengerDetailsOnNextFlightOnGivenRoute(routeId){
         const query =`
-            SELECT name,passport_no,get_age(dob) FROM Passenger_Seat
+            SELECT name,passport_no,get_age(dob) as age FROM Passenger_Seat
             WHERE booking_id IN
             (
                 SELECT booking_id FROM Seat_Booking WHERE
@@ -58,12 +58,11 @@ class Report{
     static async numberOfBookingsByEachPassengerType(startDate,endDate){
      const query =`
         SELECT count(booking_id),Customer.type FROM Seat_Booking
-        INNNER JOIN Customer USING(customer_id)
-        WHERE 
-        Seat_Booking.booking_id IN
+        RIGHT JOIN Customer USING(customer_id)
+        WHERE booking_id IN
         (
             SELECT booking_id FROM Seat_Booking WHERE
-            date_of_booking>=$1 AND date_of_booking<=$1
+            date_of_booking>=$1 AND date_of_booking<=$2
         )
         GROUP BY Customer.type
      `;
@@ -71,7 +70,7 @@ class Report{
         return result.rows;
     }
 
-
+    /*Given origin and destination, all past flights, states, passenger counts data*/
 
 }
 module.exports = Report;
