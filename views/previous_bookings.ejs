@@ -64,17 +64,16 @@
                         <% if(bookingsDetails && bookingsDetails.length!=0) {%>
                             <thead>
                             <tr>
-                                <th scope="col">BOOKING ID</th>
-                                <th scope="col">FLIGHT</th>
-                                <th scope="col">DATE OF BOOKING</th>
-                                <th scope="col">FROM</th>
-                                <th scope="col">TAKEOFF</th>
-                                <th scope="col">TO</th>
-                                <th scope="col">LANDING</th>
-                                <th scope="col">PRICE BEFORE DISCOUNT</th>
-                                <th scope="col">FINAL PRICE</th>
-                                <th scope="col">PAID STATE</th>
-                                <th scope="col">MORE INFO</th>
+                                <th scope="col"><b>BOOKING ID</b></th>
+                                <th scope="col"><b>FLIGHT</b></th>
+                                <th scope="col"><b>DATE OF BOOKING</b></th>
+                                <th scope="col"><b>FROM</b></th>
+                                <th scope="col"><b>TAKEOFF</b></th>
+                                <th scope="col"><b>TO</b></th>
+                                <th scope="col"><b>LANDING</b></th>
+                                <th scope="col"><b>FINAL PRICE</b></th>
+                                <th scope="col"><b>PAID STATE</b></th>
+                                <th scope="col"><b>MORE INFO</b></th>
 
                             </tr>
                             </thead>
@@ -86,7 +85,7 @@
                                     <%=booking.booking_id%>
                                 </td>
                                 <td>
-                                    <%=booking.schedule_id%>
+                                    <%=booking.route_id%>
                                 </td>
                                 <td>
                                     <%=(booking.date_of_booking).toString().substring(0,15)%>
@@ -104,9 +103,6 @@
                                     <%=(booking.arrival_date).toString().substring(0,15)+" "+booking.arrival_time_utc%>
                                 </td>
                                 <td>
-                                    $<%=booking.price_before_discount%>
-                                </td>
-                                <td>
                                     $<%=booking.final_price%>
                                 </td>
                                 <td>
@@ -117,7 +113,7 @@
                                         <div class="single-input  col-rt-in-3" style="justify-content: center;">
                                             <button type='submit'
                                                     class="cmn-btn" style="font-size: smaller;"
-                                                    name='more-info-button'>MORE INFO</button><input type='hidden'
+                                                    name='more-info-button'>INFO</button><input type='hidden'
                                                                                                   name='booking_id' value='<%=booking.booking_id%>'></div></form>
 
 

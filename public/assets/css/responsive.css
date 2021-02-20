@@ -459,6 +459,7 @@
     }
     .table-area .table{
         width: 900px;
+        max-width: 100%;
     }
 }
 @media (max-width: 440px) {

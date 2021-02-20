@@ -1,0 +1,108 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+<style>
+    li.lowercase {
+        text-transform: lowercase;
+    }
+</style>
+
+    <form class="header-form">
+        <div class="skip"><i class="fas fa-times"></i></div>
+        <div class="header-form-area">
+            <input type="text" placeholder="Search Here">
+            <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+        </div>
+    </form>
+
+
+    <!-- banner-section start -->
+    <section class="inner-banner-section pt-120 pb-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="inner-banner-content">
+                        <h2 class="title">get in touch</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner-section end -->
+
+
+    <!-- breadcrumb-section start -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Contact</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-section end -->
+
+
+    <a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+    <!-- contact-info-section start -->
+    <section class="contact-info-section pt-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-header">
+                        <h2 class="section-title">office contact info</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center mb-30-none">
+                <div class="col-lg-4 col-md-6 col-sm-8 text-center mb-30">
+                    <div class="contact-info-item">
+                        <i class="flaticon-pin"></i>
+                        <h3 class="title">office address</h3>
+                        <ul class="contact-info-content">
+                            <li>314, 3rd Floor, Gotham Towers</li>
+                            <li>Melbourne, Victoria</li>
+                            <li>Australia</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8 text-center mb-30">
+                    <div class="contact-info-item">
+                        <i class="flaticon-mail"></i>
+                        <h3 class="title">phone number</h3>
+                        <ul class="contact-info-content">
+                            <li><%= contactDetails.airline_hotline%></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8 text-center mb-30">
+                    <div class="contact-info-item">
+                        <i class="flaticon-internet"></i>
+                        <h3 class="title">email address</h3>
+                        <ul class="contact-info-content">
+                            <li class = "lowercase"><%= contactDetails.airline_email%></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- contact-info-section end -->
+
+
+
+<%- include('_footer',{user}) %>
