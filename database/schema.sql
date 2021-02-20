@@ -42,6 +42,7 @@ DROP TYPE IF EXISTS  aircraft_state_enum;
 DROP TYPE IF EXISTS  gender_enum;
 DROP TYPE IF EXISTS  customer_state_enum;
 DROP TYPE IF EXISTS  staff_category;
+DROP TYPE IF EXISTS  customer_category;
 DROP TYPE IF EXISTS  staff_account_state;
 
 DROP VIEW IF EXISTS flight_info_passenger CASCADE;
@@ -77,6 +78,12 @@ CREATE TYPE gender_enum AS ENUM(
 CREATE TYPE customer_state_enum AS ENUM(
 'guest',
 'registered'
+);
+
+CREATE TYPE registered_customer_category AS ENUM(
+'General',
+'Frequent',
+'Gold'
 );
 
 CREATE TYPE staff_category AS ENUM(
@@ -345,7 +352,7 @@ CREATE TABLE Organizational_Info (
 
 
 CREATE TABLE Customer_Category (
-  cat_name VARCHAR(30),
+  cat_name registered_customer_category,
   discount_percentage NUMERIC(4,2) NOT NULL,
   min_bookings SMALLINT NOT NULL,
   PRIMARY KEY (cat_name)
@@ -363,13 +370,13 @@ CREATE TABLE Registered_Customer (
   password varchar(255) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  category varchar(30), --Default no category
+  category  registered_customer_category NOT NULL DEFAULT 'General', --Default no category
   dob DATE NOT NULL,
   gender gender_enum,
   contact_no VARCHAR(15) NOT NULL,
   passport_no VARCHAR(20) NOT NULL,
-  address_line1 varchar(30) NOT NULL,
-  address_line2 varchar(30) NOT NULL,
+  address_line1 varchar(80) NOT NULL,
+  address_line2 varchar(80) NOT NULL,
   country VARCHAR(30) NOT NULL,
   city varchar(30) NOT NULL,
   display_image bytea,
@@ -481,6 +488,7 @@ CREATE TABLE Seat_Booking (
   schedule_id int NOT NULL,
   total_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
+  date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE

@@ -138,6 +138,7 @@ class Flight {
         return result.rows[0];
     }
 
+
     static async getPassengerDetails(schedule_id){
         const query = `SELECT * FROM details_except_booked_person 
                         LEFT OUTER JOIN booked_user_details 
@@ -146,6 +147,12 @@ class Flight {
         const result = await pool.query(query, [schedule_id]);
         //console.log(result.rows);
         return result.rows;      
+
+    static async getAllRoutes(){
+        const query=`SELECT * FROm Route`
+        const result= await pool.query(query);
+        return result.rows;
+
     }
 }
 
