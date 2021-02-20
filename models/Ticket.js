@@ -12,7 +12,7 @@ class Ticket {
         return [flightInfo.rows[0], priceInfo.rows];
     }
     static async getBookingDetails(booking_id){
-        const query1 = 'SELECT  booking_id,passenger_seat.seat_id as seat_id,passenger_seat.model_id as model_id,price,name,customer_id,schedule_id,final_price,class_name,class_id FROM passenger_seat NATURAL JOIN seat_booking,aircraft_seat,traveller_class WHERE booking_id = $1 AND passenger_seat.model_id=aircraft_seat.model_id AND passenger_seat.seat_id=aircraft_seat.seat_id AND aircraft_seat.traveller_class_id=traveller_class.class_id';
+        const query1 = 'SELECT  booking_id,date_of_booking,passenger_seat.seat_id as seat_id,passenger_seat.model_id as model_id,price,name,customer_id,schedule_id,final_price,class_name,class_id FROM passenger_seat NATURAL JOIN seat_booking,aircraft_seat,traveller_class WHERE booking_id = $1 AND passenger_seat.model_id=aircraft_seat.model_id AND passenger_seat.seat_id=aircraft_seat.seat_id AND aircraft_seat.traveller_class_id=traveller_class.class_id';
         const query2 = 'SELECT schedule_id FROM seat_booking WHERE booking_id = $1';
         let result1 = await pool.query(query1,[booking_id]);
         let result2=await pool.query(query2,[booking_id]);

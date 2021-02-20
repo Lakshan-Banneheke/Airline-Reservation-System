@@ -24,14 +24,17 @@
     </head>
     <body onload="window.print()">
       <div class="container p-4 pb-0 doNotPrint">
-        <div class="text-center p-3" style="background-color: rgba(255, 136, 0, 0.2)">
+        <div class="text-center p-3" style="background-color:whitesmoke">
           <div class="row">
             <div class="col-xs-6 justify-content-center">
-              <button class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a></button>
+              <button class="doNotPrint" style="background-color: orangered;"><a style="color: white;" href="/customer/viewFlights">Click here to Book More!</a></button>
             </div>
             <div class="col-xs-6 justify-content-center">
-            <button><a href="javascript:demoFromHTML()" class="button">Save as PDF</a></button>
+            <button onclick="window.print()" style="background-color: orangered;"><a href="javascript:demoFromHTML()" class="button" style=" color: white;">Save as PDF</a></button>
             </div>
+            <div></div>
+            <div><p>Customer name:  <b><%= customerDetails.first_name%> <%= customerDetails.last_name%><%= customerDetails.name%> </b> | </p><p style="color: white;">--</p></div>
+            <div>Contact Details:  <b><%= customerDetails.contact_no%><%= customerDetails.mobile%> </b></div>
 
           </div>
       </div>
@@ -43,15 +46,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs">
-                    <img src="/assets/images/brand-2.png"/>
+                    <img src="/assets/images/b_logo.png"/>
                 </div>
                 <div class="col-xs-10">
                 <h1> e- Ticket Receipt & itinerary</h1>
                 </div>
-                <div class="col-xs">
-                    <p class="text-justify"><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
-                    <p class="text-justify"><b><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></b></p>
-                </div>
+                
 
         </div>
         <hr>
@@ -77,6 +77,10 @@
                 <td>BOOKING REFERENCE</td>
                 <td>00<%=bookingDetails[0].booking_id%></td>
             </tr>
+            <tr ng-repeat-end="">
+              <td>BOOKING DATE</td>
+              <td><%=bookingDetails[0].date_of_booking.toString().substring(0,15)%></td>
+          </tr>
         </table>
       </div>
       <div>
@@ -92,8 +96,8 @@
             <th scope="col-xs">Aircraft Model</th>
             <tr ng-repeat-end="">
                 <th scope="row"><%=flightInfo[0].route_id%></th>
-                <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%></td>
-                <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%></td>
+                <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%> UTC</td>
+                <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%> UTC</td>
                 <td style="white-space:nowrap;"><%=booking.class_name%></td>
                 <td style="white-space:nowrap;"><%= booking.seat_id %></td>
                 <td style="white-space:nowrap;"><%=flightInfo[0].duration.hours%>h <%=flightInfo[0].duration.minutes%> mints</td>
@@ -118,7 +122,7 @@
               <%});%> 
               <%}%>   </p>
 
-        <p><b>Discount</b> <%= discount.toString().substring(3) %>.00 %</p>
+        <p><b>Loyalty Discount</b><br> 0<%= discount.toString().substring(3) %>.00 %</p>
         
         </div>
         <footer class="text-center text-lg-start">
@@ -147,7 +151,7 @@
   
 
 
-  <button><a href="javascript:demoFromHTML()" class="button doNotPrint">Save as PDF</a></button>
+  <button onclick="window.print()"><a href="javascript:demoFromHTML()" class="button doNotPrint">Print as PDF</a></button>
 
 </body>
 
