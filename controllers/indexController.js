@@ -1,4 +1,5 @@
 const Flight = require('../models/Flight');
+const Contact = require('../models/Contact');
 
 class IndexController{
     static async getAbout(req, res) {
@@ -21,8 +22,11 @@ class IndexController{
     }
 
     static async getContact(req, res) {
+        const contactDetails = await Contact.getContactDetails();
+
         res.render('contact', {
             user: req.session.user,
+            contactDetails: contactDetails[0],
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
             regemail: req.query.email,

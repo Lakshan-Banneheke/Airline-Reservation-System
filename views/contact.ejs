@@ -7,7 +7,11 @@
 <!-- login-section start -->
 <%- include('_login',{user}) %>
 <!-- login-section end -->
-
+<style>
+    li.lowercase {
+        text-transform: lowercase;
+    }
+</style>
 
     <form class="header-form">
         <div class="skip"><i class="fas fa-times"></i></div>
@@ -40,7 +44,7 @@
                 <div class="col-lg-8 text-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Contact</li>
                         </ol>
                     </nav>
@@ -52,43 +56,6 @@
 
 
     <a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
-
-
-    <!-- contact-section start -->
-    <div class="contact-section">
-        <div class="contact-element">
-            <img src="assets/images/contact.png" alt="image">
-        </div>
-        <div class="contact-element--style">
-            <img src="assets/images/contact-2.png" alt="image">
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="contact-form-area">
-                        <span class="caption">send us a Messages</span>
-                        <form  class="contact-form" id="contact_form_submit">
-                            <div class="row">
-                                <div class="col-sm-12 form-group">
-                                    <input type="text" id="name" name="text" placeholder="full name ">
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <input type="text" id="email" name="email" placeholder="email">
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <textarea placeholder="message" id="message"></textarea>
-                                </div>
-                                <div class="col-sm-12 form-group">
-                                    <input type="submit" class="cmn-btn" value="submit Now ">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- contact-section end -->
 
 
     <!-- contact-info-section start -->
@@ -107,9 +74,9 @@
                         <i class="flaticon-pin"></i>
                         <h3 class="title">office address</h3>
                         <ul class="contact-info-content">
-                            <li>USA, Callifornia Fivenuen, Callifor</li>
-                            <li>twon haing kupabus</li>
-                            <li>PO: 2457-256</li>
+                            <li>314, 3rd Floor, Gotham Towers</li>
+                            <li>Melbourne, Victoria</li>
+                            <li>Australia</li>
                         </ul>
                     </div>
                 </div>
@@ -118,9 +85,7 @@
                         <i class="flaticon-mail"></i>
                         <h3 class="title">phone number</h3>
                         <ul class="contact-info-content">
-                            <li>0123-456-789000021</li>
-                            <li>0123-456-7890000</li>
-                            <li>0123-456-78900</li>
+                            <li><%= contactDetails.airline_hotline%></li>
                         </ul>
                     </div>
                 </div>
@@ -129,9 +94,7 @@
                         <i class="flaticon-internet"></i>
                         <h3 class="title">email address</h3>
                         <ul class="contact-info-content">
-                            <li>softkingsupport@.com</li>
-                            <li>www.demo145.com</li>
-                            <li>example.com</li>
+                            <li class = "lowercase"><%= contactDetails.airline_email%></li>
                         </ul>
                     </div>
                 </div>
@@ -139,64 +102,6 @@
         </div>
     </section>
     <!-- contact-info-section end -->
-
-
-    <!-- brand-section start -->
-    <div class="brand-section pt-120 pb-120">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="brand-wrapper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-1.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-2.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-3.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-4.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-5.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="BrandSlider">
-                                    <div class="brand-item">
-                                        <img src="assets/images/brand-6.png" alt="logo images">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- brand-section end -->
 
 
 
