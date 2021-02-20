@@ -52,7 +52,7 @@ class Booking {
     }
 
     static async cancelBooking(booking_id){
-        const query = ' DELETE FROM seat_booking WHERE booking_id = $1;';
+        const query = ' DELETE FROM seat_booking WHERE booking_id = $1 AND state = \'Not paid\';';
         await pool.query(query,[booking_id]);
     }
 

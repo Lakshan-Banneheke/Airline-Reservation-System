@@ -30,6 +30,14 @@
 
     <!-- seat scss link -->
     <link rel="stylesheet" href="/assets/css/seats.css">
+    <style>
+        li.lowercase {
+            text-transform: lowercase;
+        }
+        span.lowercase {
+            text-transform: lowercase;
+        }
+    </style>
 
 </head>
 <body>
@@ -56,10 +64,10 @@
                         <div class="col-lg-3 pl-lg-0">
                             <div class="header-socials">
                                 <ul class="social-links">
-                                    <li><a href="#0"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="#0"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#0"><i class="fab fa-instagram"></i></a></li>
-                                    <li><a href="#0"><i class="fab fa-linkedin"></i></a></li>
+                                    <li><a href="#0"></a></li>
+                                    <li><a href="#0"></a></li>
+                                    <li><a href="#0"></a></li>
+                                    <li><a href="#0"></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -98,7 +106,7 @@
                                         </div>
                                         <div class="info-content">
                                             <h6 class="title">location</h6>
-                                            <span>medino, NY 10012, USA</span>
+                                            <span> Melbourne, Victoria, Australia</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -107,7 +115,7 @@
                                         </div>
                                         <div class="info-content">
                                             <h6 class="title">email address</h6>
-                                            <span>exmple@gmail.com</span>
+                                            <span class="lowercase">info@bairways.com</span>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +123,7 @@
                         </div>
                         <div class="col-lg-2 pr-lg-0">
                             <div class="header-action d-flex flex-wrap align-items-center justify-content-end">
-                                <a href="register.html" class="cmn-btn-active">Book now</a>
+                                <a href="/customer/ViewFlights" class="cmn-btn-active">Book now</a>
                             </div>
                         </div>
                     </div>
@@ -124,7 +132,7 @@
             <div class="header-bottom">
                 <div class="container">
                     <div class="row header-border align-items-center justify-content-between">
-                        <a class="site-logo site-title" href="index.html"><img src="/assets/images/logo.png" alt="site-logo"></a>
+                        <a class="site-logo site-title" href="/"><img src="/assets/images/b_airways_logo.png" alt="site-logo"></a>
                         <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="fas fa-bars"></span>
                         </button>
@@ -144,36 +152,17 @@
                         <nav class="navbar navbar-expand-lg p-0">
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul class="navbar-nav main-menu ml-auto">
-                                    <li class="menu_has_children"><a href="#0">Home<i class="fas fa-caret-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="index.html">Home One</a></li>
-                                            <li><a href="index-2.html">Home Two</a></li>
-                                        </ul>
+                                    <li class="menu_has_children"><a href="/">Home</a>
                                     </li>
-                                    <li><a href="about.html">About</a></li>
                                     <li class="menu_has_children"><a href="#0">Flight<i class="fas fa-caret-down"></i></a>
                                         <ul class="sub-menu">
-                                            <li><a href="flight.html">Flight</a></li>
-                                            <li><a href="flight-facilities.html">Flight Facilities</a></li>
-                                            <li><a href="search-1.html">Search Flight One</a></li>
-                                            <li><a href="search-2.html">Search Flight Two</a></li>
-                                            <li><a href="/customer/ViewFlights">Search Flight Three</a></li>
+                                            <li><a href="/customer/ViewFlights">Search Flight</a></li>
+                                            <li><a href="/aircraftDetails">Aircraft Details</a></li>
                                         </ul>
                                     </li>
-                                    <li class="menu_has_children"><a href="#0">Page<i class="fas fa-caret-down"></i></a>
-                                        <ul class="sub-menu">
-                                            <li><a href="privacy.html">Privacy Page</a></li>
-                                            <li><a href="gallery.html">Gallery Page</a></li>
-                                            <li><a href="booking.ejs">booking Page</a></li>
-                                            <li><a href="faq.html">Faq Page</a></li>
-                                            <li><a href="404.html">404 Page</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="contact.html">Contact</a></li>
+                                    <li><a href="/about">About</a></li>
+                                    <li><a href="/contact">Contact</a></li>
                                 </ul>
-                                <div class="search-bar">
-                                    <a href="#0"><i class="flaticon-search-interface-symbol"></i></a>
-                                </div>                    
                             </div>
                         </nav>
                     </div>
