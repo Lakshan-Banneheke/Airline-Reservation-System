@@ -147,7 +147,7 @@ class Flight {
         const result = await pool.query(query, [schedule_id]);
         //console.log(result.rows);
         return result.rows;      
-
+    }
     static async getAllRoutes(){
         const query=`SELECT * FROm Route`
         const result= await pool.query(query);
