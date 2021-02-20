@@ -1,0 +1,28 @@
+<form action="/staff/general/displayFilteredIncoming" method="GET">
+    <div class="row">
+        <div class="col-md-10 ">
+            <div class="row">
+                <div class="col-10">
+                    <div class="form-group col-10">
+                        <label for="origin">Select Origin:</label>
+                        <select class="select2" multiple="multiple"  style="width: 100%;" name="origin">
+                            <!-- <option value='' ></option> -->
+                            
+                            <% if(airports && airports.length!=0) {%>
+                                <% airports.forEach(function(airport){%>
+                                    <% if(user.staffData.assigned_airport !==airport.airport_code ){ %>
+                                        <option value=<%=airport.airport_code %> ><%= airport.name %>
+                                        </option>
+                                    <%}});%>
+                            <%}%>
+                        </select>      
+                    </div>
+                    <div class="col-2">
+                        <!-- <button type="submit" value="Submit " name="origin_airports" class="btn btn-info btn-sm">Search</button> -->
+                        <input type="submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

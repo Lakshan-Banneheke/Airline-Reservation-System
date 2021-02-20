@@ -45,6 +45,12 @@ DROP TYPE IF EXISTS  staff_category;
 DROP TYPE IF EXISTS  customer_category;
 DROP TYPE IF EXISTS  staff_account_state;
 
+DROP VIEW IF EXISTS flight_info_passenger CASCADE;
+DROP VIEW IF EXISTS booking_id_vs_category CASCADE;
+DROP VIEW IF EXISTS passenger_details_only CASCADE;
+DROP VIEW IF EXISTS booked_user_details CASCADE;
+DROP VIEW IF EXISTS details_except_booked_person CASCADE;
+
 SET TIME ZONE 'Etc/UTC';
 ---------------------------------- ENUMS SCHEMA ------------------------------------
 
@@ -90,6 +96,41 @@ CREATE TYPE staff_account_state AS ENUM(
 'verified',
 'unverified'
 );
+----------------------------------VIEW SCHEMA--------------------------------------------
+create view flight_info_passenger as
+select booking_id,seat_id, name as passenger_name,passport_no as passenger_passport
+from passenger_seat;
+
+-- select * from flight_info_passenger;
+
+create view booking_id_vs_category as
+select booking_id,schedule_id,customer.customer_id,type
+from seat_booking left outer join customer
+using(customer_id);
+
+-- select * from booking_id_vs_category;
+
+create view passenger_details_only as
+SELECT * from flight_info_passenger left outer join booking_id_vs_category using(booking_id);
+
+-- select * from passenger_details_only;
+
+create view booked_user_details as
+SELECT customer_id, name as booked_name, email from guest_customer where customer_id in
+(select customer_id from booking_id_vs_category where type='guest')
+UNION
+SELECT customer_id, CONCAT(first_name,' ',last_name)as booked_name, email from registered_customer where customer_id in
+(select customer_id from booking_id_vs_category where type='registered');
+
+-- select * from booked_user_details;
+create view details_except_booked_person as
+select customer_id,seat_id,passenger_name,passenger_passport,passenger_details_only.schedule_id
+from booking_id_vs_category left outer join passenger_details_only 
+using(customer_id);
+-- select * from details_except_booked_person;
+
+
+
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
@@ -971,4 +1012,12 @@ GRANT ALL ON TABLE public.temp_airport TO database_app;
                                                                                                                                 
 GRANT ALL ON TABLE public.guest_customer TO database_app;
 
+GRANT SELECT ON booking_id_vs_category TO database_app;
 
+GRANT SELECT ON passenger_details_only TO database_app;
+
+GRANT SELECT ON flight_info_passenger TO database_app;
+
+GRANT SELECT ON booked_user_details TO database_app;
+
+GRANT SELECT ON details_except_booked_person TO database_app;

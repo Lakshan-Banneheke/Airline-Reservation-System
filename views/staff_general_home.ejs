@@ -73,6 +73,7 @@
                                                 </div><!--new 1st div end-->
                                                 <div class="col-lg-8 mb-30"><!--new 2nd div-->
                                                     <br/><h6>From:  <%= incomingFlights[i].origin %></h6>
+                                                    <h6>Departed at:  <%= incomingFlights[i].actual_departed %></h6>
                                                     <h6>To:  <%= incomingFlights[i].destination %> </h6>
                                                     <h6>Aircraft ID: <%= incomingFlights[i].aircraft_id %> </h6>
                                                     <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
@@ -193,12 +194,12 @@
                 <div class="inner">
                 <h3 class="text-light">Arrived</h3>
 
-                <h6 class="text-light">Upto yesterday</h6>
+                <h6 class="text-light">For the moment</h6>
                 </div>
                 <div class="icon">
                 <i class="fas fa-plane-arrival"></i>
                 </div>
-                <a href="#" class="small-box-footer">
+                <a href="/staff/general/arrivedFlights" class="small-box-footer">
                 More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
