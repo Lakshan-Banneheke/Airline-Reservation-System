@@ -23,7 +23,20 @@
         </style>        
     </head>
     <body onload="window.print()">
-      <p class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a><br><a href="javascript:demoFromHTML()" class="button">Save as PDF</a></p>
+      <div class="container p-4 pb-0 doNotPrint">
+        <div class="text-center p-3" style="background-color: rgba(255, 136, 0, 0.2)">
+          <div class="row">
+            <div class="col-xs-6 justify-content-center">
+              <button class="doNotPrint"><a href="/customer/viewFlights">Click here to Book More!</a></button>
+            </div>
+            <div class="col-xs-6 justify-content-center">
+            <button><a href="javascript:demoFromHTML()" class="button">Save as PDF</a></button>
+            </div>
+
+          </div>
+      </div>
+      </div>
+      <br>
         <div id="content">
           <% if(bookingDetails && bookingDetails.length!=0) {%>
             <% bookingDetails.forEach(function(booking){%>
@@ -32,12 +45,12 @@
                 <div class="col-xs">
                     <img src="/assets/images/brand-2.png"/>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-10">
                 <h1> e- Ticket Receipt & itinerary</h1>
                 </div>
                 <div class="col-xs">
-                    <p><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
-                    <p><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></p>
+                    <p class="text-justify"><%= customerDetails.type.toString().toUpperCase()%> <%= customerDetails.category %> customer of <%= orgDetails.airline_name%> </p>
+                    <p class="text-justify"><b><%= customerDetails.first_name%> <%= customerDetails.last_name%> <%= customerDetails.name%></b></p>
                 </div>
 
         </div>
@@ -51,7 +64,6 @@
 
         <p><b>Please ensure you comply with airport restrictions on the carriage of liquids, aerosols and gels in hand baggage</b> Details of your Electronic ticket are shown below. All times shown are in <b>UTC</b> time format</p>
         <div>
-          <br>
           <div>
           <h4 style="color: white;">*****</h4>
         </div>
@@ -63,7 +75,7 @@
             </tr>
             <tr ng-repeat-end="">
                 <td>BOOKING REFERENCE</td>
-                <td>BA00<%=bookingDetails[0].booking_id%></td>
+                <td>00<%=bookingDetails[0].booking_id%></td>
             </tr>
         </table>
       </div>
@@ -79,12 +91,12 @@
             <th scope="col-xs">Duration</th>
             <th scope="col-xs">Aircraft Model</th>
             <tr ng-repeat-end="">
-                <th scope="row"><%=flightInfo[0].route_id%>-<%=bookingDetails[0].schedule_id%></th>
+                <th scope="row"><%=flightInfo[0].route_id%></th>
                 <td style="white-space:nowrap;"><%=flightInfo[0].origin%><br><%=(flightInfo[0].departure_date).toString().substring(0,15)%><br><%=flightInfo[0].departure_time_utc%></td>
                 <td style="white-space:nowrap;"><%=flightInfo[0].destination%><br><%=(flightInfo[0].arrival_date).toString().substring(0,15)%><br><%=flightInfo[0].arrival_time_utc%></td>
                 <td style="white-space:nowrap;"><%=booking.class_name%></td>
                 <td style="white-space:nowrap;"><%= booking.seat_id %></td>
-                <td style="white-space:nowrap;"><%=flightInfo[0].duration.hours%>h <%=flightInfo[0].duration.minuites%> mints</td>
+                <td style="white-space:nowrap;"><%=flightInfo[0].duration.hours%>h <%=flightInfo[0].duration.minutes%> mints</td>
                 <td style="white-space:nowrap;"><%=modelDetails.model_name%><br><%=modelDetails.variant%></td>
               </tr>
         </table>
@@ -94,34 +106,35 @@
         <h4 style="color: white; background-color: orangered; width: 100%;"> FARE DETAILS</h4>
         
         <b>Fare</b>
-        <div class="row">
-          <div class="col-xs">
-        <p>1 Passenger @ </p>
-      </div>
-      <div class="col-xs">
-        <p><% if(flightInfo[1] && flightInfo[1].length!=0) {%>
+  
+        <p>1 Passenger @ 
+
+        <% if(flightInfo[1] && flightInfo[1].length!=0) {%>
           <% flightInfo[1].forEach(function(price){%>
             <% if(price.traveler_class_id==bookingDetails[0].class_id) {%>
-              <%= price.price %> 
+              <b><%= price.price %> </b>  (This indicates the seat price before applying any discounts)
               
               <%}%>
               <%});%> 
-              <%}%>   </p></div>
-            </div>
+              <%}%>   </p>
 
-        <b>Discount</b>
-        <p>47873837</p>
-        <b>TOTAL TRIP COST</b>
+        <p><b>Discount</b> <%= discount.toString().substring(3) %>.00 %</p>
+        
+        </div>
+        <footer class="text-center text-lg-start">
+          <div class="container p-4 pb-0">
+          <div class="text-center p-3" style="background-color: rgba(243, 161, 94, 0.2)">
+            <% if(orgDetails && orgDetails.length!=0) {%>
+              <%= orgDetails.airline_name%><br> 
+              Contact: <%= orgDetails.airline_hotline%> 
+              E-mail: <%= orgDetails.airline_email%> 
+              Address: <%= orgDetails.airline_address%>
+          <%}%>
           </div>
-        <% if(orgDetails && orgDetails.length!=0) {%>
-          <%= orgDetails.airline_name%>
-          <%= orgDetails.airline_hotline%>
-          <%= orgDetails.airline_email%>
-          <%= orgDetails.airline_adddress%>
-      <%}%>
+          </div>
+        </footer>
     </div>
     <p style="page-break-before: always"></p>
-    <hr style="height:2px;border-width:0;color:orangered;background-color:orangered">
     <%});%>
         </div>
     <% }else{ %>
@@ -131,9 +144,10 @@
   <%}%>
 
 
+  
 
 
-  <a href="javascript:demoFromHTML()" class="button">Save as PDF</a>
+  <button><a href="javascript:demoFromHTML()" class="button doNotPrint">Save as PDF</a></button>
 
 </body>
 
@@ -142,15 +156,9 @@
   
   function demoFromHTML() {
       var pdf = new jsPDF('l', 'pt', 'a4');
-      // source can be HTML-formatted string, or a reference
-      // to an actual DOM element from which the text will be scraped.
       source = $('#content')[0];
       pdf.setFontSize(8);
       pdf.setFont('Lato-Regular', 'normal');
-      // we support special element handlers. Register them with jQuery-style 
-      // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
-      // There is no support for any other type of selectors 
-      // (class, of compound) at this time.
       specialElementHandlers = {
           // element with id of "bypass" - jQuery style selector
           '#bypassme': function (element, renderer) {
@@ -165,8 +173,7 @@
           left: 40,
           width: 522
       };
-      // all coords and widths are in jsPDF instance's declared units
-      // 'inches' in this case
+
       pdf.fromHTML(
           source, // HTML string or DOM elem ref.
           margins.left, // x coord
@@ -176,8 +183,6 @@
           },
 
           function (dispose) {
-              // dispose: object with X, Y of the last line add to the PDF 
-              //          this allow the insertion of new lines after html
               pdf.save('eTicket_BAirways.pdf');
           }, margins
       );

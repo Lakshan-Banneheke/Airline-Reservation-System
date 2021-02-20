@@ -62,7 +62,14 @@ class Ticket {
 
             return [result1.rows[0],result3.rows[0],result4.rows[0]];
         }
-        
+         
+    }
+    static async getDiscount(booking_id){
+        const query = 'SELECT price_before_discount, final_price FROM seat_booking WHERE booking_id = $1';
+        let price = await pool.query(query,[booking_id]);
+        const priceBeforeDiscount=price.rows[0].price_before_discount;
+        const finalPrice=price.rows[0].final_price;
+        return (finalPrice-priceBeforeDiscount)/priceBeforeDiscount;
     }
 }
 module.exports = Ticket;
