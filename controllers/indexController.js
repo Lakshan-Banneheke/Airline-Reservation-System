@@ -45,7 +45,7 @@ class IndexController{
 
     static async getAircraftDetails(req, res) {
         const aircraftDetails = await Flight.getAircraftDetails();
-        console.log(aircraftDetails);
+
         res.render('aircraft_details', {
             user: req.session.user,
             aircraftDetails,
