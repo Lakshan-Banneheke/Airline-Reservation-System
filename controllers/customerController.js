@@ -1,5 +1,7 @@
 const { CustomerRegInfo, CustomerLoginInfo } = require('./validators/customerInfo');
 const CustomerService = require('../services/CustomerServices');
+const { compile } = require('joi');
+const { error } = require('winston');
 
 class CustomerController {
     static async register(req, res) {
@@ -43,6 +45,50 @@ class CustomerController {
         } catch (err) {
             res.redirect('/');
         }
+    }
+
+    static async getReview(req,res){
+        try{
+        res.render('customerReview', {
+            user: req.session.user,
+            registrationError: req.query.registrationError,
+            loginError: req.query.loginError,
+            regemail: req.query.email,
+            regfirstName: req.query.firstName,
+            reglastName: req.query.lastName,
+            regdob: req.query.dob,
+            reggender: req.query.gender,
+            regcontactNo: req.query.contactNo,
+            regpassportNo: req.query.passportNo,
+            regaddressLine1: req.query.addressLine1,
+            regaddressLine2: req.query.addressLine2,
+            regcity: req.query.city,
+            regcountry: req.query.country,
+            custName: req.query.custName,
+            address: req.query.address,
+            custDob: req.query.custDob,
+            custGender: req.query.custGender,
+            custPassport: req.query.custPassport,
+            mobile: req.query.mobile,
+            custEmail: req.query.custEmail,
+            dbError: req.query.dbError,
+            
+        });  }
+        catch(err){
+            console.log("error occured");
+        }  
+    }
+
+    static async createReview(req,res){
+        try{
+            //console.log(req.body.custID,req.body.review);
+            const review=await CustomerService.createReview(req.body.custID,req.body.review);
+            return res.status(200).redirect('/#reviews');
+        }catch(err){
+            const error="Number of characters cannot exceed 500!"
+            return res.redirect(`/customer/createReview?dbError=${error}`);
+        }
+
     }
 }
 

@@ -575,8 +575,8 @@ CREATE TABLE Passenger_Seat(
 
 
 CREATE TABLE Customer_Review (
-  review_id varchar(100),
-  customer_id varchar(100) NOT NULL,
+  review_id SERIAL,
+  customer_id uuid4 NOT NULL,
   review varchar(500),
   PRIMARY KEY (review_id),
   FOREIGN KEY(customer_id) REFERENCES Registered_Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -977,7 +977,7 @@ GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 
---GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+GRANT ALL ON SEQUENCE public.customer_review_review_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
 

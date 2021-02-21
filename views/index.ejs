@@ -258,93 +258,52 @@
 
 
     <!-- client-section start -->
-    <section class="client-section pt-120 pb-120">
+    <section class="client-section pt-120 pb-120" id="reviews">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6 text-center">
                     <div class="section-header">
                         <h2 class="section-title">our happy passengers</h2>
                         <span class="title-border title-border-center"></span>
-                        <p> Augue eros ultrices amet, viverra nec nunc massa magna. Sit a, lacus mattis odio sem placerat ante, lacus aliquam sit id ligula est ante fringilla </p>
+                        <p><b>Are You a Registered customer of B Airways? We are happy to hear your feedback through <a href="/customer/createReview" style="color: blue;">our Review Page!</a></b></p>
                     </div>
+                    
                 </div>
             </div>
+            <% if(reviews && reviews.length!=0) {%>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="client-slider-area">
                         <div class="client-slider">
                             <div class="swiper-wrapper">
+                                <% reviews.forEach(function(review){%>
                                 <div class="swiper-slide">
                                     <div class="client-item d-flex flex-wrap">
                                         <div class="client-thumb">
                                             <img src="assets/images/client-1.png" alt="image">
                                         </div>
                                         <div class="client-content">
-                                            <h3 class="title">robin hook</h3>
-                                            <span>business man</span>
+                                            <h3 class="title"><%= review.first_name %> <%= review.last_name %> </h3>
+                                            <span><%= review.category %> Flyer of B Airways</span>
                                         </div>
-                                        <p>Cursus nunc fames rutruetnuutate nec ullamcorper nibh eget. Viverra vitae ac ultricies eget, et donec sed bibendum. Ornare enim euulum in magna maecenas</p>
-                                        <div class="meta-ratings">
-                                            <a href="#">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>3.0</span>
-                                            </a>
-                                        </div>
+                                        <p><%= review.review %> </p>
+                        
                                     </div>
                                 </div>
-                                <div class="swiper-slide">
-                                    <div class="client-item d-flex flex-wrap">
-                                        <div class="client-thumb">
-                                            <img src="assets/images/client-2.png" alt="image">
-                                        </div>
-                                        <div class="client-content">
-                                            <h3 class="title">martin jobs</h3>
-                                            <span>business man</span>
-                                        </div>
-                                        <p>Cursus nunc fames rutruetnuutate nec ullamcorper nibh eget. Viverra vitae ac ultricies eget, et donec sed bibendum. Ornare enim euulum in magna maecenas</p>
-                                        <div class="meta-ratings">
-                                            <a href="#">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>4.5</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="client-item d-flex flex-wrap">
-                                        <div class="client-thumb">
-                                            <img src="assets/images/client-3.png" alt="image">
-                                        </div>
-                                        <div class="client-content">
-                                            <h3 class="title">zihad kuna</h3>
-                                            <span>business man</span>
-                                        </div>
-                                        <p>Cursus nunc fames rutruetnuutate nec ullamcorper nibh eget. Viverra vitae ac ultricies eget, et donec sed bibendum. Ornare enim euulum in magna maecenas</p>
-                                        <div class="meta-ratings">
-                                            <a href="#">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <span>5.0</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                            
+                                <%});%>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <%}else{%>
+                <div class="alert  text-center">
+                    <strong>No Reviews Yet!. Add your views and suggestions to improve our service. Thank You</strong>
+                </div>
+                <%}%>
+
         </div>
     </section>
     <!-- client-section end -->

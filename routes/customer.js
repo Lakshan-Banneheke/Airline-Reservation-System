@@ -9,5 +9,7 @@ router.post('/login', ifGuest, CustomerController.login);
 router.get('/logout', ifRegisteredCustomer, CustomerController.logout);
 router.get('/viewFlights', FlightController.getFlightByFilter);
 router.post('/viewFlights', FlightController.getFlightByFilter);
+router.get('/createReview',ifRegisteredCustomer, CustomerController.getReview);
+router.post('/createReview/created',ifRegisteredCustomer, CustomerController.createReview);
 
 module.exports = router;

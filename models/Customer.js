@@ -29,6 +29,19 @@ class Customer {
         const result = await pool.query(query, [email]);
         return result.rows[0] != null;
     }
+
+    static async getReviews(){
+        const query=`SELECT customer_id,review,first_name,last_name,category FROM customer_review NATURAL JOIN registered_customer WHERE customer_review.customer_id=registered_customer.customer_id;`;
+        const result=await pool.query(query, []);
+        return result.rows;
+    }
+
+    static async createReview(custID,review){
+        const query=`INSERT INTO customer_review(customer_id,review) VALUES($1,$2);`;
+        const result = await pool.query(query, [custID,review]);
+        return result.rows;
+
+    }
 }
 
 module.exports = Customer;

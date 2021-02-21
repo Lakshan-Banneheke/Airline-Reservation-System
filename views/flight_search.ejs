@@ -297,12 +297,15 @@
 
 
                                         <!-- client-section start -->
+                                        <% if(reviews && reviews.length!=0) {%>
                                         <section class="client-section--style pt-120 pb-120">
                                             <div class="container">
+                                                
                                                 <div class="row justify-content-center">
                                                     <div class="col-lg-12">
                                                         <div class="client-slider--style">
                                                             <div class="swiper-wrapper">
+                                                                <% reviews.forEach(function(review){%>
                                                                 <div class="swiper-slide">
                                                                     <div class="client-item--style d-flex flex-wrap">
                                                                         <div class="client-thumb--style">
@@ -310,30 +313,24 @@
                                                                                 alt="image">
                                                                         </div>
                                                                         <div class="client-content--style">
-                                                                            <p>Commodo justo auctor. Cras praesent.
-                                                                                Porttitorceptsietrcu lectus nunc
-                                                                                fermentum ultrices vestibulum
-                                                                                sporitopendisse ante porta dignissim
-                                                                                estconsectetutesque scelerisque
-                                                                                dolor pellentesque, risus vel
-                                                                                egetmattis donec tellus bibenddtum
-                                                                                massa nulla neque bi sed a. Morbi
-                                                                                posuere urna velit sit venenatis.
+                                                                            <p><%= review.review %> 
                                                                             </p>
                                                                             <div class="client-header">
-                                                                                <h3 class="title">martin jobs</h3>
-                                                                                <span class="sub-title">business
-                                                                                    man</span>
+                                                                                <h3 class="title"><%= review.first_name %> <%= review.last_name %> </h3>
+                                                                                <span class="sub-title"><%= review.category %> Flyer of B Airways</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                <%});%>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </section>
+                                                <%}%>
+
                                         <!-- client-section end -->
 
 
