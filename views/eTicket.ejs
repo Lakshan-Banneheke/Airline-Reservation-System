@@ -122,7 +122,8 @@
               <%});%> 
               <%}%>   </p>
 
-        <p><b>Loyalty Discount</b><br> 0<%= discount.toString().substring(3) %>.00 %</p>
+        <p><b>Loyalty Discount</b><br> <%= Math.floor(discount*100) %>.00 %</p><br>
+      
         
         </div>
         <footer class="text-center text-lg-start">
