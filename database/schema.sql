@@ -43,6 +43,7 @@ DROP TYPE IF EXISTS  customer_state_enum;
 DROP TYPE IF EXISTS  staff_category;
 DROP TYPE IF EXISTS  customer_category;
 DROP TYPE IF EXISTS  staff_account_state;
+DROP TYPE IF EXISTS  registered_customer_category;
 
 SET TIME ZONE 'Etc/UTC';
 ---------------------------------- ENUMS SCHEMA ------------------------------------

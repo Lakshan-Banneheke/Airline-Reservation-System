@@ -96,7 +96,7 @@ class CustomerController {
             regaddressLine2: req.query.addressLine2,
             regcity: req.query.city,
             regcountry: req.query.country,
-                }  
+        });
     }
 
           

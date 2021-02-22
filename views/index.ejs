@@ -265,7 +265,7 @@
                     <div class="section-header">
                         <h2 class="section-title">our happy passengers</h2>
                         <span class="title-border title-border-center"></span>
-                        <p><b>Are You a Registered customer of B Airways? We are happy to hear your feedback through <a href="/customer/createReview" style="color: blue;">our Review Page!</a></b></p>
+                        <p><b>Are You a Registered customer of B Airways? We are happy to hear your feedback through <% if (typeof user == 'undefined'){ %>our Review Page! Register with us to give your reviews.<%} else {%><a href="/customer/createReview" style="color: blue;">our Review Page!</a><%}%></b></p>
                     </div>
                     
                 </div>
