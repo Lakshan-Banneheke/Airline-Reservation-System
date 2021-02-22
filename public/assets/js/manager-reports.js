@@ -49,14 +49,15 @@
                         response.result.forEach(element => {
                         string += `<tr>
                                             <td>${element.type.toUpperCase()}</td>
-                                            <td>${element.count}</td>
+                                            <td>${element.count.length<2?'0'+element.count:element.count}</td>
                                         </tr>`;
                         });
+                        if(response.result && response.result.length>0){
                         $('#booking_count_form_submit').prepend(`
                         
                         <div class="p-3 alert alert-success" style="overflow-x:auto;">
                             Number of Bookings between ${response.start} and ${response.end};
-                            <table class="table table-bordered">
+                            <table class="table table-bordered pass-count">
                                 <thead>
                                     <tr>
                                         <th scope="col">Customer Type</th>
@@ -66,7 +67,14 @@
                                     ${string}
                                 </tbody>
                             </table>
-                        </div>`);
+                        </div>`);}
+                        else{
+                            $('#booking_count_form_submit').prepend(`
+                        
+                            <div class="p-3 alert alert-success">
+                                Number of Bookings between ${response.start} and ${response.end} is <strong>ZERO</strong> 
+                            </div>`  
+                             ) }
                     },
                     error: function (res) {
                     }

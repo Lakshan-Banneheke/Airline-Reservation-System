@@ -71,6 +71,19 @@ class Report{
     }
 
     /*Given origin and destination, all past flights, states, passenger counts data*/
+    static async getPastFlightDetailReport(origin,dest){
+        const query=`
+            SELECT Flight_Schedule.*,COUNT(Passenger_Seat.seat_id) as Passenger_Count FROM Flight_Schedule
+            LEFT JOIN Seat_Booking USING(schedule_id)
+            LEFT JOIN Passenger_Seat USING(booking_id)
+              WHERE Flight_Schedule.route_id=(
+                SELECT route_id FROM ROUTE WHERE origin=$1 AND destination=$2
+            ) AND flight_state='Landed'
+            GROUP BY(Flight_Schedule.schedule_id)
+        `;
+        const result = await pool.query(query,[origin,dest]);
+        return result.rows;
+    }
 
 }
 module.exports = Report;

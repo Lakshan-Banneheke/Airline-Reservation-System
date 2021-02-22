@@ -148,7 +148,7 @@ class ManagerController {
             if(error) throw error;
             const result = await ReportService.getNumberOfPassengersTravellingToGivenDest(value);
             res.status(200).send({message:`Number of passengers travelling to ${req.body.passenger_count_airport_code} 
-                between ${req.body.passenger_count_start_date} and ${req.body.passenger_count_end_date} is ${result.count}`},
+                between ${req.body.passenger_count_start_date} and ${req.body.passenger_count_end_date} is <strong>${result.count.length<2?'0'+result.count:result.count}</strong>`},
                 
             );
         }catch(e){
@@ -159,8 +159,7 @@ class ManagerController {
     static async getBookingCountByPassengerType(req,res){
         try{
             const result = await ReportService.numberOfBookingsByEachPassengerType(req.body);
-            res.status(200).send({start:req.body.booking_count_start_date,end:req.body.booking_count_end_date,result:result}
-                
+            res.status(200).send({start:req.body.booking_count_start_date,end:req.body.booking_count_end_date,result:result} 
             );
         }catch(e){
             console.log(e)
@@ -183,6 +182,26 @@ class ManagerController {
             })
         }catch(e){
             res.redirect(`/staff/manager/reports?error=${e}`)
+        }
+    }
+    static async getAllPastFlightsReport(req,res){
+        try{
+            if(req.body.old_origin=='' || req.body.old_destination==''){
+                throw new Errors.BadRequest('Origin and Destination Airports Must be Selected')
+            }
+            const flights = await ReportService.getPastFlightDetailsReport(req.body.old_origin,req.body.old_destination)
+            res.render('staff_manager_past_flight_report',{
+                error:req.query.error,
+                success:req.query.success,
+                user:req.session.user,
+                origin:req.body.old_origin,
+                destination:req.body.old_destination,
+                flights:flights
+            })
+
+        }catch(e){
+            res.redirect(`/staff/manager/reports?error=${e}`)
+
         }
     }
 }

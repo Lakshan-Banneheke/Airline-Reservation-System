@@ -14,5 +14,6 @@ router.post('/change_airport/:empId', ifManager, ManagerController.changeAssigne
 router.post('/passenger_count_to_dest', ifManager, ManagerController.getPassengerCountToDest);
 router.post('/booking_count', ifManager, ManagerController.getBookingCountByPassengerType);
 router.post('/next_flight_passenger_details', ifManager, ManagerController.getPassengerDetailsPage);
+router.post('/past_flight_report',ifManager, ManagerController.getAllPastFlightsReport);
 
 module.exports = router;
