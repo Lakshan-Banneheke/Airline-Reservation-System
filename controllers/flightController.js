@@ -1,3 +1,4 @@
+const CustomerService = require('../services/CustomerServices');
 const FlightService = require('../services/flightServices');
 
 class FlightController {
@@ -7,6 +8,7 @@ class FlightController {
             const allFlights = await FlightService.getAllFlightsByFilter(req.query.booking_date_from, req.query.from, req.query.to);
             const upcomingFlights = await FlightService.getAllFlights();
             const airports = await FlightService.getLocation();
+            const reviews=await CustomerService.getReviews();
             res.render('flight_search', {
                 error: req.query.error,
                 success: req.query.success,
@@ -16,6 +18,7 @@ class FlightController {
                 allFlights,
                 upcomingFlights,
                 airports,
+                reviews,
                 user: req.session.user,
                 registrationError: req.query.registrationError,
                 loginError: req.query.loginError,

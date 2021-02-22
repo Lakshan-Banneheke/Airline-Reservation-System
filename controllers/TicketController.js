@@ -9,8 +9,7 @@ class TicketController {
         const schedule_id=bookingDetails[0].schedule_id;
         const flightInfo = await TicketService.getFlightInfo(schedule_id);
         res.render('eTicket',{
-            user: req.session.user,
-                customerDetails:ticketDetails[0],
+                user: req.session.user,
                 modelDetails:ticketDetails[1],
                 orgDetails:ticketDetails[2],
                 bookingDetails: bookingDetails[1],

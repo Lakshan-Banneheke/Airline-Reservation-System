@@ -35,6 +35,22 @@ class CustomerService {
         return customer;
     }
 
+    static async getReviews(){
+        return await Customer.getReviews();
+        
+    }
+
+    static async createReview(custID,customer_review){
+        try{
+        const review= await Customer.createReview(custID,customer_review);
+        return review;
+        }catch(err){
+            throw new Errors.InternalServerError('Number of characters cannot exceed 500');
+        }
+    
+
+    }
+
     static async editProfile({
         custID, firstName, lastName, dob, gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
       }) {
@@ -69,8 +85,6 @@ class CustomerService {
     static async getRegisteredCustomerByID(id) {
         return await Customer.getRegisteredCustomerByID(id);
     }
-
-
 }
 
 module.exports = CustomerService;

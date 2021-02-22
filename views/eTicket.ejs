@@ -33,9 +33,7 @@
             <button onclick="window.print()" style="background-color: orangered;"><a href="javascript:demoFromHTML()" class="button" style=" color: white;">Save as PDF</a></button>
             </div>
             <div></div>
-            <div><p>Customer name:  <b><%= customerDetails.first_name%> <%= customerDetails.last_name%><%= customerDetails.name%> </b> | </p><p style="color: white;">--</p></div>
-            <div>Contact Details:  <b><%= customerDetails.contact_no%><%= customerDetails.mobile%> </b></div>
-
+          
           </div>
       </div>
       </div>
@@ -122,7 +120,8 @@
               <%});%> 
               <%}%>   </p>
 
-        <p><b>Loyalty Discount</b><br> 0<%= discount.toString().substring(3) %>.00 %</p>
+        <p><b>Loyalty Discount</b><br> <%= Math.floor(discount*100) %>.00 %</p><br>
+      
         
         </div>
         <footer class="text-center text-lg-start">

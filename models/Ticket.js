@@ -19,13 +19,8 @@ class Ticket {
         return [result2.rows[0], result1.rows];
     }    
     static async getTicketDetails(booking_id){
-        //get customer details related to the booking
-        let type=`SELECT customer.type as type FROM seat_booking NATURAL JOIN customer WHERE booking_id=$1;`;
-        let result_type=await pool.query(type,[booking_id]);
-        let typeName=result_type.rows[0].type;
-
-        if(typeName==='registered'){
-            const query1=`SELECT customer.customer_id,customer.type as type,schedule_id,first_name,last_name,category,contact_no FROM seat_booking NATURAL JOIN customer INNER JOIN registered_customer ON(type='registered' AND seat_booking.customer_id=registered_customer.customer_id) WHERE booking_id=$1;`;
+            //get schedule id related to the booking
+            const query1=`SELECT schedule_id FROM seat_booking  WHERE booking_id=$1;`;
             let result1=await pool.query(query1,[booking_id]);
             let schedule_id=result1.rows[0].schedule_id;
 
@@ -42,27 +37,6 @@ class Ticket {
             let result4=await pool.query(query4,[]);
 
             return [result1.rows[0],result3.rows[0],result4.rows[0]];
-        }
-        else{
-            const query1=`SELECT customer.customer_id,customer.type as type,schedule_id,name,mobile FROM seat_booking NATURAL JOIN customer INNER JOIN guest_customer ON(type='guest' AND seat_booking.customer_id=guest_customer.customer_id) WHERE booking_id=$1;`;
-            let result1=await pool.query(query1,[booking_id]);
-            let schedule_id=result1.rows[0].schedule_id;
-
-            const query2 = 'SELECT aircraft_id FROM flight_schedule WHERE schedule_id = $1';
-            let result2=await pool.query(query2,[schedule_id]);
-            let aircraft_id=result2.rows[0].aircraft_id;
-
-            //get model details related to the booking
-            const query3='SELECT aircraft_model.model_id,model_name,variant FROM aircraft_model,aircraft_instance WHERE aircraft_id=$1 AND aircraft_instance.model_id=aircraft_model.model_id;';
-            let result3=await pool.query(query3,[aircraft_id]);
-
-            //get organizational info
-            const query4='SELECT airline_name,airline_hotline,airline_email,address_1,address_2,address_3 FROM organizational_info;'
-            let result4=await pool.query(query4,[]);
-
-            return [result1.rows[0],result3.rows[0],result4.rows[0]];
-        }
-         
     }
     static async getDiscount(booking_id){
         const query = 'SELECT price_before_discount, final_price FROM seat_booking WHERE booking_id = $1';
