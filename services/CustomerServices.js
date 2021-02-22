@@ -50,6 +50,41 @@ class CustomerService {
     
 
     }
+
+    static async editProfile({
+        custID, firstName, lastName, dob, gender, contactNo, passportNo, addressLine1, addressLine2, city, country,
+      }) {
+        return Customer.editProfile(
+            firstName, lastName, dob, gender, contactNo, passportNo, addressLine1, addressLine2, city, country, custID
+        );
+    }
+
+    static async changePassword({
+          custID, currentPassword, newPassword1, newPassword2
+      }) {
+        if (!crypto.timingSafeEqual(Buffer.from(newPassword1), Buffer.from(newPassword2))) {
+            throw new Errors.BadRequest('Password does not match retype password');
+        }
+
+        const customer = await Customer.getRegisteredCustomerByID(custID);
+        if (!customer) {
+            throw new Errors.BadRequest('Error');
+        }
+
+        const hashedCurrentPassword = customer.password;
+        const passwordCorrect = await bcrypt.compare(currentPassword, hashedCurrentPassword);
+        if (!passwordCorrect) {
+            throw new Errors.BadRequest('Current password is incorrect');
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword1, 10);
+
+        return Customer.changePassword(custID, hashedPassword);
+    }
+
+    static async getRegisteredCustomerByID(id) {
+        return await Customer.getRegisteredCustomerByID(id);
+    }
 }
 
 module.exports = CustomerService;

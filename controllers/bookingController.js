@@ -190,6 +190,7 @@ class BookingController {
 
     static async getPreviousBooking(req, res) {
         try {
+            req.session.booking_id = req.body.booking_id;
             const bookingDetails = await BookingService.getBookingDetails(req.body.booking_id);
             const schedule_id=bookingDetails[0].schedule_id;
             const flight_details = await FlightService.getFlightByID(schedule_id);

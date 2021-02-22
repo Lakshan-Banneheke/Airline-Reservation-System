@@ -47,10 +47,11 @@ class CustomerController {
         }
     }
 
+
     static async getReview(req,res){
         try{
         res.render('customerReview', {
-            user: req.session.user,
+          user: req.session.user,
             registrationError: req.query.registrationError,
             loginError: req.query.loginError,
             regemail: req.query.email,
@@ -72,12 +73,34 @@ class CustomerController {
             mobile: req.query.mobile,
             custEmail: req.query.custEmail,
             dbError: req.query.dbError,
-            
         });  }
         catch(err){
             console.log("error occured");
         }  
     }
+
+    static async viewEditProfile(req, res) {
+        res.render('editProfile', {
+            // pass these to every page as you can register or login from any page
+             user: req.session.user,
+            registrationError: req.query.registrationError,
+            loginError: req.query.loginError,
+            regemail: req.query.email,
+            regfirstName: req.query.firstName,
+            reglastName: req.query.lastName,
+            regdob: req.query.dob,
+            reggender: req.query.gender,
+            regcontactNo: req.query.contactNo,
+            regpassportNo: req.query.passportNo,
+            regaddressLine1: req.query.addressLine1,
+            regaddressLine2: req.query.addressLine2,
+            regcity: req.query.city,
+            regcountry: req.query.country,
+                }  
+    }
+
+          
+  
 
     static async createReview(req,res){
         try{
@@ -90,6 +113,37 @@ class CustomerController {
         }
 
     }
+
+ 
+    static async editProfile(req, res) {
+        try {
+            await CustomerService.editProfile(req.body);
+            const customer = await CustomerService.getRegisteredCustomerByID(req.body.custID);
+            req.session.user.customerData = customer;
+            return res.status(200).send({ result: 'redirect', url: '/' });
+        } catch (err) {
+            return res.status(200).send({
+                result: 'redirect',
+                url: `/customer/editProfile?registrationError=${err}`
+            });
+        }
+    }
+
+    static async changePassword(req, res) {
+        try {
+            await CustomerService.changePassword(req.body);
+            const customer = await CustomerService.getRegisteredCustomerByID(req.body.custID);
+            req.session.user.customerData = customer;
+            return res.status(200).send({ result: 'redirect', url: '/' });
+        } catch (err) {
+            return res.status(200).send({
+                result: 'redirect',
+                url: `/customer/editProfile?registrationError=${err}`
+            });
+        }
+    }
+
+
 }
 
 module.exports = CustomerController;
