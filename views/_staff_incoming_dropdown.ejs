@@ -1,13 +1,13 @@
 <form action="/staff/general/displayFilteredIncoming" method="GET">
     <div class="row">
-        <div class="col-md-10 ">
+        <div class="col-md-12 ">
+            <a href="/staff/general/upcomingFlightsMain" class="btn btn-link float-right">Remove Filters</a>
             <div class="row">
                 <div class="col-10">
                     <div class="form-group col-10">
                         <label for="origin">Select Origin:</label>
                         <select class="select2" multiple="multiple"  style="width: 100%;" name="origin">
                             <!-- <option value='' ></option> -->
-                            
                             <% if(airports && airports.length!=0) {%>
                                 <% airports.forEach(function(airport){%>
                                     <% if(user.staffData.assigned_airport !==airport.airport_code ){ %>
