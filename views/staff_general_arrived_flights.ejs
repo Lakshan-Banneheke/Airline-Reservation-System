@@ -5,34 +5,9 @@
 
         <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Arrived flights</br></h3>
+              <h3 class="card-title">Arrived flights</h3>
             </div>
-            </br>
 
-            <!-- search form
-            <form action="enhanced-results.html">
-                <div class="row">
-                    <div class="col-md-8 offset-md-1">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    
-                                    <div class="input-group input-group-md">
-                                        
-                                        <input type="search" class="form-control form-control-md" placeholder="Search from flight id" >
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-md btn-default">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </form> -->
 
             <div class="card-body">
 
@@ -47,6 +22,11 @@
                         <%=success%>
                     </div>
                 <% } %>
+                <%if(!arrivedFlights || arrivedFlights.length==0){%>
+                    <div class="text-center text-primary">
+                        No Arrived Flights Yet
+                    </div>
+                <%}%>
                 
                 <% for (var i = 0; i < arrivedFlights.length; i++) { %>
                         

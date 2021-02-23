@@ -13,130 +13,166 @@
         }
      </script>
      <div class="card  rounded shadow-lg">
-        <div class="row card-body">
-            <div class="col-md-6 col-sm-12 text-center">
-                Image Here
-                <br>
-            </div>
-            <div class="col-md-6 col-sm-12 align-self-center">
+        <div class="card-body">
+            
+            
             
                 <h3 class="text-center">Register as Staff Member</h3>
                 <form method="POST" action="/staff/register">
-                    <% if (error) {%>
-                        <div class="alert alert-danger" role="alert">
-                            <%=error%>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 text-center align-self-center">
+                            <img src="https://image.freepik.com/free-vector/add-user-concept-illustration_114360-458.jpg" alt="Login"
+                                width="90%" />
+                            <br>
                         </div>
-                    <% } %>
-                    <% if (success) {%>
-                        <div class="alert alert-danger" role="alert">
-                            <%=success%>
-                        </div>
-                    <% } %>
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required value="<%=firstName%>" maxlength="50" style="text-transform: capitalize;">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required value="<%=lastName%>" maxlength="50" style="text-transform: capitalize;">
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <select id="gender" class="form-control" name="gender" required>
-                            <option  selected>Choose...</option>
-                            <% if( gender=='Male') { %>
-                                <option value="Male" selected>Male</option>
-                            <% }else{  %>
-                                <option value="Male">Male</option>
+                        <div class="col-md-6 col-sm-12 align-self-center">
+                            <% if (error) {%>
+                                <div class="alert alert-danger" role="alert">
+                                    <%=error%>
+                                </div>
                             <% } %>
-                            <% if( gender=='Female') { %>
-                                <option value="Female" selected>Female</option>
-                            <% }else{  %>
-                                <option value="Female">Female</option>
+                            <% if (success) {%>
+                                <div class="alert alert-danger" role="alert">
+                                    <%=success%>
+                                </div>
                             <% } %>
-                            <% if( gender=='Other') { %>
-                                <option value="Other" selected>Other</option>
-                            <% }else{  %>
-                                <option value="Other">Other</option>
-                            <% } %>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob" name="dob"  class="form-control" required value="<%=dob%>">
-                    </div>
-                    <div class="form-group">
-                        <label for="empId">Employee ID <small class="text-secondary"> (Bxxxxx) </small></label>
-                        <input type="empId" class="form-control" id="empId" name="empId" placeholder="Employee ID" required value="<%=empId%>" maxlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Staff Category</label>
-                        <select id="category" class="form-control" name="category" required onchange="showAirportField(this);">
-                            <option  selected>Choose...</option>
-                            <% if( category=='admin') { %>
-                                <option value="admin" selected>Admin</option>
-                            <% }else{  %>
-                                <option value="admin">Admin</option>
-                            <% } %>
-                            <% if( category=='manager') { %>
-                                <option value="manager" selected>Manager</option>
-                            <% }else{  %>
-                                <option value="manager">Manager</option>
-                            <% } %>
-                            <% if( category=='general') { %>
-                                <option value="general" selected>General</option>
-                            <% }else{  %>
-                                <option value="general">General</option>
-                            <% } %>
-                        </select>
-                    </div>
-                    <div class="form-group" id="airport-field" style="display: block;">
-                        <label for="airport">Assigned Airport<small class="text-secondary"> (only if General Staff)</small></label>
-                        <select id="airport" class="form-control" name="airport">
-                            <option  selected value="">Choose...</option>
-                            <% if(airportCodes && airportCodes.length>0){ %>
-                                <% airportCodes.forEach(function(code){ %>
-                                    <% if( airport==code.airport_code ) { %>
-                                        <option value='<%=code.airport_code%>' selected><%=code.airport_code%></option>
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required value="<%=firstName%>" maxlength="50" style="text-transform: capitalize;">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required value="<%=lastName%>" maxlength="50" style="text-transform: capitalize;">
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" class="form-control" name="gender" required>
+                                    <option  selected>Choose...</option>
+                                    <% if( gender=='Male') { %>
+                                        <option value="Male" selected>Male</option>
                                     <% }else{  %>
-                                        <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                                        <option value="Male">Male</option>
                                     <% } %>
-                                <% }); %>
-                            <% } %> 
-                        </select>
+                                    <% if( gender=='Female') { %>
+                                        <option value="Female" selected>Female</option>
+                                    <% }else{  %>
+                                        <option value="Female">Female</option>
+                                    <% } %>
+                                    <% if( gender=='Other') { %>
+                                        <option value="Other" selected>Other</option>
+                                    <% }else{  %>
+                                        <option value="Other">Other</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" name="dob"  class="form-control" required value="<%=dob%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="empId">Employee ID <small class="text-secondary"> (Bxxxxx) </small></label>
+                                <input type="empId" class="form-control" id="empId" name="empId" placeholder="Employee ID" required value="<%=empId%>" maxlength="6">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required value="<%=email%>" maxlength="50">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="category">Staff Category</label>
+                                <select id="category" class="form-control" name="category" required onchange="showAirportField(this);">
+                                    <option  selected>Choose...</option>
+                                    <% if( category=='admin') { %>
+                                        <option value="admin" selected>Admin</option>
+                                    <% }else{  %>
+                                        <option value="admin">Admin</option>
+                                    <% } %>
+                                    <% if( category=='manager') { %>
+                                        <option value="manager" selected>Manager</option>
+                                    <% }else{  %>
+                                        <option value="manager">Manager</option>
+                                    <% } %>
+                                    <% if( category=='general') { %>
+                                        <option value="general" selected>General</option>
+                                    <% }else{  %>
+                                        <option value="general">General</option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group" id="airport-field" style="display: block;">
+                                <label for="airport">Assigned Airport<small class="text-secondary"> (only if General Staff)</small></label>
+                                <select id="airport" class="form-control" name="airport">
+                                    <option  selected value="">Choose...</option>
+                                    <% if(airportCodes && airportCodes.length>0){ %>
+                                        <% airportCodes.forEach(function(code){ %>
+                                            <% if( airport==code.airport_code ) { %>
+                                                <option value='<%=code.airport_code%>' selected><%=code.airport_code%></option>
+                                            <% }else{  %>
+                                                <option value='<%=code.airport_code%>' ><%=code.airport_code%></option>
+                                            <% } %>
+                                        <% }); %>
+                                    <% } %> 
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="contactNO">Contact Number</label>
-                        <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact Number" required value="<%=contactNo%>" maxlength="15">
+                    
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required value="<%=email%>" maxlength="50">
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="contactNO">Contact Number</label>
+                                <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact Number" required value="<%=contactNo%>" maxlength="15">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="country">Country</label>
-                        <input type="text" class="form-control" id="country" name="country" placeholder="Last Name" required value="<%=country%>" maxlength="50" style="text-transform: capitalize;">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password <small class="text-secondary">(must be more than 5 less than 20 characters)</small></label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required >
-                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" class="form-control" id="country" name="country" placeholder="Last Name" required value="<%=country%>" maxlength="50" style="text-transform: capitalize;">
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="password">Password <small class="text-secondary">(must be more than 5 less than 20 characters)</small></label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required >
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirmation  Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="securityKey">Enter the Security Key<small class="text-secondary"> (Required only if catrgory is Admin)</small></label>
-                        <input type="text" class="form-control" id="securityKey" name="securityKey" placeholder="Security key" value="<%=securityKey%>" maxlength="80">
                     </div>
-    
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirmation  Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                            </div>
+        
+                            
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="securityKey">Enter the Security Key<small class="text-secondary"> (Required only if catrgory is Admin)</small></label>
+                                <input type="text" class="form-control" id="securityKey" name="securityKey" placeholder="Security key" value="<%=securityKey%>" maxlength="80">
+                            </div>
+                        </div>
+
+
+                    </div>
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
-            </div>
+       
             
         </div>
 
