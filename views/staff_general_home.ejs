@@ -77,7 +77,30 @@
                                                     <h6>To:  <%= incomingFlights[i].destination %> </h6>
                                                     <h6>Aircraft ID: <%= incomingFlights[i].aircraft_id %> </h6>
                                                     <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
-                                                    <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Arrival</button><input type='hidden' name='arrival_schedule_id' value='<%= incomingFlights[i].schedule_id %>'></form>
+                                                    <button type="button"  class='btn btn-outline-info float-right' data-toggle="modal" data-target="#flightArrivalMark">
+                                                        Mark Flight Arrival
+                                                    </button>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="flightArrivalMark" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to mark arrival?</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Schedule ID: <%= incomingFlights[i].schedule_id %>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-info float-right' >Mark Flight Arrival</button><input type='hidden' name='arrival_schedule_id' value='<%= incomingFlights[i].schedule_id %>'></form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <form action='/staff/general/markArrivalFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Arrival</button><input type='hidden' name='arrival_schedule_id' value='<%= incomingFlights[i].schedule_id %>'></form> -->
                                                 </div><!--new 2nd div-->
                                         </div><!--raw end-->
                                         </div>
@@ -143,7 +166,30 @@
                                                         <h6>To:  <%= departingFlights[i].destination %> </h6>
                                                         <h6>Aircraft ID: <%= departingFlights[i].aircraft_id %> </h6>
                                                         <!-- <a href='/staff/general/markArrivalFlight' class="btn btn-success float-right">Mark Arrival</a> -->
-                                                        <form action='/staff/general/markDepartureFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Departure</button><input type='hidden' name='departing_schedule_id' value='<%= departingFlights[i].schedule_id %>'></form>
+                                                        <button type="button"  class='btn btn-outline-info float-right' data-toggle="modal" data-target="#flightDepartureMark">
+                                                            Mark Flight Departure
+                                                        </button>
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="flightDepartureMark" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to mark departure?</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        Schedule ID: <%= departingFlights[i].schedule_id %>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        <form action='/staff/general/markDepartureFlight' method=post><button type='submit' class='btn btn-outline-info float-right' >Mark Flight Departure</button><input type='hidden' name='departing_schedule_id' value='<%= departingFlights[i].schedule_id %>'></form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <form action='/staff/general/markDepartureFlight' method=post><button type='submit' class='btn btn-outline-dark float-right' >Mark Flight Departure</button><input type='hidden' name='departing_schedule_id' value='<%= departingFlights[i].schedule_id %>'></form> -->
                                                     </div><!--new 2nd div-->
                                             </div><!--raw end-->
                                             </div>
