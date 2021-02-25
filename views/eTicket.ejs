@@ -113,7 +113,7 @@
 
         <% if(flightInfo[1] && flightInfo[1].length!=0) {%>
           <% flightInfo[1].forEach(function(price){%>
-            <% if(price.traveler_class_id==bookingDetails[0].class_id) {%>
+            <% if(price.traveler_class_id==booking.class_id) {%>
               <b><%= price.price %> </b>  (This indicates the seat price before applying any discounts)
               
               <%}%>
