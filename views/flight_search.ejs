@@ -239,7 +239,7 @@
                                         <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
                                             <div class="flight-item">
                                                 <div class="flight-thumb">
-                                                    <img src="/assets/images/flight-1.jpg" alt="image">
+                                                    <img src="<%= flight.destination_image %> " width="350px" height="259px"  alt="image">
                                                     <h3 class="flight-overlay">from$<%=flight.price%>
                                                     </h3>
                                                 </div>
@@ -282,20 +282,6 @@
 
                                         <!-- flight-section end -->
 
-                                        <!-- offer-section start -->
-                                        <section class="offer-section">
-                                            <div class="container-fluid">
-                                                <div class="row">
-                                                    <div class="col-lg-12 pl-0 pr-0">
-                                                        <div class="offer-thunb">
-                                                            <img src="/assets/images/offer.png" alt="image">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <!-- offer-section end -->
-
 
                                         <!-- client-section start -->
                                         <% if(reviews && reviews.length!=0) {%>
@@ -310,7 +296,7 @@
                                                                 <div class="swiper-slide">
                                                                     <div class="client-item--style d-flex flex-wrap">
                                                                         <div class="client-thumb--style">
-                                                                            <img src="/assets/images/client-4.png"
+                                                                            <img src="/assets/images/b_x_icon.png"
                                                                                 alt="image">
                                                                         </div>
                                                                         <div class="client-content--style">
@@ -335,158 +321,7 @@
                                         <!-- client-section end -->
 
 
-                                        <!-- choose-us-section start -->
-                                        <section class="choose-us-section choose-us-section--style pt-120">
-                                            <div class="container">
-                                                <div class="row justify-content-center">
-                                                    <div class="col-lg-6 text-center">
-                                                        <div class="section-header">
-                                                            <h2 class="section-title">why we are best booking agency
-                                                                for air ticket</h2>
-                                                            <span class="title-border title-border-center"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-30-none">
-                                                    <div class="col-lg-6 mb-30">
-                                                        <div class="choose-us-content choose-us-content--style">
-                                                            <div class="faq-left-content">
-                                                                <div class="faq-wrapper">
-                                                                    <div class="faq-item active open">
-                                                                        <h3 class="faq-title"><span class="title">fast
-                                                                                service</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">why
-                                                                                need online
-                                                                                booking</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">24
-                                                                                hours customer support</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">iso
-                                                                                certificate</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 mb-30">
-                                                        <div class="faq-thumb">
-                                                            <div class="video-icon video-icon--style">
-                                                                <a class="popup-youtube mfp-iframe"
-                                                                    href="https://www.youtube.com/watch?v=0O2aH4XLbto">
-                                                                    <i class="flaticon-play-button"></i>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <!-- choose-us-section end -->
-
-
-                                        <!-- brand-section start -->
-                                        <div class="brand-section pt-120 pb-120">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="brand-wrapper">
-                                                            <div class="swiper-wrapper">
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-1.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-2.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-3.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-4.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-5.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-6.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- brand-section end -->
+                                       
 
 
                                 </div>
