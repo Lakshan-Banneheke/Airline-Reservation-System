@@ -56,14 +56,14 @@ INSERT INTO traveller_class(class_name) VALUES ('Economy');
 ---------------------INSERTING AIRCRAFT MODELS---------------------------
 
 --max_load in kg -- speed in kmph -- fuel_capacity in litres--
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 737','MAX 10','Boeing Commercial',150,24,12,6,4,4,88300,25941,838);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed,image_link)
+VALUES('Boeing 737','MAX 10','Boeing Commercial',150,24,12,6,4,4,88300,25941,838,'https://www.boeing.com/resources/boeingdotcom/commercial/737max10/assets/images/gallery/gallery-full-0.jpg');
 
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
-VALUES('Boeing 757','300','Boeing Commercial',198,32,12,6,4,4,123830,43400,918);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed,image_link)
+VALUES('Boeing 757','300','Boeing Commercial',198,32,12,6,4,4,123830,43400,918,'https://www.skytamer.com/1.2/2011/20111008-051.jpg');
 
-INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed)
-VALUES('Airbus A380','800','Airbus',500,48,20,10,6,4,575000,323546,903);
+INSERT INTO aircraft_model(model_name,variant,manufacturer_name,economy_seat_capacity,business_seat_capacity,platinum_seat_capacity,economy_seats_per_row,business_seats_per_row,platinum_seats_per_row,max_load,fuel_capacity,avg_airspeed,image_link)
+VALUES('Airbus A380','800','Airbus',500,48,20,10,6,4,575000,323546,903,'https://airbus-h.assetsadobe2.com/is/image/content/dam/products-and-solutions/formation-flight/Airbus-50th-years-anniversary-formation-flight-take-off-015.jpg?wid=991&fit=fit,1&qlt=85,0');
 
 ---------------------INSERTING AIRCRAFT INSTANCES---------------------------
 INSERT INTO aircraft_instance (model_id,airport_code,aircraft_state) VALUES (1,'BIA','On-Ground');

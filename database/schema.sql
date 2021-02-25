@@ -489,6 +489,7 @@ CREATE TABLE Aircraft_Model (
   max_load numeric(10,2), 
   fuel_capacity numeric(10,2),
   avg_airspeed int,
+  image_link varchar(255),
   PRIMARY KEY (model_id)
 );
 
