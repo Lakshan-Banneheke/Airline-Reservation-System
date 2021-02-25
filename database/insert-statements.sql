@@ -33,20 +33,20 @@ INSERT INTO location(name) VALUES ('Singapore');
 INSERT INTO location(name, parent_id) VALUES ('Changi',16);
 
 ---------------------INSERTING AIRPORTS---------------------------
-INSERT INTO airport(airport_code,location_id) VALUES('BIA',3);
-INSERT INTO airport(airport_code,location_id) VALUES('HRI',2);
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('BIA',3,'https://lh3.googleusercontent.com/proxy/vF5zjz4Kjjy2Wo8D2WuR7gQPE8g4g49d7lK7VKf1KIxJttesjqhRCuhEJP4xhgwAdH7lNoy5TiVz1bs6oWSCSpmHADsEzl2QNUmUKCDbADsy5QVduGhGuJpq4h8no2Hlm5MZv8yuNF4Z');
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('HRI',2,'http://www.maga.lk/wp-content/uploads/2015/02/11-Hambantota-Admin-06.jpg');
 
-INSERT INTO airport(airport_code,location_id) VALUES('CGK',5);
-INSERT INTO airport(airport_code,location_id) VALUES('DPS',6);
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('CGK',5,'https://www.airport-data.com/images/airports/033/033957.jpg');
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('DPS',6,'https://allindonesiatravel.com/images/pura-ulun-danu-bratan-temple-lake-bali.jpg');
 
-INSERT INTO airport(airport_code,location_id) VALUES('DEL',9);
-INSERT INTO airport(airport_code,location_id) VALUES('BOM',11);
-INSERT INTO airport(airport_code,location_id) VALUES('MAA',13);
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('DEL',9,'https://www.fabhotels.com/blog/wp-content/uploads/2019/02/Akshardham-Temple.jpg');
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('BOM',11,'https://s1.it.atcdn.net/wp-content/uploads/2017/05/iStock-539018660-800x584.jpg');
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('MAA',13,'https://www.airportsdata.net/fotos/maa-aeropuerto.jpg');
 
-INSERT INTO airport(airport_code,location_id) VALUES('BKK',15);
-INSERT INTO airport(airport_code,location_id) VALUES('DMK',15);
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('BKK',15,'http://wakwauw.com/wp-content/uploads/2019/02/places-to-visit-in-bangkok-nightlife-of-places-to-visit-in-bangkok-nightlife-13.jpg');
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('DMK',15,'https://img.traveltriangle.com/blog/wp-content/uploads/2018/01/wat-arun.jpg');
 
-INSERT INTO airport(airport_code,location_id) VALUES('SIN',17);
+INSERT INTO airport(airport_code,location_id,destination_image) VALUES('SIN',17,'https://images.adsttc.com/media/images/5481/daaa/e58e/cef0/ed00/000e/large_jpg/Jewel_Changi_Airport_Aerial_view_CP.jpg?1417796254');
 
 ---------------------INSERTING TRAVELLER CLASS---------------------------
 INSERT INTO traveller_class(class_name) VALUES ('Platinum');

@@ -470,7 +470,7 @@ CREATE TABLE Location (
 CREATE TABLE Airport (
   airport_code varchar(10),
   location_id int NOT NULL,
-  image bytea,
+  destination_image text,
   PRIMARY KEY (airport_code),
   FOREIGN KEY(location_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -489,7 +489,7 @@ CREATE TABLE Aircraft_Model (
   max_load numeric(10,2), 
   fuel_capacity numeric(10,2),
   avg_airspeed int,
-  image_link varchar(255),
+  image_link text,
   PRIMARY KEY (model_id)
 );
 
