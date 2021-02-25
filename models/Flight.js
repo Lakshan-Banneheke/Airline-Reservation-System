@@ -50,7 +50,7 @@ class Flight {
     }
 
     static async getAllFlights() {
-        const query = `SELECT schedule_id,route_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination,price FROM flight_schedule INNER JOIN route USING(route_id) INNER JOIN seat_price USING(route_id) WHERE flight_state='Scheduled' AND traveler_class_id=3  ORDER BY departure_date LIMIT 6;`;
+        const query = `SELECT schedule_id,route_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination,price,destination_image FROM flight_schedule INNER JOIN route USING(route_id) INNER JOIN seat_price USING(route_id) INNER JOIN airport ON airport.airport_code=route.destination WHERE flight_state='Scheduled' AND traveler_class_id=3  ORDER BY departure_date LIMIT 6;`;
         const result = await pool.query(query, []);
         return result.rows;
     }
