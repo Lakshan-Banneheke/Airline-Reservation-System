@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon -->
+    <link rel="shortcut icon" href="/assets/images/b_x_icon.png" type="image/x-icon">
     <title>B Airways</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -18,7 +20,7 @@
     <link rel="stylesheet" href="/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-        <!-- main style css link -->
+    <!-- main style css link -->
     <link rel="stylesheet" href="/assets/css/style.css">
     <!-- responsive css link -->
     <link rel="stylesheet" href="/assets/css/responsive.css">
@@ -32,17 +34,17 @@
                 <% if(user) {%>
                     <div class="navbar-header">
                         <a href="/" class="pull-left visible-md visible-lg mr-1">
-                            <img src="/assets/images/b_air_logo.png" width="50" class="d-inline-block align-top" alt="Logo">
+                            <img src="/assets/images/b_airways_logo_staff.png" width="65" class="d-inline-block align-top" alt="Logo">
                         </a>
                     </div>
-                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>"><strong><h4>Airways</h4></strong></a>
+                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>" ><strong><h4 style="color: red;">B Airways</h4></strong></a>
                 <%}else{%>
                     <div class="navbar-header">
                         <a href="/" class="pull-left visible-md visible-lg mr-1">
-                            <img src="/assets/images/b_air_logo.png" width="50" class="d-inline-block align-top" alt="Logo">
+                            <img src="/assets/images/b_airways_logo_staff.png" width="65" class="d-inline-block align-top" alt="Logo">
                         </a>
                     </div>
-                    <a class="navbar-brand" href=""><strong><h4>Airways</h4></strong></a>
+                    <a class="navbar-brand" href="" ><strong><h4 style="color: red;">B Airways</h4></strong></a>
                 <%}%>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

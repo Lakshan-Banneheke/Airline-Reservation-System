@@ -1,6 +1,7 @@
 const { GuestInfo } = require('./validators/guestInfo');
 const BookingService = require('../services/BookingServices');
 const FlightService = require('../services/flightServices');
+const Booking = require('../models/Booking');
 class BookingController {
     static async getBooking(req, res) {
         let schedule_id;
@@ -58,9 +59,13 @@ class BookingController {
     }
 
     static async getPayment(req, res) {
+        const paymentstatus= await Booking.getPaymentStatus(req.session.booking_id)
+        if(!paymentstatus || paymentstatus.state==='Paid'){
+            return res.status(405).render('405');
+        }
         const prices = await BookingService.getPrice(req.session.booking_id);
         if (typeof prices === 'undefined') {
-            res.status(405).render('405');
+            return res.status(405).render('405');
         } else {
             const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
 

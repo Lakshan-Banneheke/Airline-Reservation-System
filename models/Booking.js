@@ -71,6 +71,12 @@ class Booking {
         return bookingsDetails.rows;
     }
 
+    static async getPaymentStatus(bookingID){
+        const query = 'SELECT state FROM Seat_Booking WHERE booking_id=$1';
+        let result = await pool.query(query,[bookingID]);
+        return result.rows[0];
+    }
+
 }
 
 module.exports = Booking;

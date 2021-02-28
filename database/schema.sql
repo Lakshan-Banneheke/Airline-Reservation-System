@@ -1,4 +1,8 @@
-DROP TRIGGER IF EXISTS update_customer_bookings ON Seat_Booking;
+DROP TRIGGER IF EXISTS insert_seats_for_new_model ON aircraft_model;
+DROP TRIGGER IF EXISTS update_customer_bookings  ON Seat_Booking;
+DROP TRIGGER IF EXISTS update_customer_category ON registered_customer;
+
+
 
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
@@ -978,6 +982,12 @@ BEGIN
 END;
 $$;
 
+------------------------------Indexing Schema-----------------------------------------------------------------------
+CREATE INDEX "IDX_Schedule_State" ON "flight_schedule" ("flight_state");
+CREATE INDEX "IDX_Schedule_Route_ID" ON "flight_schedule" ("route_id");
+CREATE INDEX "IDX_Booking_Schedule_ID" ON "seat_booking" ("schedule_id");
+CREATE INDEX "IDX_Route_Origin" ON "route" ("origin");
+CREATE INDEX "IDX_Route_Dest" ON "route" ("destination");
 
 
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
