@@ -30,9 +30,19 @@
         <div>
             <nav class="navbar navbar-expand-lg navbar-light shadow-lg bg-light border-bottom fixed-top">
                 <% if(user) {%>
-                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>"><strong><h4>B Airways</h4></strong></a>
+                    <div class="navbar-header">
+                        <a href="/" class="pull-left visible-md visible-lg mr-1">
+                            <img src="/assets/images/b_air_logo.png" width="50" class="d-inline-block align-top" alt="Logo">
+                        </a>
+                    </div>
+                    <a class="navbar-brand" href="/staff/<%=user.staff_category%>"><strong><h4>Airways</h4></strong></a>
                 <%}else{%>
-                    <a class="navbar-brand" href=""><strong><h4>B Airways</h4></strong></a>
+                    <div class="navbar-header">
+                        <a href="/" class="pull-left visible-md visible-lg mr-1">
+                            <img src="/assets/images/b_air_logo.png" width="50" class="d-inline-block align-top" alt="Logo">
+                        </a>
+                    </div>
+                    <a class="navbar-brand" href=""><strong><h4>Airways</h4></strong></a>
                 <%}%>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -48,8 +58,8 @@
                                     <a href="/staff/logout" class="nav-link"><b>Log Out</b></a>
                                 </li>
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <!-- <img src="/assets/usericon.png" width="30" height="30" class="d-inline-block align-top rounded-circle" alt="user-icon"> -->
-                                    Img
+                                    <img src="/assets/images/staff_icon.jpg" width="35" height="35" class="d-inline-block align-top rounded-circle" alt="user-icon">
+                                    
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="/staff/<%=user.staff_category%>" ><i class="fas fa-home" style="margin-right: 6px;"></i><b>HOME</b></a>

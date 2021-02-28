@@ -1,0 +1,78 @@
+<%- include('_staff_header',{user}) %>
+<div class="container py-4">
+    <div class="text-center">
+        <h3>Past Flight Details</h3>
+    </div>
+    <div class="text-center">
+        <div class="row mt-3">
+            <div class="col-sm-6 col-xs-12">
+                <h4><i class="fas fa-plane-departure mt-1 text-black-50 "></i> Origin - <%=origin%></h4>
+            </div>
+            <div class="col-sm-6 col-xs-12">
+               <h4> <i class="fas fa-plane-arrival  mt-1 text-black-50 "></i> Destination - <%=destination%></h4>
+            </div>
+        </div>
+
+    </div>
+    <hr>
+    <% if (error) {%>
+        <div class="alert alert-danger text-center" role="alert">
+            <%=error%>
+        </div>
+    <% } %>
+    <% if (success) {%>
+        <div class="alert alert-success text-center" role="alert">
+            <%=success%>
+        </div>
+    <% } %>
+    
+    <%if(flights && flights.length>0){%>
+        <% flights.forEach(function(flight) { %>
+                                
+            <!--flights start-->
+            <div class="col-lg-12 mb-30">
+                <div class="card p-3 mt-3 border border-warning shadow">
+                    <div class="row"><!--row start-->
+                        <div class="col-lg-3 mb-30"><!--new 1st div-->
+                            <div>
+                                <div class=" card-title">
+                                    <i class="fa fa-plane" aria-hidden="true"></i><h5 class="title">Schedule ID: <%= flight.schedule_id %></h5>
+                                </div>
+                                <div>
+                                    <h6>
+                                        Passenger Count - <%=flight.passenger_count.length<2?'0'+flight.passenger_count:flight.passenger_count%>     
+                                    </h6>
+                                </div>
+                                <div>
+                                    <h6>
+                                        State - <%=flight.flight_state%>
+                                    </h6>
+                                </div>
+                                
+                                
+                            </div>
+                        </div><!--new 1st div end-->
+                        <div class="col-lg-9 mb-30"><!--new 2nd div-->
+                            <br/>
+                            <h6>Scheduled Departed DateTime -  <%= flight.departure_date %> <%= flight.departure_time_utc %> </h6>
+                            <h6>Scheduled Arrival DateTime - <%= flight.arrival_date %>  <%= flight.arrival_time_utc %></h6>
+                            <h6>Actual Departed DateTime -  <%= flight.actual_departed %></h6>
+                            <h6>Actual Arrival DateTime - <%= flight.actual_arrival %></h6>
+                            
+                        </div><!--new 2nd div-->
+                </div><!--raw end-->
+                </div>
+            </div>
+            <!--flights end-->
+
+        <% }) %>
+
+    <%}else{%>
+        <div class="text-center alert alert-warning">
+            There No Past Flights Between These Two Airports
+        </div>
+    <%}%>
+</div>
+
+
+<%- include('_staff_footer') %>

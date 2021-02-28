@@ -1,6 +1,7 @@
 const StaffService = require('../services/StaffServices');
 const ReportService = require('../services/ReportService');
 const Errors = require('../helpers/error');
+const { passengerCountReport } = require('./validators/reports');
 
 class ManagerController {
     static async homePage(req, res) {
@@ -41,11 +42,17 @@ class ManagerController {
     static async reportPage(req,res){
         try{
             const models = await ReportService.getRevenueForEachModel();
+            const airportCodes = await StaffService.getAllAirportCodes();
+            const routes = await StaffService.getAllRoutes();
             res.render('staff_manager_reports',{
                 user: req.session.user,
                 error: req.query.error,
                 success: req.query.success,
+                passenger_count_to_dest:null,
+                booking_count:null,
+                routes,
                 models,
+                airportCodes,
             })
         }catch(e){
             console.log(e)
@@ -132,6 +139,69 @@ class ManagerController {
                 success: false,
                 error: e,
             });
+        }
+    }
+
+    static async getPassengerCountToDest(req,res){
+        try{
+            const {value,error}=await passengerCountReport.validate(req.body);
+            if(error) throw error;
+            const result = await ReportService.getNumberOfPassengersTravellingToGivenDest(value);
+            res.status(200).send({message:`Number of passengers travelling to ${req.body.passenger_count_airport_code} 
+                between ${req.body.passenger_count_start_date} and ${req.body.passenger_count_end_date} is <strong>${result.count.length<2?'0'+result.count:result.count}</strong>`},
+                
+            );
+        }catch(e){
+            console.log(e)
+            res.render("500")
+        }
+    }
+    static async getBookingCountByPassengerType(req,res){
+        try{
+            const result = await ReportService.numberOfBookingsByEachPassengerType(req.body);
+            res.status(200).send({start:req.body.booking_count_start_date,end:req.body.booking_count_end_date,result:result} 
+            );
+        }catch(e){
+            console.log(e)
+            res.render("500")
+        }
+    }
+
+    static async getPassengerDetailsPage(req,res){
+        try{
+            if(req.body.route_code===''){
+                throw new Errors.BadRequest('Invalid Route ID');
+            }
+            const passengers = await ReportService.getPassengerDetailsOnNextFlightOnGivenRoute(req.body.route_code)
+            res.render('staff_manager_next_flight_passenger_details',{
+                error:req.query.error,
+                success:req.query.success,
+                user:req.session.user,
+                adultPassengers:passengers.filter((passenger)=>passenger.age>18),
+                minorPassengers:passengers.filter((passenger)=>passenger.age<=18),
+            })
+        }catch(e){
+            res.redirect(`/staff/manager/reports?error=${e}`)
+        }
+    }
+    static async getAllPastFlightsReport(req,res){
+        try{
+            if(req.body.old_origin=='' || req.body.old_destination==''){
+                throw new Errors.BadRequest('Origin and Destination Airports Must be Selected')
+            }
+            const flights = await ReportService.getPastFlightDetailsReport(req.body.old_origin,req.body.old_destination)
+            res.render('staff_manager_past_flight_report',{
+                error:req.query.error,
+                success:req.query.success,
+                user:req.session.user,
+                origin:req.body.old_origin,
+                destination:req.body.old_destination,
+                flights:flights
+            })
+
+        }catch(e){
+            res.redirect(`/staff/manager/reports?error=${e}`)
+
         }
     }
 }

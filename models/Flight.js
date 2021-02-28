@@ -61,10 +61,12 @@ class Flight {
         return result.rows;
     }
 
+
     static async getAircraftDetails(){
         const query = 'SELECT * FROM aircraft_model;';
         const result = await pool.query(query, []);
         return result.rows;
     }
+
 }
 module.exports = Flight;

@@ -1,0 +1,119 @@
+<%- include('_staff_header_general',{user}) %>
+<div class="hold-transition sidebar-mini">
+    <div class="container">
+
+
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Arrived flights</h3>
+            </div>
+
+
+            <div class="card-body">
+
+                <% if (error) {%>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <%=error%>
+                    </div>
+                <% } %>
+
+                <% if (success) {%>
+                    <div class="alert alert-success text-center" role="alert">
+                        <%=success%>
+                    </div>
+                <% } %>
+                <%if(!arrivedFlights || arrivedFlights.length==0){%>
+                    <div class="text-center text-primary">
+                        No Arrived Flights Yet
+                    </div>
+                <%}%>
+                
+                <% for (var i = 0; i < arrivedFlights.length; i++) { %>
+                        
+                    <!--ongoing flights start-->
+                    <div class="col-lg-12 mb-30">
+                        <div class="flight-search-box">
+                            <div class="row"><!--row start-->
+                                <div class="col-lg-4 mb-30"><!--new 1st div-->
+                                    <div class="flight-search-item d-flex flex-wrap">
+                                        <div class="flight-search-thumb">
+                                            <i class="fa fa-plane" aria-hidden="true"></i>
+                                            
+                                        </div>
+                                        <div class="flight-search-title">
+                                            <h5 class="title">Schedule ID: <%= arrivedFlights[i].schedule_id %></h5>
+                                        </div>
+                                    </div>
+                                    <div class="flight-search-body">
+                                        <h5 class="flight-start"><%= arrivedFlights[i].departure_time_utc %></h5>
+                                        <h5 class="flight-middle"><%= ("0"+arrivedFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+arrivedFlights[i].duration.minutes).slice(-2) %></h5>
+                                        <h5 class="flight-end"> <%= arrivedFlights[i].arrival_time_utc %></h5>
+                                    </div>
+                                    <div class="flight-place">
+                                        <p><span class="start-place">Departure Time</span></p>
+                                    </div>
+                                </div><!--new 1st div end-->
+                                <div class="col-lg-8 mb-30"><!--new 2nd div-->
+                                    <br/><h6>From:  <%= arrivedFlights[i].origin %> </br> Departing date: <%= arrivedFlights[i].departure_date %></h6>
+                                    <h6>To:  <%= arrivedFlights[i].destination %> </br> Arrival date: <%= arrivedFlights[i].arrival_date %></h6>
+                                    <h6>Aircraft ID: <%= arrivedFlights[i].aircraft_id %> </h6>
+                                    <!-- <a href="/staff/general/upcomingFlightsMore" class="btn btn-info float-right" >More Details</a> -->
+                                    
+                                </div><!--new 2nd div-->
+                        </div><!--raw end-->
+                        </div>
+                    </div>
+                    <!--ongoing flights end-->
+
+                <% } %>
+
+                <!--test modal
+                <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Flight 2 Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Booking ID</th>
+                                      <th scope="col">Customer ID</th>
+                                      <th scope="col">Customer Name</th>
+                                      <th scope="col">No.of seats</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                      <% for (var i = 0; i <25; i++) { %>
+                                      
+                                    <tr>
+                                      <th scope="row">1</th>
+                                      <td>Mark</td>
+                                      <td>Otto</td>
+                                      <td>@mdo</td>
+                                    </tr>
+                                    <% } %>
+                                  </tbody>
+                              </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                test modal end-->
+
+            </div>
+        </div>
+        
+
+        
+
+
+
+
+    </div><!--container div closed-->
+</div>
+<%- include('_staff_footer') %>
