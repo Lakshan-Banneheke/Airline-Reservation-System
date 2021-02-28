@@ -26,6 +26,10 @@ class BookingService {
         return Booking.getPrice(booking_id);
     }
 
+    static async getSeatPrices(booking_id) {
+        return Booking.getSeatPrices(booking_id);
+    }
+
     static async successBooking(booking_id) {
         return Booking.successBooking(booking_id);
     }
@@ -36,6 +40,10 @@ class BookingService {
 
     static async getBookingDetails(booking_id) {
         return Booking.getBookingDetails(booking_id);
+    }
+
+    static async getPreviousBookings(customerID) {
+        return Booking.getPreviousBookings(customerID);
     }
 }
 

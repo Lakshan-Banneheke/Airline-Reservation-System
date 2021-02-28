@@ -40,7 +40,7 @@
                 <div class="col-lg-8 text-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Flight</li>
                             <li class="breadcrumb-item active" aria-current="page">Search</li>
                         </ol>
                     </nav>
@@ -68,18 +68,22 @@
                             <div class="rt-input-group rt-input-group--style">
                                 <div class="single-input  col-rt-in-3">
                                     <select name="from" id="dropdown" class="select-bar">
+
                                         <% if(from===undefined || from=='') {%>
                                         <option value='' selected>--Select FROM Airport--</option>
                                         <%} else{%>
-                                            <option value=<%=from %> selected><b><%=from %></b></option>
                                             <option value='' >--Select FROM Airport--</option>
-                                            <%}%>
+                                        <%}%>
+
                                         <% if(airports && airports.length!=0) {%>
                                             <% airports.forEach(function(airport){%>
-                                                <option value=<%=airport.airport_code %> ><%= airport.name %>
-                                                </option>
-                                                <%});%>
-                                                    <%}%>
+                                                <% if(from ===airport.airport_code) {%>
+                                                <option value=<%=airport.airport_code %> selected ><%= airport.name %></option>
+                                                <%} else{%>
+                                                    <option value=<%=airport.airport_code %> ><%= airport.name %></option>
+                                                <%}
+                                            });%>
+                                        <%}%>
                                     </select>
 
                                     <span class="input-iconbadge"><img src="/assets/images/icon-1.png" alt=""
@@ -90,16 +94,19 @@
                                     <select name="to" id="dropdown" class="select-bar">
                                         <% if(to===undefined || to=='') {%>
                                             <option value='' selected>--Select TO Airport--</option>
-                                            <%} else{%>
-                                                <option value=<%=to %> selected><b><%=to %></b></option>
-                                                <option value='' >--Select TO Airport--</option>
-                                                <%}%>
+                                        <%} else{%>
+                                            <option value='' >--Select TO Airport--</option>
+                                        <%}%>
+
                                         <% if(airports && airports.length!=0) {%>
                                             <% airports.forEach(function(airport){%>
-                                                <option value=<%=airport.airport_code %> ><%= airport.name %>
-                                                </option>
-                                                <%});%>
-                                                    <%}%>
+                                                <% if(to ===airport.airport_code) {%>
+                                                    <option value=<%=airport.airport_code %> selected ><%= airport.name %></option>
+                                                <%} else{%>
+                                                    <option value=<%=airport.airport_code %> ><%= airport.name %></option>
+                                                <%}
+                                            });%>
+                                        <%}%>
                                     </select>
                                     <div class="suggestions"></div>
                                     <span class="input-iconbadge"><img src="/assets/images/icon-1.png" alt=""
@@ -144,9 +151,9 @@
                                     <tr>
                                         <th scope="col">FLIGHT</th>
                                         <th scope="col">FROM</th>
-                                        <th scope="col">TAKEOFF</th>
+                                        <th scope="col">TAKEOFF IN UTC TIME</th>
                                         <th scope="col">TO</th>
-                                        <th scope="col">LANDING</th>
+                                        <th scope="col">LANDING IN UTC TIME</th>
                                         <th scope="col">BOOK</th>
 
                                     </tr>
@@ -157,7 +164,7 @@
 
                                         <tr>
                                             <td>
-                                                <%=flight.schedule_id%>
+                                                <%=flight.route_id%>
                                             </td>
                                             <td>
                                                 <%=flight.origin%>
@@ -217,7 +224,7 @@
                                     <div class="row justify-content-center">
                                         <div class="col-lg-6 text-center">
                                             <div class="section-header">
-                                                <h2 class="section-title">upcoming Flight</h2>
+                                                <h2 class="section-title">Upcoming Flights</h2>
                                                 <span class="title-border title-border-center"></span>
                                                 <p> Augue eros ultrices amet, viverra nec nunc massa magna. Sit a,
                                                     lacus mattis odio sem placerat ante, lacus aliquam sit id ligula
@@ -232,7 +239,7 @@
                                         <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
                                             <div class="flight-item">
                                                 <div class="flight-thumb">
-                                                    <img src="/assets/images/flight-1.jpg" alt="image">
+                                                    <img src="<%= flight.destination_image %> " width="350px" height="259px"  alt="image">
                                                     <h3 class="flight-overlay">from$<%=flight.price%>
                                                     </h3>
                                                 </div>
@@ -274,214 +281,48 @@
                                     <%}%>
 
                                         <!-- flight-section end -->
-                                        <!-- offer-section start -->
-                                        <section class="offer-section">
-                                            <div class="container-fluid">
-                                                <div class="row">
-                                                    <div class="col-lg-12 pl-0 pr-0">
-                                                        <div class="offer-thunb">
-                                                            <img src="/assets/images/offer.png" alt="image">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <!-- offer-section end -->
 
 
                                         <!-- client-section start -->
+                                        <% if(reviews && reviews.length!=0) {%>
                                         <section class="client-section--style pt-120 pb-120">
                                             <div class="container">
+                                                
                                                 <div class="row justify-content-center">
                                                     <div class="col-lg-12">
                                                         <div class="client-slider--style">
                                                             <div class="swiper-wrapper">
+                                                                <% reviews.forEach(function(review){%>
                                                                 <div class="swiper-slide">
                                                                     <div class="client-item--style d-flex flex-wrap">
                                                                         <div class="client-thumb--style">
-                                                                            <img src="/assets/images/client-4.png"
+                                                                            <img src="/assets/images/b_x_icon.png"
                                                                                 alt="image">
                                                                         </div>
                                                                         <div class="client-content--style">
-                                                                            <p>Commodo justo auctor. Cras praesent.
-                                                                                Porttitorceptsietrcu lectus nunc
-                                                                                fermentum ultrices vestibulum
-                                                                                sporitopendisse ante porta dignissim
-                                                                                estconsectetutesque scelerisque
-                                                                                dolor pellentesque, risus vel
-                                                                                egetmattis donec tellus bibenddtum
-                                                                                massa nulla neque bi sed a. Morbi
-                                                                                posuere urna velit sit venenatis.
+                                                                            <p><%= review.review %> 
                                                                             </p>
                                                                             <div class="client-header">
-                                                                                <h3 class="title">martin jobs</h3>
-                                                                                <span class="sub-title">business
-                                                                                    man</span>
+                                                                                <h3 class="title"><%= review.first_name %> <%= review.last_name %> </h3>
+                                                                                <span class="sub-title"><%= review.category %> Flyer of B Airways</span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                <%});%>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </section>
+                                                <%}%>
+
                                         <!-- client-section end -->
 
 
-                                        <!-- choose-us-section start -->
-                                        <section class="choose-us-section choose-us-section--style pt-120">
-                                            <div class="container">
-                                                <div class="row justify-content-center">
-                                                    <div class="col-lg-6 text-center">
-                                                        <div class="section-header">
-                                                            <h2 class="section-title">why we are best booking agency
-                                                                for air ticket</h2>
-                                                            <span class="title-border title-border-center"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-30-none">
-                                                    <div class="col-lg-6 mb-30">
-                                                        <div class="choose-us-content choose-us-content--style">
-                                                            <div class="faq-left-content">
-                                                                <div class="faq-wrapper">
-                                                                    <div class="faq-item active open">
-                                                                        <h3 class="faq-title"><span class="title">fast
-                                                                                service</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">why
-                                                                                need online
-                                                                                booking</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">24
-                                                                                hours customer support</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="faq-item">
-                                                                        <h3 class="faq-title"><span class="title">iso
-                                                                                certificate</span><span
-                                                                                class="right-icon"></span></h3>
-                                                                        <div class="faq-content">
-                                                                            <p>Platea tincidunt praesent mauris,
-                                                                                facilisis vel sed ornare nulltcies
-                                                                                proin luctus velilibero. At ligula
-                                                                                amet, sit velit est morbi, sit eros
-                                                                                tempus mus sit at ut tortor ut.
-                                                                                Morbi nulla antmauris</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 mb-30">
-                                                        <div class="faq-thumb">
-                                                            <div class="video-icon video-icon--style">
-                                                                <a class="popup-youtube mfp-iframe"
-                                                                    href="https://www.youtube.com/watch?v=0O2aH4XLbto">
-                                                                    <i class="flaticon-play-button"></i>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <!-- choose-us-section end -->
+                                       
 
-
-                                        <!-- brand-section start -->
-                                        <div class="brand-section pt-120 pb-120">
-                                            <div class="container">
-                                                <div class="row">
-                                                    <div class="col-lg-12">
-                                                        <div class="brand-wrapper">
-                                                            <div class="swiper-wrapper">
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-1.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-2.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-3.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-4.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-5.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="swiper-slide">
-                                                                    <div class="BrandSlider">
-                                                                        <div class="brand-item">
-                                                                            <img src="/assets/images/brand-6.png"
-                                                                                alt="logo images">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- brand-section end -->
 
                                 </div>
                             </section>

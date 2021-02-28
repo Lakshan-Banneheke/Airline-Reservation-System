@@ -1,0 +1,207 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">Edit Customer Profile</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">edit customer profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+<!-- booking-registration-section start -->
+<section class="booking-registration-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <% if(registrationError) {%>
+                <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                    <%=registrationError%>
+                </div>
+                <% } %>
+                <form class="general-information" id="editProfile">
+                    <input type="hidden" id="custID" value="<%=user.customerData.customer_id%>">
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title text-center">Customer information</h3>
+                            <br>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Email</label>
+                                <div class="col-lg-8">
+                                    <input type="email" class="form-control" id="editEmail" value="<%=user.customerData.email%>" disabled >
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >First Name</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" name="firstName" id="editFirstName" required value="<%=user.customerData.first_name%>">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >Last Name</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" name="lastName" id="editLastName" required value="<%=user.customerData.last_name%>">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Date Of Birth</label>
+                                <div class="col-lg-8">
+                                    <input type="date" class="form-control" id="editDob" value="<%=user.customerData.dob.substring(0,10)%>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Gender</label>
+                                <div class="col-lg-8">
+                                    <select class="select-bar" id="editGender" required>
+                                        <option data-display="- Select Gender -">- Select Gender -</option>
+                                        <% if(user.customerData.gender=='Male') {%>
+                                            <option value="Male" selected>Male</option>
+                                        <%}else{%>
+                                            <option value="Male">Male</option>
+                                        <%}%>
+                                        <% if(user.customerData.gender =='Female') {%>
+                                            <option value="Female" selected>Female</option>
+                                        <%}else{%>
+                                            <option value="Female">Female</option>
+                                        <%}%>
+                                        <% if(user.customerData.gender=='Other') {%>
+                                            <option value="Other" selected>Other</option>
+                                        <%}else{%>
+                                            <option value="Other">Other</option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Concact Number </label>
+                                <div class="col-lg-8">
+                                    <input type="tel" class="form-control" id="editContactNo" value="<%=user.customerData.contact_no%>" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Passport Number</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="editPassportNo" value="<%=user.customerData.passport_no%>" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Address</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" name="addressLine1" id="editAddressLine1" required value="<%=user.customerData.address_line1%>">
+                                    <input type="text" class="form-control"  name="addressLine2" id="editAddressLine2" required value="<%=user.customerData.address_line2%>">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >City</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" name="city" id="editCity" required value="<%=user.customerData.city%>">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >Country</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" name="country" id="editCountry" required value="<%=user.customerData.country%>">
+                                </div>
+                            </div>
+                            <hr>
+                            <br>
+                            <div class="row justify-content-center" id="submitButton">
+                                <div class="col-lg-12 text-center">
+                                    <button class="cmn-btn" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div class="col-lg-8">
+                <form class="general-information" id="changePassword">
+                    <input type="hidden" id="custID" value="<%=user.customerData.customer_id%>">
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <h3 class="title text-center">Change Password</h3>
+                            <br>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">Current password</label>
+                                <div class="col-lg-8">
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >New password</label>
+                                <div class="col-lg-8">
+                                    <input type="password" class="form-control" name="newPassword1" id="newPassword1" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label" >Re-type new password</label>
+                                <div class="col-lg-8">
+                                    <input type="password" class="form-control" name="newPassword2" id="newPassword2" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <br>
+                            <div class="row justify-content-center" id="changePasswordButton">
+                                <div class="col-lg-12 text-center">
+                                    <button class="cmn-btn" type="submit">Change Password</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('_footer',{user}) %>
