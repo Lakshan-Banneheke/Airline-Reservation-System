@@ -39,6 +39,7 @@
     "express-session": "^1.17.1",
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
+    "jspdf": "^2.3.0",
     "node-pg-migrate": "^5.9.0",
     "nodemon": "^2.0.7",
     "pg": "^8.5.1",

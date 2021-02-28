@@ -1,0 +1,90 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+
+    <form class="header-form">
+        <div class="skip"><i class="fas fa-times"></i></div>
+        <div class="header-form-area">
+            <input type="text" placeholder="Search Here">
+            <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+        </div>
+    </form>
+
+
+    <!-- banner-section start -->
+    <section class="inner-banner-section pt-120 pb-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="inner-banner-content">
+                        <h2 class="title">aircraft details</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner-section end -->
+
+
+    <!-- breadcrumb-section start -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Aircraft Models</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-section end -->
+
+
+    <a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+    <!-- flight-section start -->
+    <section class="flight-section pt-120 pb-120">
+        <div class="container">
+            <div class="row justify-content-center mb-30-none">
+                <% aircraftDetails.forEach(aircraft => {%>
+                    <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
+                        <div class="flight-item">
+                            <div class="flight-thumb">
+                                <img src="<%= aircraft.image_link%>" alt="image">
+                            </div>
+                            <div class="flight-details">
+                                <h3 class="title"><%= aircraft.model_name%></h3>
+                                <h3 class="title"><%= aircraft.variant%></h3>
+                                <ul class="flight-content">
+                                    <li><i class="flaticon-startup"></i><b>Max Passenger Capacity: </b><%= (aircraft.economy_seat_capacity+aircraft.business_seat_capacity+aircraft.platinum_seat_capacity)%></li>
+                                    <li><i class="flaticon-coffee"></i><b>Fuel Capacity: </b><%= aircraft.fuel_capacity%> l</li>
+                                    <li><i class="flaticon-search-interface-symbol"></i><b>Max Load: </b><%= aircraft.max_load%> kg</li>
+                                    <li><i class="flaticon-plane"></i><b>Avg Air Speed: </b><%= aircraft.avg_airspeed%> kmph</li>
+                                    <li><i class="flaticon-internet"></i><b>Manufacturer: </b><%= aircraft.manufacturer_name%></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                <%});%>
+            </div>
+        </div>
+    </section>
+    <!-- flight-section end -->
+
+
+
+
+
+<%- include('_footer',{user}) %>

@@ -1,0 +1,210 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">previous bookings</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Previous Bookings</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+<br><br><br>
+
+<!-- flight-table-area start -->
+<div class="flight-table-area pb-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12">
+                <div class="table-area">
+                    <table class="table table-striped table-bordered table-hover">
+                        <% if(bookingsDetails && bookingsDetails.length!=0) {%>
+                            <thead>
+                            <tr>
+                                <th scope="col"><b>BOOKING ID</b></th>
+                                <th scope="col"><b>FLIGHT</b></th>
+                                <th scope="col"><b>DATE OF BOOKING</b></th>
+                                <th scope="col"><b>FROM</b></th>
+                                <th scope="col"><b>TAKEOFF (UTC TIME)</b></th>
+                                <th scope="col"><b>TO</b></th>
+                                <th scope="col"><b>LANDING (UTC TIME)</b></th>
+                                <th scope="col"><b>FINAL PRICE</b></th>
+                                <th scope="col"><b>PAID STATE</b></th>
+                                <th scope="col"><b>MORE INFO</b></th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% bookingsDetails.forEach(function(booking){%>
+
+                            <tr>
+                                <td>
+                                    <%=booking.booking_id%>
+                                </td>
+                                <td>
+                                    <%=booking.route_id%>
+                                </td>
+                                <td>
+                                    <%=(booking.date_of_booking).toString().substring(0,15)%>
+                                </td>
+                                <td>
+                                    <%=booking.origin%>
+                                </td>
+                                <td>
+                                    <%= (booking.departure_date).toString().substring(0,15)+" "+booking.departure_time_utc %>
+                                </td>
+                                <td>
+                                    <%=booking.destination%>
+                                </td>
+                                <td>
+                                    <%=(booking.arrival_date).toString().substring(0,15)+" "+booking.arrival_time_utc%>
+                                </td>
+                                <td>
+                                    $<%=booking.final_price%>
+                                </td>
+                                <td>
+                                    <%=booking.state%>
+                                </td>
+                                <td>
+                                    <form action='/booking/previous' method=post>
+                                        <div class="single-input  col-rt-in-3" style="justify-content: center;">
+                                            <button type='submit'
+                                                    class="cmn-btn" style="font-size: smaller;"
+                                                    name='more-info-button'>INFO</button><input type='hidden'
+                                                                                                  name='booking_id' value='<%=booking.booking_id%>'></div></form>
+
+
+
+                                </td>
+
+                            </tr>
+                            <%});%>
+                            </tbody>
+                    </table>
+                </div>
+
+                <% }else{ %>
+                <div class=" alert alert-danger text-center">
+                    <strong><h4>No Previous Bookings</h4></strong>
+                </div>
+                <%}%>
+                <br><br>
+
+                <!-- flight-table-area end -->
+
+
+                <!-- flight-section start -->
+                <% if(upcomingFlights && upcomingFlights.length!=0) {%>
+                <section class="flight-section pt-120 pb-120" id="upcomingFlights">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 text-center">
+                                <div class="section-header">
+                                    <h2 class="section-title">Upcoming Flights</h2>
+                                    <span class="title-border title-border-center"></span>
+                                    <p> Augue eros ultrices amet, viverra nec nunc massa magna. Sit a,
+                                        lacus mattis odio sem placerat ante, lacus aliquam sit id ligula
+                                        est ante fringilla </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-30-none">
+                            <% upcomingFlights.forEach(function(flight){%>
+
+
+                            <div class="col-lg-4 col-md-6 col-sm-8 mb-30">
+                                <div class="flight-item">
+                                    <div class="flight-thumb">
+                                        <img src="<%= flight.destination_image %>" alt="image">
+                                        <h3 class="flight-overlay">from$<%=flight.price%>
+                                        </h3>
+                                    </div>
+                                    <div class="flight-details">
+
+                                        <form action="/booking" method="post">
+                                            <input type="hidden" name="schedule_id" value="<%=flight.schedule_id%>"/>
+
+                                            <button type="submit" style="background-color: white;">
+                                                <a>
+                                                    <h3 class="title">
+                                                        <%=flight.origin%>
+                                                    </h3>
+                                                    <i class="flaticon-exchange"></i>
+                                                    <h3 class="title">
+                                                        <%=flight.destination%>
+                                                    </h3>
+                                                </a>
+                                            </button>
+                                        </form>
+                                        <ul class="flight-content">
+                                            <li><i class="flaticon-clock"></i>
+                                                <%=flight.departure_time_utc.toString()+'-----'+flight.arrival_time_utc.toString()%>
+                                            </li>
+                                            <li><i class="flaticon-calendar"></i>
+                                                <%=flight.departure_date.toString().substring(0,15)+'-'+flight.arrival_date.toString().substring(0,15)%>
+                                            </li>
+                                            <li><i class="flaticon-plane"></i> B Airways</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <%});%>
+                        </div>
+                        <% }else{ %>
+                            <div class="alert alert-warning text-center">
+                                <strong>No Flights available</strong>
+                            </div>
+                        <%}%>
+
+                        <!-- flight-section end -->
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('_footer',{user}) %>

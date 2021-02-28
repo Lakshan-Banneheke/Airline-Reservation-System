@@ -1,5 +1,8 @@
-DROP TRIGGER IF EXISTS afterbookingInsertTrigger ON Seat_Booking;
-DROP TRIGGER IF EXISTS beforebookingCancellationTrigger ON Seat_Booking;
+DROP TRIGGER IF EXISTS insert_seats_for_new_model ON aircraft_model;
+DROP TRIGGER IF EXISTS update_customer_bookings  ON Seat_Booking;
+DROP TRIGGER IF EXISTS update_customer_category ON registered_customer;
+
+
 
 DROP PROCEDURE IF EXISTS registerCustomer;
 DROP PROCEDURE IF EXISTS increaseNumBookings;
@@ -42,7 +45,15 @@ DROP TYPE IF EXISTS  aircraft_state_enum;
 DROP TYPE IF EXISTS  gender_enum;
 DROP TYPE IF EXISTS  customer_state_enum;
 DROP TYPE IF EXISTS  staff_category;
+DROP TYPE IF EXISTS  registered_customer_category;
 DROP TYPE IF EXISTS  staff_account_state;
+DROP TYPE IF EXISTS  registered_customer_category;
+
+DROP VIEW IF EXISTS flight_info_passenger CASCADE;
+DROP VIEW IF EXISTS booking_id_vs_category CASCADE;
+DROP VIEW IF EXISTS passenger_details_only CASCADE;
+DROP VIEW IF EXISTS booked_user_details CASCADE;
+DROP VIEW IF EXISTS details_except_booked_person CASCADE;
 
 SET TIME ZONE 'Etc/UTC';
 ---------------------------------- ENUMS SCHEMA ------------------------------------
@@ -73,6 +84,12 @@ CREATE TYPE customer_state_enum AS ENUM(
 'registered'
 );
 
+CREATE TYPE registered_customer_category AS ENUM(
+'General',
+'Frequent',
+'Gold'
+);
+
 CREATE TYPE staff_category AS ENUM(
 'admin',
 'manager',
@@ -83,6 +100,7 @@ CREATE TYPE staff_account_state AS ENUM(
 'verified',
 'unverified'
 );
+
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
@@ -136,7 +154,7 @@ LANGUAGE plpgsql IMMUTABLE;
 
 ----Function to calculate arrival time for a flight
 
-CREATE OR REPLACE FUNCTION get_arrival(val_route_id int, val_departure_datetime timestamp)
+CREATE OR REPLACE FUNCTION get_arrival(val_route_id VARCHAR(10), val_departure_datetime timestamp)
 RETURNS timestamp
 AS $CODE$
 DECLARE
@@ -186,7 +204,7 @@ CREATE OR REPLACE FUNCTION get_seat_price(val_schedule_id int, val_seat_id text)
 RETURNS numeric
 AS $CODE$
 DECLARE
-    val_route_id int;
+    val_route_id VARCHAR(10);
     val_model_id int;
     val_aircraft_id int;
     val_traveler_class_id int;
@@ -256,6 +274,8 @@ DECLARE
     temp_price numeric(10,2);
     val_booking_id int;
     val_model_id int;
+    discounted_price numeric(10,2);
+    val_discount_percentage numeric(10,2);
 
 BEGIN
 
@@ -277,7 +297,15 @@ BEGIN
             i = i + 1;
     END LOOP;
 
-    INSERT INTO seat_booking(customer_id, schedule_id, total_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
+    discounted_price = tot_price;
+
+    IF (val_type = 'registered') THEN
+        SELECT discount_percentage INTO val_discount_percentage FROM Registered_Customer JOIN Customer_Category ON category = cat_name WHERE customer_id = val_customer_id;
+        discounted_price = tot_price * (1 - val_discount_percentage/100);
+    END IF;
+
+
+    INSERT INTO seat_booking(customer_id, schedule_id, price_before_discount, final_price, state) VALUES(val_customer_id, val_schedule_id, tot_price, discounted_price, 'Not paid') RETURNING booking_id INTO val_booking_id;
 
     SELECT model_id INTO val_model_id FROM aircraft_instance NATURAL JOIN flight_schedule WHERE schedule_id=val_schedule_id;
 
@@ -289,6 +317,100 @@ BEGIN
 END;
 $$;
 
+-----------Function to insert seats for a new model ----------
+CREATE OR REPLACE FUNCTION insert_seats_func() RETURNS TRIGGER AS $$
+DECLARE
+    temp_model_id int;
+    current_seat int;
+    row_num int;
+    col char;
+    platinum int;
+    business int;
+    economy int;
+    economy_row int;
+    business_row int;
+    platinum_row int;
+    cols char[] DEFAULT array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    columns_economy char[];
+    columns_business char[];
+    columns_platinum char[];
+BEGIN
+    temp_model_id = new.model_id;
+    SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity, economy_seats_per_row, business_seats_per_row, platinum_seats_per_row INTO economy, business, platinum, economy_row, business_row, platinum_row
+    FROM aircraft_model WHERE model_id=temp_model_id;
+
+    columns_platinum = cols[: platinum_row];
+
+    current_seat = 1;
+    row_num = 1;
+    while current_seat <= platinum loop
+            foreach col in array columns_platinum loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 1);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+
+    columns_business = cols[: business_row];
+    current_seat = 1;
+
+    while current_seat <= business loop
+            foreach col in array columns_business loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 2);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+    columns_economy = cols[: economy_row];
+    current_seat = 1;
+
+    while current_seat <= economy loop
+            foreach col in array columns_economy loop
+                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 3);
+                    current_seat = current_seat + 1;
+                end loop;
+            row_num = row_num + 1;
+        end loop;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION increment_customer_bookings() RETURNS TRIGGER AS $$
+DECLARE
+   cust_type customer_state_enum;
+BEGIN
+    IF (NEW.state = 'Paid') THEN
+        SELECT type INTO cust_type FROM customer WHERE customer_id = NEW.customer_id;
+           IF (cust_type = 'registered') THEN
+               UPDATE registered_customer SET no_of_bookings = no_of_bookings + 1 WHERE customer_id = NEW.customer_id;
+           END IF;
+    END IF;
+    RETURN NULL; -- result is ignored since this is an AFTER trigger
+END;
+$$ LANGUAGE plpgsql;
+
+
+--------FUNCTION TO INCREMENT BOOKINGS WITH TRIGGER____________________
+CREATE OR REPLACE FUNCTION change_customer_category() RETURNS TRIGGER AS $$
+DECLARE
+   frequent_min SMALLINT;
+   gold_min SMALLINT;
+BEGIN
+
+    SELECT min_bookings INTO frequent_min FROM customer_category WHERE cat_name='Frequent';
+    SELECT min_bookings INTO gold_min FROM customer_category WHERE cat_name='Gold';
+
+    IF (NEW.no_of_bookings >= gold_min) THEN
+        UPDATE registered_customer SET category = 'Gold' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    ELSIF (NEW.no_of_bookings >= frequent_min) THEN
+        UPDATE registered_customer SET category = 'Frequent' WHERE customer_id = NEW.customer_id;
+        RETURN NULL;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 
 ----------------------------------  TABLE SCHEMA --------------------------------------
@@ -297,14 +419,16 @@ CREATE TABLE Organizational_Info (
   airline_name  varchar(30) NOT NULL,
   airline_hotline varchar(20) NOT NULL,
   airline_email varchar(50) NOT NULL,
-  airline_address varchar(100) NOT NULL,
+  address_1 varchar(100) NOT NULL,
+  address_2 varchar(100) NOT NULL,
+  address_3 varchar(100) NOT NULL,
   airline_account_no varchar(30) NOT NULL,
   PRIMARY KEY (airline_name)
 );
 
 
 CREATE TABLE Customer_Category (
-  cat_name VARCHAR(30),
+  cat_name registered_customer_category,
   discount_percentage NUMERIC(4,2) NOT NULL,
   min_bookings SMALLINT NOT NULL,
   PRIMARY KEY (cat_name)
@@ -322,13 +446,13 @@ CREATE TABLE Registered_Customer (
   password varchar(255) NOT NULL,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  category varchar(30), --Default no category
+  category  registered_customer_category NOT NULL DEFAULT 'General', --Default no category
   dob DATE NOT NULL,
   gender gender_enum,
   contact_no VARCHAR(15) NOT NULL,
   passport_no VARCHAR(20) NOT NULL,
-  address_line1 varchar(30) NOT NULL,
-  address_line2 varchar(30) NOT NULL,
+  address_line1 varchar(80) NOT NULL,
+  address_line2 varchar(80) NOT NULL,
   country VARCHAR(30) NOT NULL,
   city varchar(30) NOT NULL,
   display_image bytea,
@@ -357,7 +481,7 @@ CREATE TABLE Location (
 CREATE TABLE Airport (
   airport_code varchar(10),
   location_id int NOT NULL,
-  image bytea,
+  destination_image text,
   PRIMARY KEY (airport_code),
   FOREIGN KEY(location_id) REFERENCES Location(location_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -376,6 +500,7 @@ CREATE TABLE Aircraft_Model (
   max_load numeric(10,2), 
   fuel_capacity numeric(10,2),
   avg_airspeed int,
+  image_link text,
   PRIMARY KEY (model_id)
 );
 
@@ -400,7 +525,7 @@ CREATE TABLE Aircraft_Instance (
 );
 
 CREATE TABLE Route (
-  route_id SERIAL,
+  route_id VARCHAR(10),
   origin varchar(10) NOT NULL,
   destination varchar(10) NOT NULL,
   duration interval NOT NULL,
@@ -411,7 +536,7 @@ CREATE TABLE Route (
 
 CREATE TABLE Flight_Schedule (
   schedule_id SERIAL,
-  route_id int NOT NULL ,
+  route_id VARCHAR(10) NOT NULL ,
   aircraft_id int NOT NULL,
   departure_date date NOT NULL,
   departure_time_utc time NOT NULL,
@@ -426,7 +551,7 @@ CREATE TABLE Flight_Schedule (
 );
 
 CREATE TABLE Seat_Price (
-  route_id int NOT NULL,
+  route_id VARCHAR(10) NOT NULL,
   traveler_class_id int NOT NULL,
   price numeric(10,2) NOT NULL,
   PRIMARY KEY(route_id,traveler_class_id),
@@ -438,8 +563,10 @@ CREATE TABLE Seat_Booking (
   booking_id SERIAL,
   customer_id varchar(36) NOT NULL,
   schedule_id int NOT NULL,
-  total_price numeric(10,2) NOT NULL,
+  price_before_discount numeric(10,2) NOT NULL,
+  final_price numeric(10,2) NOT NULL,
   state booking_state_enum NOT NULL,
+  date_of_booking DATE NOT NULL DEFAULT NOW()::DATE,
   PRIMARY KEY (booking_id),
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(schedule_id) REFERENCES Flight_Schedule(schedule_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -461,8 +588,8 @@ CREATE TABLE Passenger_Seat(
 
 
 CREATE TABLE Customer_Review (
-  review_id varchar(100),
-  customer_id varchar(100) NOT NULL,
+  review_id SERIAL,
+  customer_id uuid4 NOT NULL,
   review varchar(500),
   PRIMARY KEY (review_id),
   FOREIGN KEY(customer_id) REFERENCES Registered_Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -517,7 +644,50 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 -----------------------------------VIEWS SCHEMA ----------------------------------------
 CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
+create view flight_info_passenger as
+select booking_id,seat_id, name as passenger_name,passport_no as passenger_passport
+from passenger_seat;
+
+-- select * from flight_info_passenger;
+
+create view booking_id_vs_category as
+select booking_id,schedule_id,customer.customer_id,type
+from seat_booking left outer join customer
+using(customer_id);
+
+-- select * from booking_id_vs_category;
+
+create view passenger_details_only as
+SELECT * from flight_info_passenger left outer join booking_id_vs_category using(booking_id);
+
+-- select * from passenger_details_only;
+
+create view booked_user_details as
+SELECT customer_id, name as booked_name, email from guest_customer where customer_id in
+(select customer_id from booking_id_vs_category where type='guest')
+UNION
+SELECT customer_id, CONCAT(first_name,' ',last_name)as booked_name, email from registered_customer where customer_id in
+(select customer_id from booking_id_vs_category where type='registered');
+
+-- select * from booked_user_details;
+create view details_except_booked_person as
+select customer_id,seat_id,passenger_name,passenger_passport,passenger_details_only.schedule_id
+from booking_id_vs_category left outer join passenger_details_only 
+using(customer_id);
+-- select * from details_except_booked_person;
+
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
+CREATE TRIGGER update_customer_bookings
+AFTER UPDATE OF state ON seat_booking
+    FOR EACH ROW EXECUTE PROCEDURE increment_customer_bookings();
+
+
+CREATE TRIGGER insert_seats_for_new_model AFTER INSERT ON aircraft_model
+    FOR EACH ROW EXECUTE PROCEDURE insert_seats_func();
+
+CREATE TRIGGER update_customer_category
+AFTER UPDATE OF no_of_bookings ON registered_customer
+    FOR EACH ROW EXECUTE PROCEDURE change_customer_category();
 
 
 
@@ -594,7 +764,7 @@ END;
 $$;
 
 ----------Procedure to insert scheduled flights---------------
-CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id int, val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
+CREATE OR REPLACE PROCEDURE scheduleFlights(val_route_id VARCHAR(10), val_aircraft_id int, val_departure_date date, val_departure_time_utc time)
 LANGUAGE plpgsql    
 AS $$ 
 DECLARE
@@ -798,75 +968,9 @@ BEGIN
 END;
 $$;
 
----------------------PROCEDURE FOR ADDING SEATS---------------------------
-CREATE OR REPLACE PROCEDURE insert_seats()
-LANGUAGE plpgsql
-AS $$
-DECLARE
-	   temp_model_id int;
-	   model_count int;
-       current_seat int;
-       row_num int;
-       col char;
-	   platinum int;
-	   business int;
-	   economy int;
-       economy_row int;
-       business_row int;
-       platinum_row int;
-       cols char[] DEFAULT array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-       columns_economy char[];
-       columns_business char[];
-       columns_platinum char[];
-BEGIN
-	SELECT COUNT(model_id) INTO model_count FROM aircraft_model;
-	temp_model_id = 1;
-
-	while temp_model_id <= model_count loop
-		SELECT economy_seat_capacity, business_seat_capacity, platinum_seat_capacity, economy_seats_per_row, business_seats_per_row, platinum_seats_per_row INTO economy, business, platinum, economy_row, business_row, platinum_row
-			FROM aircraft_model WHERE model_id=temp_model_id;
-
-        columns_platinum = cols[: platinum_row];
-
-		current_seat = 1;
-		row_num = 1;
-		while current_seat <= platinum loop
-            foreach col in array columns_platinum loop
-                    INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 1);
-                    current_seat = current_seat + 1;
-            end loop;
-			row_num = row_num + 1;
-		end loop;
-
-        columns_business = cols[: business_row];
-		current_seat = 1;
-
-        while current_seat <= business loop
-                foreach col in array columns_business loop
-                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 2);
-                        current_seat = current_seat + 1;
-                end loop;
-                row_num = row_num + 1;
-        end loop;
-        columns_economy = cols[: economy_row];
-        current_seat = 1;
-
-        while current_seat <= economy loop
-                foreach col in array columns_economy loop
-                        INSERT INTO aircraft_seat VALUES(temp_model_id, CONCAT(row_num, col), 3);
-                        current_seat = current_seat + 1;
-                end loop;
-                row_num = row_num + 1;
-        end loop;
-        temp_model_id = temp_model_id + 1;
-	end loop;
-
-END;
-$$;
-
 
 ---------------------PROCEDURE FOR ADDING SEAT PRICES---------------------------
-CREATE OR REPLACE PROCEDURE insert_route_price(int,numeric,numeric,numeric)
+CREATE OR REPLACE PROCEDURE insert_route_price(varchar,numeric,numeric,numeric)
 LANGUAGE plpgsql
 AS $$
 
@@ -878,6 +982,13 @@ BEGIN
 END;
 $$;
 
+------------------------------Indexing Schema-----------------------------------------------------------------------
+CREATE INDEX "IDX_Schedule_State" ON "flight_schedule" ("flight_state");
+CREATE INDEX "IDX_Schedule_Route_ID" ON "flight_schedule" ("route_id");
+CREATE INDEX "IDX_Booking_Schedule_ID" ON "seat_booking" ("schedule_id");
+CREATE INDEX "IDX_Route_Origin" ON "route" ("origin");
+CREATE INDEX "IDX_Route_Dest" ON "route" ("destination");
+
 
 ---------------------------------------Privilages - only for dev ------------------------------------------------------------------------
 
@@ -888,7 +999,7 @@ GRANT EXECUTE ON FUNCTION public.generate_uuid4() TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_age(birthday date) TO database_app;
 
-GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id integer, val_departure_datetime timestamp without time zone) TO database_app;
+GRANT EXECUTE ON FUNCTION public.get_arrival(val_route_id VARCHAR(10), val_departure_datetime timestamp without time zone) TO database_app;
 
 GRANT EXECUTE ON FUNCTION public.get_timestamp(val_date date, val_time time without time zone) TO database_app;
 
@@ -902,7 +1013,7 @@ GRANT EXECUTE ON PROCEDURE public.registercustomer(val_email character varying, 
 
 GRANT EXECUTE ON PROCEDURE public.registerstaff(val_emp_id character, val_category staff_category, val_password character varying, val_first_name character varying, val_last_name character varying, val_contact_no character varying, val_email character varying, val_dob date, val_gender gender_enum, val_country character varying, val_airport character varying) TO database_app;
 
-GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id integer, val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
+GRANT EXECUTE ON PROCEDURE public.scheduleflights(val_route_id VARCHAR(10), val_aircraft_id integer, val_departure_date date, val_departure_time_utc time without time zone) TO database_app;
 
 
 --GRANT EXECUTE ON FUNCTION public.afterseatbookinginsert() TO database_app;
@@ -917,7 +1028,7 @@ GRANT ALL ON SEQUENCE public.flight_schedule_schedule_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.location_location_id_seq TO database_app;
 
-GRANT ALL ON SEQUENCE public.route_route_id_seq TO database_app;
+GRANT ALL ON SEQUENCE public.customer_review_review_id_seq TO database_app;
 
 GRANT ALL ON SEQUENCE public.seat_booking_booking_id_seq TO database_app;
 
@@ -963,4 +1074,12 @@ GRANT ALL ON TABLE public.temp_airport TO database_app;
                                                                                                                                 
 GRANT ALL ON TABLE public.guest_customer TO database_app;
 
+GRANT SELECT ON booking_id_vs_category TO database_app;
 
+GRANT SELECT ON passenger_details_only TO database_app;
+
+GRANT SELECT ON flight_info_passenger TO database_app;
+
+GRANT SELECT ON booked_user_details TO database_app;
+
+GRANT SELECT ON details_except_booked_person TO database_app;

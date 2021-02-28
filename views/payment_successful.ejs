@@ -41,7 +41,7 @@
             <div class="col-lg-8 text-center">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Payment</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">payment</li>
                         <li class="breadcrumb-item active" aria-current="page">booking</li>
                     </ol>
                 </nav>
@@ -55,10 +55,20 @@
 
 
 <!-- booking-registration-section start -->
+
+
 <section class="booking-registration-section pt-120 pb-120">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
+              <form action="/booking/payment/success/eTicket" method="post">
+                <div class="text-center" >
+                    <input type="hidden" value="<%= bookingDetails[0].booking_id%>"/>
+                    <div class="alert alert-warning" role="alert">
+                    <button type="submit"><h6><i class="fas fa-exclamation-circle"></i> Click here to print e- Ticket Receipt & Itinerary</h6></button>
+                  </div>
+                    </div>
+                  </form>
                 <form class="general-information" id="bookingForm" action="create-booking">
 
                     <div class="booking-registration-form">
@@ -66,9 +76,9 @@
                             <div class="text-center" >
                                 <h1 style="color:green;"><i class="fas fa-check-circle" style="size: 30%;"></i>Payment Successful!</h1>
                                 <br>
-                                <h3>Thank You for your payment of $<%=bookingDetails[0].total_price%> for B Airways</h3>
-                                <p>Reference Customer ID: <%=bookingDetails[0].customer_id%></p>
+                                <h3>Thank You for your payment of $<%=bookingDetails[0].final_price%> for B Airways</h3>
                             </div>
+                            
                             <% if(bookingDetails && bookingDetails.length!=0) {%>
                               <% bookingDetails.forEach(function(booking){%>
                             <div class="flex font-sans justify-center items-center h-screen">
@@ -98,12 +108,12 @@
                                       <span class="uppercase text-white block tracking-wide text-sm"><%=(flight_details.departure_date).toString().substring(0,15)%></span>   
                                     </div>
                                     <div class="w-1/5">
-                                      <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">gate</span>
-                                      <span class="uppercase text-white block tracking-wide text-sm">51b</span>
+                                      <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs"></span>
+                                      <span class="uppercase text-white block tracking-wide text-sm"></span>
                                     </div>
                                     <div class="w-2/5">
                                       <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">boarding</span>
-                                      <span class="uppercase text-white block tracking-wide text-sm"><%=flight_details.boarding_time_utc%></span>
+                                      <span class="uppercase text-white block tracking-wide text-sm"><%=flight_details.boarding_time_utc%> UTC</span>
                                     </div>
                                   </div>
                                   
@@ -118,11 +128,11 @@
                                         </div>
                                         <div class="mb-3">
                                           <h4 class="text-xs uppercase tracking-wide text-grey-darker">Departure</h4>
-                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.departure_time_utc%></p>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.departure_time_utc%> UTC</p>
                                         </div>
                                         <div class="">
                                           <h4 class="text-xs uppercase tracking-wide text-grey-darker">Estimate arrive</h4>
-                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.arrival_time_utc%></p>
+                                          <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.arrival_time_utc%> UTC</p>
                                         </div>
                                         </div>
                                       <div class="small-3 columns">
@@ -150,7 +160,7 @@
                               <%});%>
                             <% }else{ %>
                               <div class=" alert alert-warning text-center">
-                                                          <strong>No Flights available</strong>
+                                                          <strong>No Tickets were booked</strong>
                           </div>
                           <%}%>
 
@@ -161,7 +171,14 @@
 
                 </form>
                 
-                  
+                <form action="/booking/payment/success/eTicket" method="post">
+                  <div class="text-center" >
+                      <input type="hidden" value="<%= bookingDetails[0].booking_id%>"/>
+                      <div class="alert alert-warning" role="alert">
+                      <button type="submit"><h6><i class="fas fa-exclamation-circle"></i> Click here to print e- Ticket Receipt & Itinerary</h6></button>
+                    </div>
+                      </div>
+                    </form>
                   
                   
                   

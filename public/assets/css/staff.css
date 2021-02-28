@@ -26,3 +26,7 @@ html{
 .manager-card:hover{
     transform: scale(1.05);
 }
+
+.pass-count td, .pass-count th{
+    border-color: black !important;
+}

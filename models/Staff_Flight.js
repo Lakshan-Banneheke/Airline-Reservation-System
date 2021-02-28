@@ -30,7 +30,7 @@ class Flight {
     }
 
     static async incomingPendingFlightDetails(staff_member_airport) {
-        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,flight_state
+        const query = `SELECT schedule_id,aircraft_id,departure_time_utc,arrival_time_utc,duration,origin,destination,flight_state,actual_departed
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
                         WHERE (flight_state=$1 OR flight_state=$2) AND destination=$3
                         ORDER BY get_timestamp(arrival_date,arrival_time_utc) ASC`;
@@ -49,14 +49,75 @@ class Flight {
         return result.rows;
     }
 
-    static async getUpcomingFlightDetails(staff_member_airport) {
+    static async getArrivedFlights(staff_member_airport){
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination,actual_arrival
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Landed' AND destination=$1
+                        ORDER BY get_timestamp(arrival_date,arrival_time_utc) DESC;`
+        const result = await pool.query(query, [staff_member_airport]);
+        return result.rows;
+    }
+
+
+
+    static async getUpcomingIncomingFlights(staff_member_airport) {
         const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
                         FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
-                        WHERE flight_state='Scheduled' AND (origin=$1 or destination=$1) AND departure_date>NOW()::DATE
+                        WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE
                         ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
         const result = await pool.query(query, [staff_member_airport]);
 
         return result.rows;
+    }
+
+    static async getUpcomingIncomingFlightsFiltered(staff_member_airport,filtered_airports,type) {
+        
+        if(type=='object'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE AND origin=ANY($2)
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
+        else if(type=='string'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (destination=$1) AND departure_date>NOW()::DATE AND origin=$2
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
+    }
+
+    static async getUpcomingOutgoingFlights(staff_member_airport) {
+        const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+        const result = await pool.query(query, [staff_member_airport]);
+
+        return result.rows;
+    }
+
+    static async getUpcomingOutgoingFlightsFiltered(staff_member_airport,filtered_airports,type) {
+        
+        if(type=='object'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE AND destination=ANY($2)
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
+        else if(type=='string'){
+            const query = `SELECT schedule_id,aircraft_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,duration,origin,destination
+                        FROM flight_schedule LEFT OUTER JOIN route USING(route_id)
+                        WHERE flight_state='Scheduled' AND (origin=$1) AND departure_date>NOW()::DATE AND destination=$2
+                        ORDER BY get_timestamp(departure_date,departure_time_utc) ASC`;
+            const result = await pool.query(query, [staff_member_airport,filtered_airports]);
+            return result.rows;
+        }
     }
 
     static async markArrival(schedule_id) {
@@ -75,6 +136,23 @@ class Flight {
                         WHERE model_id=(SELECT model_id FROM aircraft_instance WHERE aircraft_id=$1)`;
         const result = await pool.query(query, [aircraft_id]);
         return result.rows[0];
+    }
+
+
+    static async getPassengerDetails(schedule_id){
+        const query = `SELECT * FROM details_except_booked_person 
+                        LEFT OUTER JOIN booked_user_details 
+                        USING(customer_id)
+                        WHERE schedule_id=$1;`
+        const result = await pool.query(query, [schedule_id]);
+        //console.log(result.rows);
+        return result.rows;      
+    }
+    static async getAllRoutes(){
+        const query=`SELECT * FROm Route`
+        const result= await pool.query(query);
+        return result.rows;
+
     }
 }
 

@@ -1,0 +1,190 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!--link rel="stylesheet" href="/assets/css/ticketStyle.css"-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/0.7.4/tailwind.min.css">
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">Previous Booking</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">Booking ID</li>
+                        <li class="breadcrumb-item active" aria-current="page"><%= bookingDetails[0].booking_id%></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+
+<!-- booking-registration-section start -->
+<section class="booking-registration-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form action="/booking/payment/success/eTicket" method="post">
+                    <div class="text-center" >
+                        <input type="hidden" value="<%= bookingDetails[0].booking_id%>"/>
+                        <div class="alert alert-warning" role="alert">
+                            <button type="submit"><h6><i class="fas fa-exclamation-circle"></i> Click here to print e- Ticket Receipt & Itinerary</h6></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="general-information" id="bookingForm" action="create-booking">
+
+                    <div class="booking-registration-form">
+                        <div class="booking-form-area">
+                            <% if(bookingDetails && bookingDetails.length!=0) {%>
+                                <% bookingDetails.forEach(function(booking){%>
+                                <div class="flex font-sans justify-center items-center h-screen">
+                                    <div class="w-full max-w-sm mx-4 shadow-lg rounded-lg">
+
+                                        <div class="py-4 px-6 flex justify-between items-end bg-white rounded-lg rounded-b-none">
+                                            <div>
+
+                                            </div>
+                                            <div>
+                                                <span class="uppercase font-bold text-grey-darkest tracking-wide text-sm">Boarding pass</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex bg-red justify-around items-center py-16 px-6 sm:px-12 bg-destination" style="background-color: orangered;">
+                                            <div class="flex-1 text-5xl font-bold text-white tracking-wide text-shadow-lg"><%=flight_details.origin%></div>
+                                            <div class="mx-8">
+                                                <img class="h-12" src="http://www.freeiconspng.com/uploads/description-white-plane-icon-2-27.png" alt="" />
+                                            </div>
+                                            <div class="flex-1 text-right text-5xl font-bold text-white tracking-wide text-shadow-lg"><%=flight_details.destination%></div>
+                                        </div>
+
+
+                                        <div class="flex bg-purple-400 px-6 sm:px-12 py-4" style="background-color: indianred;">
+                                            <div class="w-2/5">
+                                                <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">date</span>
+                                                <span class="uppercase text-white block tracking-wide text-sm"><%=(flight_details.departure_date).toString().substring(0,15)%></span>
+                                            </div>
+                                            <div class="w-1/5">
+                                                <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs"></span>
+                                                <span class="uppercase text-white block tracking-wide text-sm"></span>
+                                            </div>
+                                            <div class="w-2/5">
+                                                <span class="uppercase text-purple-lighter block tracking-wide mb-1 font-thin text-xs">boarding</span>
+                                                <span class="uppercase text-white block tracking-wide text-sm"><%=flight_details.boarding_time_utc%></span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="py-8 px-6 sm:px-12 bg-white bg-plane rounded-lg rounded-t-none">
+                                            <div class="flex">
+                                                <div class="w-3/5">
+                                                    <div class="mb-3">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Passenger</h4>
+                                                        <p class="font-semibold tracking-wide text-purple-400" class="passenger-name"><%=booking.name %> </p>
+                                                        <p><small></small></p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Departure</h4>
+                                                        <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.departure_time_utc%> UTC</p>
+                                                    </div>
+                                                    <div class="">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Estimate arrive</h4>
+                                                        <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.arrival_time_utc%> UTC</p>
+                                                    </div>
+                                                </div>
+                                                <div class="small-3 columns">
+                                                    <div class="mb-3">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Class</h4>
+                                                        <p class="font-semibold tracking-wide text-grey-darkest"><%=booking.class_name%></p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Seat</h4>
+                                                        <p class="font-semibold tracking-wide text-grey-darkest"><%= booking.seat_id %></p>
+                                                    </div>
+                                                    <div class="">
+                                                        <h4 class="text-xs uppercase tracking-wide text-grey-darker">Flight</h4>
+                                                        <p class="font-semibold tracking-wide text-grey-darkest"><%=flight_details.schedule_id%></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <%});%>
+                            <% }else{ %>
+                                <div class=" alert alert-warning text-center">
+                                    <strong>No Flights available</strong>
+                                </div>
+                            <%}%>
+
+
+                        </div>
+                    </div>
+
+
+                </form>
+
+
+
+
+
+
+
+
+
+                <div class="educational-registration-form">
+                    <div class="booking-form-area">
+                        <div class="row justify-content-center">
+
+                            <div class="col-lg-12 text-center">
+                                <a href="/" class="cmn-btn">Home</a>
+                                <a href="/customer/viewFlights" class="cmn-btn">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('_footer',{user}) %>

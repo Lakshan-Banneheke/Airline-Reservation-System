@@ -1,0 +1,112 @@
+<!-- header-section start -->
+<%- include('_header',{user}) %>
+<!-- header-section end -->
+<!-- register-section start -->
+<%- include('_signup',{user,registrationError}) %>
+<!-- register-section end -->
+<!-- login-section start -->
+<%- include('_login',{user}) %>
+<!-- login-section end -->
+
+<form class="header-form">
+    <div class="skip"><i class="fas fa-times"></i></div>
+    <div class="header-form-area">
+        <input type="text" placeholder="Search Here">
+        <button type="submit"><i class="flaticon-search-interface-symbol"></i></button>
+    </div>
+</form>
+
+
+<!-- banner-section start -->
+<section class="inner-banner-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="inner-banner-content">
+                    <h2 class="title">Customer Review</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner-section end -->
+
+
+<!-- breadcrumb-section start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customer Review</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-section end -->
+
+
+<a href="#" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+
+ <!-- booking-registration-section start -->
+ <section class="booking-registration-section pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <% if(registrationError) {%>
+                <div class="alert alert-danger" role="alert" style="z-index: 999;">
+                    <%=registrationError%>
+                </div>
+                <% } %>
+                <form class="comment-form" id="reviewForm" action="/customer/createReview/created" method="post">
+                <%if (!user || user.type == 'registered') { %>
+                    
+                    <div class="">
+                        <div class="leave-comment">
+                            <h3 class="title">Add Your Review Here</h3>
+                                <% if(dbError) {%>
+                                    <div class="alert alert-warning">
+                                        <%= dbError %> 
+                                    </div>
+                                <% } %>
+                            
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" >Full Name</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control" id="custName" value="<%=user.customerData.first_name%> <%=user.customerData.last_name%>" disabled>
+                                        <input type="hidden" class="form-control" id="custID" name="custID" value="<%=user.customerData.customer_id%>">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label">Review(500 characters)</label>
+                                    <div class="col-lg-8">
+                                        <textarea class="form-control" name="review" id="review"></textarea>
+                                    </div>
+                                </div>
+                        
+                    
+                   
+                                <div class="col-lg-12 form-group">
+                                    <button class="cmn-btn" type="submit">Post Review</button>
+                                </div>
+                                </div>
+                               
+                            
+                    </div>
+                </form>
+                
+                   <% }else{ %>  
+                    <div class="">
+                        <h3 class="title">Register with us now!</h3>
+                    </div>
+                    <% } %>     
+                  
+            </div>
+            </div>
+            </div>
+            </section>
+<%- include('_footer',{user}) %>

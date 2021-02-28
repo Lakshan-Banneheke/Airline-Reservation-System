@@ -4,8 +4,7 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <img src="/assets/images/blog-10.jpg" class="card-img-top" alt="...">
-                </br>
+                <h3>Information</h3>
                 </br>
                 <% if (error) {%>
                     <div class="alert alert-danger text-center" role="alert">
@@ -51,22 +50,23 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                      <th scope="col">Booking ID</th>
-                                      <th scope="col">Customer ID</th>
-                                      <th scope="col">Customer Name</th>
-                                      <th scope="col">No.of seats</th>
+                                      <th scope="col">Seat id</th>
+                                      <th scope="col">Passenger name</th>
+                                      <th scope="col">Passenger passport</th>
+                                      <th scope="col">Booked person name</th>
+                                      <th scope="col">Booked person email</th>
                                     </tr>
                                   </thead>
                                   <tbody>
-                                      <% for (var i = 0; i <25; i++) { %>
-                                      
-                                    <tr>
-                                      <th scope="row">1</th>
-                                      <td>Mark</td>
-                                      <td>Otto</td>
-                                      <td>@mdo</td>
-                                    </tr>
-                                    <% } %>
+                                        <% for (var i = 0; i <moreInfoPassenger.length; i++) { %>
+                                            <tr>
+                                            <th scope="row"><%= moreInfoPassenger[i].seat_id %></th>
+                                            <td><%= moreInfoPassenger[i].passenger_name %></td>
+                                            <td><%= moreInfoPassenger[i].passenger_passport %></td>
+                                            <td><%= moreInfoPassenger[i].booked_name %></td>
+                                            <td><%= moreInfoPassenger[i].email %></td>
+                                            </tr>
+                                        <% } %>
                                   </tbody>
                               </table>
                         </div>

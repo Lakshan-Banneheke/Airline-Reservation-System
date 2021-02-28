@@ -34,10 +34,11 @@
                     try{
                         let datePicked = new Date(custDob);
                         let cutoffDate  = new Date(Date.now() - (1000*60*60*24*365*18));
+
                         if(cutoffDate<datePicked)
-                            error_msgs+='<br>Pick a valid Date of Birth';
+                            error_msgs+='<br>Pick a valid Date of Birth for customer';
                     }catch{
-                        error_msgs+='<br>Pick a valid Date of Birth';
+                        error_msgs+='<br>Pick a valid Date of Birth for customer';
                     }
                 }
                 if(Genders.indexOf(custGender)===-1){
@@ -56,6 +57,7 @@
                     error_msgs+="<br>Please select a unique seat number for each passenger";
                 }
 
+                passDob.forEach(ValidatePassDob);
 
             }catch(err){
                 error_msgs=`<br>OOPS! something went wrong!${err}`;
@@ -115,6 +117,13 @@
                     return (true)
                 }
                 return (false)
+            }
+
+            function ValidatePassDob(item, index) {
+                let datePicked = new Date(item);
+                let currentDate = new Date(Date.now());
+                if(currentDate<datePicked)
+                    error_msgs+='<br>Pick a valid Date of Birth for passenger ' + (index+1);
             }
         });
 
