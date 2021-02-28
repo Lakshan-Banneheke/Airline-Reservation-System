@@ -58,27 +58,37 @@ class BookingController {
     }
 
     static async getPayment(req, res) {
-        const price = await BookingService.getPrice(req.session.booking_id);
-        
-        res.render('payment', {
-            user: req.session.user,
-            booking_id: req.session.booking_id,
-            price: price.total_price,
-            registrationError: req.query.registrationError,
-            dbError: req.query.dbError,
-            loginError: req.query.loginError,
-            regemail: req.query.email,
-            regfirstName: req.query.firstName,
-            reglastName: req.query.lastName,
-            regdob: req.query.dob,
-            reggender: req.query.gender,
-            regcontactNo: req.query.contactNo,
-            regpassportNo: req.query.passportNo,
-            regaddressLine1: req.query.addressLine1,
-            regaddressLine2: req.query.addressLine2,
-            regcity: req.query.city,
-            regcountry: req.query.country,
-        });
+        const prices = await BookingService.getPrice(req.session.booking_id);
+        if (typeof prices === 'undefined') {
+            res.status(405).render('405');
+        } else {
+            const seat_prices = await BookingService.getSeatPrices(req.session.booking_id);
+
+            const discount_percentage = Math.floor(100 - 100 * prices.final_price / prices.price_before_discount);
+
+            res.render('payment', {
+                user: req.session.user,
+                booking_id: req.session.booking_id,
+                seat_prices: seat_prices,
+                price: prices.final_price,
+                priceBeforeDiscount: prices.price_before_discount,
+                discount_percentage: discount_percentage,
+                registrationError: req.query.registrationError,
+                dbError: req.query.dbError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
+        }
     }
 
     static async cancelPayment(req, res) {
@@ -140,10 +150,72 @@ class BookingController {
     static async deleteBooking(req, res) {
         try {
             await BookingService.cancelBooking(req.body.booking_id);
-            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+            return res.status(200).send({ result: 'redirect', url: '/' });
         } catch (error) {
             console.log(error);
-            return res.status(200).send({ result: 'redirect', url: '/customer/viewFlights' });
+            return res.status(200).send({ result: 'redirect', url: '/' });
+        }
+    }
+
+    static async getPreviousBookings(req, res) {
+        try {
+            const bookingsDetails = await BookingService.getPreviousBookings(req.session.user.customerData.customer_id);
+            const upcomingFlights = await FlightService.getAllFlights();
+            console.log(bookingsDetails);
+
+            res.render('previous_bookings', {
+                user: req.session.user,
+                bookingsDetails,
+                upcomingFlights,
+                registrationError: req.query.registrationError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.redirect('/');
+        }
+    }
+
+
+    static async getPreviousBooking(req, res) {
+        try {
+            req.session.booking_id = req.body.booking_id;
+            const bookingDetails = await BookingService.getBookingDetails(req.body.booking_id);
+            const schedule_id=bookingDetails[0].schedule_id;
+            const flight_details = await FlightService.getFlightByID(schedule_id);
+
+            res.render('previous_booking', {
+                user: req.session.user,
+                flight_details,
+                bookingDetails: bookingDetails[1],
+                registrationError: req.query.registrationError,
+                loginError: req.query.loginError,
+                regemail: req.query.email,
+                regfirstName: req.query.firstName,
+                reglastName: req.query.lastName,
+                regdob: req.query.dob,
+                reggender: req.query.gender,
+                regcontactNo: req.query.contactNo,
+                regpassportNo: req.query.passportNo,
+                regaddressLine1: req.query.addressLine1,
+                regaddressLine2: req.query.addressLine2,
+                regcity: req.query.city,
+                regcountry: req.query.country,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.redirect('/');
         }
     }
 }

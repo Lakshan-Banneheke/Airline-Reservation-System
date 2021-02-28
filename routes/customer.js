@@ -10,4 +10,12 @@ router.get('/logout', ifRegisteredCustomer, CustomerController.logout);
 router.get('/viewFlights', FlightController.getFlightByFilter);
 router.post('/viewFlights', FlightController.getFlightByFilter);
 
+router.get('/createReview',ifRegisteredCustomer, CustomerController.getReview);
+router.post('/createReview/created',ifRegisteredCustomer, CustomerController.createReview);
+
+router.get('/editProfile', ifRegisteredCustomer, CustomerController.viewEditProfile);
+router.post('/editProfile', ifRegisteredCustomer, CustomerController.editProfile);
+router.post('/changePassword', ifRegisteredCustomer, CustomerController.changePassword);
+
+
 module.exports = router;
