@@ -56,8 +56,14 @@ DROP VIEW IF EXISTS booked_user_details CASCADE;
 DROP VIEW IF EXISTS details_except_booked_person CASCADE;
 
 SET TIME ZONE 'Etc/UTC';
----------------------------------- ENUMS SCHEMA ------------------------------------
 
+/*
+  ___ _ __  _   _ _ __ ___  ___ 
+ / _ \ '_ \| | | | '_ ` _ \/ __|
+|  __/ | | | |_| | | | | | \__ \
+ \___|_| |_|\__,_|_| |_| |_|___/
+ */
+ ---------------------------------- ENUMS SCHEMA ------------------------------------
 CREATE TYPE flight_state_enum AS ENUM(
 'Scheduled',
 'Departed-On-Time',
@@ -101,16 +107,32 @@ CREATE TYPE staff_account_state AS ENUM(
 'unverified'
 );
 
+/*
+      _                       _           
+     | |                     (_)          
+   __| | ___  _ __ ___   __ _ _ _ __  ___ 
+  / _` |/ _ \| '_ ` _ \ / _` | | '_ \/ __|
+ | (_| | (_) | | | | | | (_| | | | | \__ \
+  \__,_|\___/|_| |_| |_|\__,_|_|_| |_|___/
+*/
 ------------------------------------DOMAIN SCHEMA ---------------------------------------
 
 CREATE DOMAIN UUID4 AS char(36)
 CHECK (VALUE ~ '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
 
-----------------------------------  FUNCTION SCHEMA  ------------------------------------
+/* 
+   __                  _   _                 
+  / _|                | | (_)                
+ | |_ _   _ _ __   ___| |_ _  ___  _ __  ___ 
+ |  _| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+ | | | |_| | | | | (__| |_| | (_) | | | \__ \
+ |_|  \__,_|_| |_|\___|\__|_|\___/|_| |_|___/                              
+ */
 
+----------------------------------  Functions SCHEMA --------------------------------------
 ----Function to create UUID for tables
-
+--https://stackoverflow.com/questions/12505158/generating-a-uuid-in-postgres-for-insert-statement
 CREATE OR REPLACE FUNCTION generate_uuid4 ()
     RETURNS char( 36
 )
@@ -412,7 +434,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
+/* 
+  _        _     _           
+ | |      | |   | |          
+ | |_ __ _| |__ | | ___  ___ 
+ | __/ _` | '_ \| |/ _ \/ __|
+ | || (_| | |_) | |  __/\__ \
+  \__\__,_|_.__/|_|\___||___/
+ */
 ----------------------------------  TABLE SCHEMA --------------------------------------
 
 CREATE TABLE Organizational_Info (
@@ -625,6 +654,15 @@ CREATE TABLE Guest_Customer(
   FOREIGN KEY(customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
+/*
+ _____               _             
+/  ___|             (_)            
+\ `--.  ___  ___ ___ _  ___  _ __  
+ `--. \/ _ \/ __/ __| |/ _ \| '_ \ 
+/\__/ /  __/\__ \__ \ | (_) | | | |
+\____/ \___||___/___/_|\___/|_| |_|
+*/
 ---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
 
 CREATE TABLE "session" (
@@ -641,6 +679,15 @@ ALTER TABLE "session"
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
+
+/*
+        _                   
+       (_)                  
+ __   ___  _____      _____ 
+ \ \ / / |/ _ \ \ /\ / / __|
+  \ V /| |  __/\ V  V /\__ \
+   \_/ |_|\___| \_/\_/ |___/ 
+*/
 -----------------------------------VIEWS SCHEMA ----------------------------------------
 CREATE OR REPLACE VIEW temp_airport AS SELECT airport_code,getLocation(airport_code) AS name FROM  airport INNER JOIN location USING(location_id);
 
@@ -676,6 +723,16 @@ from booking_id_vs_category left outer join passenger_details_only
 using(customer_id);
 -- select * from details_except_booked_person;
 
+/*
+  _        _                           
+ | |      (_)                          
+ | |_ _ __ _  __ _  __ _  ___ _ __ ___ 
+ | __| '__| |/ _` |/ _` |/ _ \ '__/ __|
+ | |_| |  | | (_| | (_| |  __/ |  \__ \
+  \__|_|  |_|\__, |\__, |\___|_|  |___/
+              __/ | __/ |              
+             |___/ |___/               
+*/
 --------------------------------------   TRIGGERS  SCEHMA ------------------------------------------------------------------------------------
 CREATE TRIGGER update_customer_bookings
 AFTER UPDATE OF state ON seat_booking
@@ -691,6 +748,17 @@ AFTER UPDATE OF no_of_bookings ON registered_customer
 
 
 
+
+/*
+                               _                     
+                              | |                    
+  _ __  _ __ ___   ___ ___  __| |_   _ _ __ ___  ___ 
+ | '_ \| '__/ _ \ / __/ _ \/ _` | | | | '__/ _ \/ __|
+ | |_) | | | (_) | (_|  __/ (_| | |_| | | |  __/\__ \
+ | .__/|_|  \___/ \___\___|\__,_|\__,_|_|  \___||___/
+ | |                                                 
+ |_|                                                 
+*/
 --------------------------------------- PROCEDURES SCHEMA---------------------------------------------------------------------------------------
 
 -- Procedure to register customer
@@ -982,6 +1050,15 @@ BEGIN
 END;
 $$;
 
+
+/*
+  _           _                    
+ (_)         | |                   
+  _ _ __   __| | _____  _____  ___ 
+ | | '_ \ / _` |/ _ \ \/ / _ \/ __|
+ | | | | | (_| |  __/>  <  __/\__ \
+ |_|_| |_|\__,_|\___/_/\_\___||___/
+*/
 ------------------------------Indexing Schema-----------------------------------------------------------------------
 CREATE INDEX "IDX_Schedule_State" ON "flight_schedule" ("flight_state");
 CREATE INDEX "IDX_Schedule_Route_ID" ON "flight_schedule" ("route_id");
