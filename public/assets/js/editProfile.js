@@ -58,7 +58,6 @@
                     },
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (response) {
-                        console.log(response);
                         $('#editProfile').children('.reg-error1').remove();
                         if (response.result === 'redirect') {
                             //redirecting

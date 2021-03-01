@@ -22,7 +22,6 @@ setTimeout(delBooking, 602000);
 let submitted = false;
 
 function setSubmitted(){
-    console.log(1);
     submitted = true;
 }
 window.onbeforeunload = delBooking;
@@ -31,7 +30,6 @@ window.onbeforeunload = delBooking;
 function delBooking(){
     if (!submitted) {
         submitted = true;
-        console.log("Deleting booking")
         $.ajax({
             type: "DELETE",
             url: '/booking/deleteBooking',
