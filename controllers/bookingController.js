@@ -166,7 +166,6 @@ class BookingController {
         try {
             const bookingsDetails = await BookingService.getPreviousBookings(req.session.user.customerData.customer_id);
             const upcomingFlights = await FlightService.getAllFlights();
-            console.log(bookingsDetails);
 
             res.render('previous_bookings', {
                 user: req.session.user,

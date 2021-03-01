@@ -53,7 +53,6 @@
 
 
             if (error_msgs=="<strong>OOPS</strong>") {
-                console.log('k');
                 $.ajax({
                     type: "POST",
                     url: '/customer/register',
@@ -74,7 +73,6 @@
                     },
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (response) {
-                        console.log(response);
                         $('#create_account_form_submit').children('.reg-success').remove();
                         if (response.result == 'redirect') {
                             //redirecting

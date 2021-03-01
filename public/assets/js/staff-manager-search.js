@@ -7,7 +7,6 @@ const searchStaff = async searchText => {
         let resCodes = await fetch(`/staff/manager/get_airport_codes`);
         const resCodesJson = await resCodes.json();
         const airportCodes = resCodesJson.airportCodes;
-        console.log(resCodesJson.airportCodes);
         let optionsList;
         if(airportCodes && airportCodes.length>0){
             optionsList = airportCodes.map((code)=>{
@@ -16,7 +15,6 @@ const searchStaff = async searchText => {
         }else{
             optionsList='';
         } 
-        console.log(optionsList);
         response =await response.json();
         if (response.success){
             let outputHTML;
