@@ -664,7 +664,7 @@ CREATE TABLE Guest_Customer(
 \____/ \___||___/___/_|\___/|_| |_|
 */
 ---------------------------------- SESSION TABLE SCHEMA ---------------------------------------------------------------------
-
+---https://github.com/voxpelli/node-connect-pg-simple/blob/main/table.sql
 CREATE TABLE "session" (
     "sid" varchar NOT NULL COLLATE "default",
     "sess" json NOT NULL,
