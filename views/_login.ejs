@@ -9,7 +9,7 @@
                                 <div class="common-form-style bg-one create-account">
                                     <div class="stop d-lg-none"><i class="fas fa-times"></i></div>
                                     <h4 class="title">Login to Your Account</h4>
-                                    <p>Enter email and password </p>
+                                    <p>Enter Your Email and Password </p>
                                     <% if(loginError) {%>
                                         <div class="alert alert-danger" role="alert" style="z-index: 999;">
                                             <%=loginError%>
@@ -17,15 +17,14 @@
                                     <% } %>
                                     <form class="create-account-form" method="POST" action="/customer/login">
                                         <div class="form-group">
-                                            <input type="email" placeholder="Email" name="email" required>
+                                            <input type="email" placeholder="email" name="email" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" id="myInput" placeholder="Password" name="password" required>
-                                            <a href="#0" id="show-pass-one" class="show-pass"><i class="fas fa-eye"></i></a>
+                                            <input type="password" id="myInput" placeholder="password" name="password" required>
                                         </div>
                                         <ul class="lost-pass">
                                             <li>
-                                                <a href="#0">Forget Password?</a>
+                                                <p></p>
                                             </li>
                                             <li>
                                                 <div class="form-group form-group--style">
