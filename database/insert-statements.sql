@@ -216,7 +216,8 @@ CALL insert_route_price('B064',390,220,83);
 
 
 -------------------INSERTING FLIGHT SCHEDULES---------------
-
+CALL scheduleFlights('B001',1,'2021-03-03','07:30:00');
+CALL scheduleFlights('B053',1,'2021-03-03','21:00:00');
 CALL scheduleFlights('B001',1,'2021-03-04','07:00:00');
 CALL scheduleFlights('B057',1,'2021-03-04','20:00:00');
 CALL scheduleFlights('B010',1,'2021-03-05','09:00:00');
@@ -227,6 +228,8 @@ CALL scheduleFlights('B001',1,'2021-03-08','07:00:00');
 CALL scheduleFlights('B057',1,'2021-03-08','20:00:00');
 CALL scheduleFlights('B010',1,'2021-03-09','09:00:00');
 
+CALL scheduleFlights('B034',2,'2021-03-03','07:15:00');
+CALL scheduleFlights('B027',2,'2021-03-03','19:00:00');
 CALL scheduleFlights('B034',2,'2021-03-04','09:00:00');
 CALL scheduleFlights('B031',2,'2021-03-05','03:00:00');
 CALL scheduleFlights('B061',2,'2021-03-06','16:30:00');
@@ -235,8 +238,10 @@ CALL scheduleFlights('B031',2,'2021-03-08','03:00:00');
 CALL scheduleFlights('B061',2,'2021-03-09','16:30:00');
 CALL scheduleFlights('B034',2,'2021-03-10','09:00:00');
 CALL scheduleFlights('B031',2,'2021-03-11','03:00:00');
-CALL scheduleFlights('B061',2,'2021-03-12','16:30:00');
+CALL scheduleFlights('B061',2,'2021-03-12','16:30:00'); 
 
+CALL scheduleFlights('B005',3,'2021-03-03','07:15:00');
+CALL scheduleFlights('B041',3,'2021-03-03','18:00:00');
 CALL scheduleFlights('B005',3,'2021-03-04','15:30:00');
 CALL scheduleFlights('B041',3,'2021-03-05','01:30:00');
 CALL scheduleFlights('B005',3,'2021-03-06','15:30:00');
@@ -246,6 +251,8 @@ CALL scheduleFlights('B041',3,'2021-03-09','01:30:00');
 CALL scheduleFlights('B005',3,'2021-03-10','15:30:00');
 CALL scheduleFlights('B041',3,'2021-03-11','01:30:00');
 
+CALL scheduleFlights('B017',4,'2021-03-03','07:10:00');
+CALL scheduleFlights('B057',4,'2021-03-03','15:00:00');
 CALL scheduleFlights('B017',4,'2021-03-04','03:30:00');
 CALL scheduleFlights('B057',4,'2021-03-04','15:00:00');
 CALL scheduleFlights('B017',4,'2021-03-05','03:30:00');
@@ -263,8 +270,8 @@ CALL scheduleFlights('B057',4,'2021-03-10','15:00:00');
 CALL scheduleFlights('B017',4,'2021-03-11','03:30:00');
 CALL scheduleFlights('B057',4,'2021-03-11','15:00:00');
 
-
-
+CALL scheduleFlights('B011',5,'2021-03-03','07:15:00');
+CALL scheduleFlights('B009',5,'2021-03-03','20:00:00');
 CALL scheduleFlights('B011',5,'2021-03-04','07:30:00');
 CALL scheduleFlights('B009',5,'2021-03-04','20:00:00');
 CALL scheduleFlights('B011',5,'2021-03-08','09:30:00');
@@ -272,6 +279,8 @@ CALL scheduleFlights('B009',5,'2021-03-08','21:00:00');
 CALL scheduleFlights('B011',5,'2021-03-12','07:30:00');
 CALL scheduleFlights('B009',5,'2021-03-12','20:00:00');
 
+CALL scheduleFlights('B047',6,'2021-03-03','08:00:00');
+CALL scheduleFlights('B006',6,'2021-03-03','20:00:00');
 CALL scheduleFlights('B047',6,'2021-03-04','07:30:00');
 CALL scheduleFlights('B007',6,'2021-03-04','20:00:00');
 CALL scheduleFlights('B063',6,'2021-03-05','09:30:00');
@@ -285,7 +294,8 @@ CALL scheduleFlights('B050',6,'2021-03-08','21:00:00');
 CALL scheduleFlights('B017',6,'2021-03-09','07:00:00');
 CALL scheduleFlights('B056',6,'2021-03-09','21:00:00');
 
-
+CALL scheduleFlights('B040',7,'2021-03-03','08:00:00');
+CALL scheduleFlights('B028',7,'2021-03-03','20:00:00');
 CALL scheduleFlights('B040',7,'2021-03-04','07:30:00');
 CALL scheduleFlights('B031',7,'2021-03-04','20:00:00');
 CALL scheduleFlights('B064',7,'2021-03-05','09:30:00');
@@ -299,6 +309,8 @@ CALL scheduleFlights('B031',7,'2021-03-08','20:00:00');
 CALL scheduleFlights('B064',7,'2021-03-09','09:30:00');
 CALL scheduleFlights('B015',7,'2021-03-10','21:00:00');
 
+CALL scheduleFlights('B002',8,'2021-03-03','08:00:00');
+CALL scheduleFlights('B019',8,'2021-03-03','23:00:00');
 CALL scheduleFlights('B002',8,'2021-03-04','22:30:00');
 CALL scheduleFlights('B019',8,'2021-03-05','20:00:00');
 CALL scheduleFlights('B002',8,'2021-03-06','22:30:00');
