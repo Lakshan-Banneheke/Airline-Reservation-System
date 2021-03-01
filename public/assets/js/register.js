@@ -30,7 +30,7 @@
                 var datePicked = new Date(dob);
                 let cutoffDate  = new Date(Date.now() - (1000*60*60*24*365*18));
                 if(cutoffDate<datePicked)
-                    error_msgs+='<br>Pick a valid Date of Birth';
+                    error_msgs+='<br>You must be older than 18 years to register with us.';
                 }catch{
                     error_msgs+='<br>Pick a valid Date of Birth';
                 }     
