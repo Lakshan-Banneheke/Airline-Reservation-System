@@ -33,7 +33,22 @@ const ymdhms = (dateObj) => {
 
     return format;
 };
+
+const utc_timestamp = (dateObj)=>{
+    const year = dateObj.getUTCFullYear();
+
+    const month = (`0${dateObj.getUTCMonth() + 1}`).slice(-2);
+    const date = (`0${dateObj.getUTCDate()}`).slice(-2);
+    const hour = (`0${dateObj.getUTCHours() + 1}`).slice(-2);
+
+    const minute = (`0${dateObj.getUTCMinutes() + 1}`).slice(-2);
+
+    const format = `${year}/${month}/${date} ${hour}:${minute}`;
+
+    return format;
+}
 module.exports = {
+    utc_timestamp,
     ymd,
     hms,
     ymdhms,

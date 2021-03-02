@@ -5,6 +5,7 @@
         <% if(user.staffData){%>
             <h3>Welcome <%=user.staffData.first_name%></h3>
             <p class="text-secondary">Assigned Airport - <%=user.staffData.assigned_airport%></p>
+            <p class="text-secondary">Current UTC Time : <%=new Date().toUTCString().slice(0, -3)%></p>
         <%}else{%>
             <h3>Welcome!</h3>
         <%}%>
