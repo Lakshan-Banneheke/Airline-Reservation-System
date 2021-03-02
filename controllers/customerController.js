@@ -1,16 +1,18 @@
 const { CustomerRegInfo, CustomerLoginInfo } = require('./validators/customerInfo');
 const CustomerService = require('../services/CustomerServices');
-const { compile } = require('joi');
-const { error } = require('winston');
+const { ymd} = require('../helpers/dateFormat');
 
 class CustomerController {
     static async register(req, res) {
         try {
             const { value, error } = await CustomerRegInfo.validate(req.body);
+            console.log('con'+value.dob.toString());
             if (error) throw (error);
             await CustomerService.register(value);
             // automatic login after register
             const customer = await CustomerService.login(value);
+            const formattedDob = ymd(new Date(customer.dob));
+            customer.dob=formattedDob
             req.session.user = {};
             req.session.user.type = customer.type;
             req.session.user.customerData = customer;
@@ -29,6 +31,8 @@ class CustomerController {
             const { value, error } = await CustomerLoginInfo.validate(req.body);
             if (error) throw (error);
             const customer = await CustomerService.login(value);
+            const formattedDob = ymd(new Date(customer.dob));
+            customer.dob=formattedDob
             req.session.user = {};
             req.session.user.type = customer.type;
             req.session.user.customerData = customer;
