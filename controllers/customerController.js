@@ -6,7 +6,7 @@ class CustomerController {
     static async register(req, res) {
         try {
             const { value, error } = await CustomerRegInfo.validate(req.body);
-            console.log('con'+value.dob.toString());
+            
             if (error) throw (error);
             await CustomerService.register(value);
             // automatic login after register

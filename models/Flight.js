@@ -8,10 +8,11 @@ class Flight {
     }
 
     static async getAllFlightsByFilter(vdepartureDate, vdeparture, vdestination) {
+        
         let result = null;
         // View all the flights available
         // eslint-disable-next-line max-len
-        if ((vdepartureDate === undefined || vdepartureDate === '') && (vdeparture === undefined || vdeparture === '') && (vdestination === undefined || vdeparture === '')) {
+        if ((vdepartureDate === undefined || vdepartureDate === '') && (vdeparture === undefined || vdeparture === '') && (vdestination === undefined || vdestination === '')) {
             const query = `SELECT schedule_id,route_id,departure_date,departure_time_utc,arrival_date,arrival_time_utc,origin,destination FROM flight_schedule INNER JOIN route USING(route_id)  WHERE flight_state='Scheduled' AND (departure_date||' '|| departure_time_utc)::timestamp>=NOW()+interval '6 hours 00 minutes' ORDER BY departure_date LIMIT 20;`;
             result = await pool.query(query, []);
             return result.rows;
