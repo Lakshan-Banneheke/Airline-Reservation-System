@@ -65,7 +65,7 @@
                                                     </div>
                                                     <div class="flight-search-body">
                                                         <h5 class="flight-start"><%= incomingFlights[i].departure_time_utc %></h5>
-                                                        <h5 class="flight-middle"><%= ("0"+incomingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+incomingFlights[i].duration.minutes).slice(-2) %></h5>
+                                                        <h5 class="flight-middle"><%= ("0"+incomingFlights[i].duration.hours).slice(-2) %>h<%= incomingFlights[i].duration.minutes? ("0"+incomingFlights[i].duration.minutes).slice(-2) : "00"%></h5>
                                                         <h5 class="flight-end"> <%= incomingFlights[i].arrival_time_utc %></h5>
                                                     </div>
                                                     <div class="flight-place">
@@ -149,7 +149,7 @@
                                                         </div>
                                                         <div class="flight-search-body">
                                                             <h5 class="flight-start"><%= departingFlights[i].departure_time_utc %></h5>
-                                                            <h5 class="flight-middle"><%= ("0"+departingFlights[i].duration.hours).slice(-2) %>h<%=  ("0"+departingFlights[i].duration.minutes).slice(-2) %></h5>
+                                                            <h5 class="flight-middle"><%= ("0"+departingFlights[i].duration.hours).slice(-2) %>h<%= departingFlights[i].duration.minutes? ("0"+departingFlights[i].duration.minutes).slice(-2):"00" %></h5>
                                                             <h5 class="flight-end"> <%= departingFlights[i].arrival_time_utc %></h5>
                                                         </div>
                                                         <div class="flight-place">
