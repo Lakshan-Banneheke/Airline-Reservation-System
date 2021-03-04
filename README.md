@@ -13,7 +13,7 @@ This Simple Airline Reservation system was developed as the semester project of 
 | **Home Page**                                            | **Flights Page**                                        |
 | ![Booking Page](screenshots/booking_pg.png)              | ![Payment Page](screenshots/payment_pg.png)             |
 | **Booking Page**                                         | **Payment Page**                                        |
-| ![About Page](screenshots/about_pg.png)              
+| ![About Page](screenshots/about_pg.png)                       
 | **About Page**                                         
 
 
