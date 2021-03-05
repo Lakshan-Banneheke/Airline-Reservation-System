@@ -110,6 +110,7 @@ DATABASE_URL=postgres://database_app:password@localhost:5432/airline_reservation
 SESSION_SECRET=database
 PORT=3000
 SERVER_ADDRESS=127.0.0.1
+NODE_ENV=development
 ```
 
 Then use `nodemon` or `node` to serve the pages.
