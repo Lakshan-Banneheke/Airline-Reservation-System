@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=airline_reservation_db
+    volumes:
+      - ./schema:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web
+    environment:
+      - SESSION_SECRET=database
+      - PGHOST=db
+      - PGUSER=postgres
+      - PGDATABASE=airline_reservation_db
+      - PGPASSWORD=password
+      - PGPORT=5432
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+volumes:
+  postgres-data:
